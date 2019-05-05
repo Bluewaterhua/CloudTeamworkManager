@@ -63,6 +63,9 @@
     <Compile Include="notification\__init__.py" />
     <Compile Include="task\admin.py" />
     <Compile Include="task\apps.py" />
+    <Compile Include="task\forms.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="task\migrations\__init__.py" />
     <Compile Include="task\models.py" />
     <Compile Include="task\tests.py" />
