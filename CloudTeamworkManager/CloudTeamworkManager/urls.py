@@ -19,14 +19,16 @@ Including another URLconf
 # Uncomment next two lines to enable admin:
 from django.contrib import admin
 from django.urls import path, include
+import notifications.urls
+import xadmin
 
 urlpatterns = [
     # Uncomment the next line to enable the admin:
-    path('admin/', admin.site.urls),
+    path('xadmin/', xadmin.site.urls),
     path('account/', include('account.urls')),
     path('task/', include('task.urls')),
     path('publisher/', include('publisher.urls')),
     path('file/', include('file.urls')),
-    #path('notification/', include('account.urls')),
-    #path('task/', include('account.urls')),
+    path('noti/', include('noti.urls')),
+    path('', include('account.urls')),
 ]

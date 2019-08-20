@@ -1,18 +1,16 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
+from django.forms import ValidationError
 from django.forms.models import model_to_dict
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.contrib.auth import logout as remove_session
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
-from django.forms import ValidationError
-from .forms import RegisterForm, LoginForm, GetPasswordForm, change_info, extend_info, ResetPasswordForm
+from .forms import RegisterForm, LoginForm, ResetPasswordForm, change_info, extend_info, SetPasswordForm, my_clean_phone_number
 from .models import UserProfile
 from .msgcode import sendcode
 from task.models import task
-from .forms import my_clean_phone_number
 import json
-import traceback
 
 
 def logoutAccount(request):
@@ -22,9 +20,8 @@ def logoutAccount(request):
 def login_page(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            return HttpResponseRedirect("/account/space/")
-        forms = LoginForm()
-        return render(request, 'login_page.html', {"form": forms})
+            return HttpResponseRedirect("/")
+        return render(request, 'signIn.html')
 
     if request.method == "POST":
         forms = LoginForm(request.POST)
@@ -33,60 +30,64 @@ def login_page(request):
             user = auth.authenticate(request, username = forms.cleaned_data['phone_number'], password = forms.cleaned_data['password'])
             if user:
                 auth.login(request, user)
-                return HttpResponseRedirect("/account/space/")
-            return render(request, 'login_page.html', {"form": forms, "tip": "用户名或密码错误"})
-        return render(request, 'login_page.html', {"form": forms, "tip": "输入内容有误"})
+                return JsonResponse({"url": "/", "status": 302}, safe=False)
+            return JsonResponse({"tip": "用户名或密码错误", "status": 400}, safe=False)
+        return JsonResponse({"tip": "输入内容有误", "status": 400}, safe=False)
 
     if request.method == "DELETE":
          auth.logout(request)
          return HttpResponseRedirect("/account/login/")
 
 def register_page(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+
     if request.method == "GET":
-        forms = RegisterForm()
-        return render(request, 'register_page.html', {"form": forms, "tip": ""})
+        return render(request, 'signUp.html')
 
     if request.method == "POST":
         forms = RegisterForm(request.POST)
-        forms.answer = request.session.get("verify")
 
         if forms.is_valid():
-            user = User.objects.create_user(username = forms.cleaned_data['phone_number'], password=forms.cleaned_data['password'])
-            UserProfile.objects.create(user_id = user.id)
-            return HttpResponseRedirect("/account/login/")
-        return render(request, 'register_page.html', {"form": forms})
+            try:
+                user = User.objects.get(username = forms.cleaned_data['phone_number'])
+            except:
+                user = User.objects.create_user(username = forms.cleaned_data['phone_number'], password=forms.cleaned_data['password'])
+                UserProfile.objects.create(user_id = user.id)
+                return JsonResponse({"url": "/account/login", "status": 302}, safe=False)
+            return JsonResponse({"tip": "手机号已被注册", "status": 400}, safe=False)
+        return JsonResponse({"tip": list(forms.errors.values())[0][0], "status": 400}, safe=False)
 
-def get_password_page(request):
+def reset_password_page(request):
     if request.method == "GET":
-        forms = GetPasswordForm()
-        return render(request, 'get_password_page.html', {"form": forms})
+        return render(request, 'resetPassword.html')
 
     if request.method == "POST":
-        forms = GetPasswordForm(request.POST)
-        forms.answer = request.session.get("verify")
+        forms = ResetPasswordForm(request.POST)
 
         if forms.is_valid():
             user = User.objects.get(username = forms.cleaned_data["phone_number"])
             user.set_password(forms.cleaned_data["password"])
             user.save()
-            return HttpResponseRedirect("/account/login/")
-        return render(request, 'get_password_page.html', {"form": forms})
+            return JsonResponse({"url": "/account/login", "status": 302}, safe=False)
+        return JsonResponse({"tip": list(forms.errors.values())[0][0], "status": 400}, safe=False)
 
-def reset_password(request):
+@login_required
+def set_password(request):
     if request.method == "GET":
-        forms = ResetPasswordForm()
-        return render(request, 'reset_password_page.html', {"form": forms})
+        return render(request, 'setPassword.html')
 
     if request.method == "POST":
-        forms = ResetPasswordForm()
-        forms.answer = request.session.get("verify")
-        user = request.user
-        forms.user = user
+        forms = SetPasswordForm(request.POST)
+        user = request.user  # 不用动这里
+        forms.user = request.user  # 不用动这里
+        forms.answer = request.session.get('verify').upper()
 
         if forms.is_valid():
             user.set_password(forms.cleaned_data["new_password"])
-            return HttpResponse("200")
-        return render(request, 'reset_password_page.html', {"form": forms})
+            auth.logout(request)
+            return JsonResponse({"url": "/account/login", "status": 302}, safe=False)
+        return JsonResponse({"tip": list(forms.errors.values())[0][0], "status": 400}, safe=False)
 
 def check_phone_number(request):
     phone_number = request.POST.get("phone_number")
@@ -94,8 +95,8 @@ def check_phone_number(request):
     try:
         my_clean_phone_number(phone_number)
     except ValidationError as e:
-        return HttpResponse(e.message)
-    return HttpResponse("手机号码可用")
+        return JsonResponse({"tip": e.message, "status": 400}, safe=False)
+    return JsonResponse({"tip": "手机号码可用", "status": 200}, safe=False)
 
 def sendmsgcode(request):
     def check_picode():
@@ -103,21 +104,29 @@ def sendmsgcode(request):
         code = request.POST.get('picode').upper()
 
         if code == answer:
-            remove_session(request)
+            auth.logout(request)
             return True
         return False
 
     if check_picode():
         sendcode(request.POST.get("phone_number"))
-        return HttpResponse("200")
-    return HttpResponse('图形验证码校验失败')
+        return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
+    return JsonResponse({"tip": "图形验证码校验失败", "status": 400}, safe=False)
 
 @login_required
 def space_page(request):
     user_info = UserProfile.objects.get(user_id = request.user.id)
-    if user_info.name:
-        return render(request, 'space.html')
-    return HttpResponseRedirect("/account/perfect_information/")
+
+    return render(request, 'space.html')
+
+def home(request):
+    if request.user.is_authenticated:
+        user_info = UserProfile.objects.get(user_id = request.user.id)
+
+        if user_info.name:
+            return render(request, 'home.html')
+        return HttpResponseRedirect("/account/perfect_information/")
+    return render(request, 'home.html')
 
 @login_required
 def personal_page(request):
@@ -135,50 +144,37 @@ def personal_page(request):
 
 @login_required
 def perfect_info(request):
-    user_info = UserProfile.objects.get(user_id = request.user.id)
     if request.method == "GET":
-        if user_info.name:
-            return HttpResponseRedirect("/account/space/")
-        form = extend_info()
-        return render(request, 'perfect_information.html', {'form': form, "target_url": "/account/perfect_information/"})
+        return render(request, "space.html", {"model": "perfect_info"})
 
     if request.method == "POST":
         user_info = UserProfile.objects.get(user_id = request.user.id)
-        form = extend_info(request.POST, instance=user_info)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect("/account/space/")
-        return render(request, 'perfect_information.html', {"form": form, "target_url": "/account/perfect_information/"})
+        if user_info.name:
+            forms = extend_info(request.POST, instance=user_info)
 
-'''处理用户修改个人信息的请求
-要求用户登录，若没有登录，返回登录页面'''
+            if forms.is_valid():
+                forms.save()
+                return JsonResponse({"url": "/account/space/", "status": 302}, safe=False)
+            return JsonResponse({"tip": list(forms.errors.values())[0][0], "status": 400}, safe=False)
+        return JsonResponse({"tip": "权限不足", "status": 400}, safe=False)
+
 @login_required
-def change_info_page(request):
-
-    # 从数据库中查找当前用户的个人信息
-    user_info = UserProfile.objects.get(user_id = request.user.id)
-
-    # 如果是get请求，则是打开页面的请求
+def change_info(request):
     if request.method == "GET":
+        return render(request, "space.html", {"model": "change_info"})
 
-        # 将该用户的信息作为实例传入change_info表单的实例化函数，将会返回一个change_info表单的实例。
-        # 这个实例中的字段将使用user_info中的信息填充
-        form = change_info(instance=user_info)
-
-        return render(request, 'perfect_information.html', {'form': form, "target_url": "/account/change_information/"})
-
-    # 如果是post请求，则该请求希望修改一个用户的信息
     if request.method == "POST":
+        user_info = UserProfile.objects.get(user_id = request.user.id)
+        forms = change_info(request.POST, instance=user_info)
 
-        # 将该用户的信息作为实例传入change_info表单的实例化函数，同时传入请求的post表单，将会返回一个change_info表单的实例。
-        # 这个实例中的字段将先使用user_info中的信息填充，再使用post表单的信息填充。
-        # 把user_info作为实例传入表单，一方面，可以指定需要修改的信息是user_info这个用户的信息
-        # 另一方面，可以填充post表单中被隐藏的字段，例如name
-        # 这样，用户的新信息完美覆盖到了旧信息上
-        form = change_info(request.POST, instance=user_info)
+        if forms.is_valid():
+            forms.save()
+            return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
+        return JsonResponse({"tip": list(forms.errors.values())[0][0], "status": 400}, safe=False)
 
-        # 验证表单合法性
-        if form.is_valid():
-            form.save()
-            return HttpResponse("200")
-        return render(request, 'perfect_information.html', {"form": form, "target_url": "/account/change_information/"})
+@login_required
+def task_list(request):
+    user = UserProfile.objects.get(user_id = request.user.id)
+    task_list = json.loads(user.involved_projects)
+    
+    return json.dumps([task.objects.get(id = each).values(["id", "task_name", "members", "task_status"]) for each in task_list])

@@ -1,4 +1,5 @@
-from django.shortcuts import render, HttpResponse, get_object_or_404 
+from django.shortcuts import render, HttpResponse, get_object_or_404
+from django.http import JsonResponse
 from django.contrib.auth.models import User, Group, Permission
 from guardian.shortcuts import assign_perm, remove_perm
 from task.models import task as models_task
@@ -129,7 +130,7 @@ class member(user):
                 comment.detail = _publisher(comment.detail).create(request.POST.get("content"), editor_id = request.user.id)
             comment.save()
                 
-            return HttpResponse('200')
+            return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
         return HttpResponse(status=403)
 
     def view_personal_shedule(self, request):
@@ -149,7 +150,7 @@ class member(user):
                 shedule.detail = _publisher(shedule.detail).create(request.POST.get("content"))
             shedule.save()
                 
-            return HttpResponse('200')
+            return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
         return HttpResponse(status=403)
 
     def view_personal_progress(self, request):
@@ -169,7 +170,7 @@ class member(user):
                 progress.detail = _publisher(progress.detail).create(request.POST.get("content"))
             progress.save()
                 
-            return HttpResponse('200')
+            return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
         return HttpResponse(status=403)
 
     def cancel_leader(self, target_group):
@@ -234,7 +235,7 @@ class task(object):
     def view_task_comment(self, request):
         if request.user.has_perm("task.glance_over_task_details", self.task):
             return HttpResponse(self.task.task_comment)
-        return HttpResponse(status=403)
+        return HttpResponse(status = 403)
 
     def edit_task_comment(self, request):
         if request.user.has_perm("task.edit_task_comments", self.task):
@@ -244,13 +245,13 @@ class task(object):
                 self.task.task_comment = _publisher(self.task.task_comment).create(request.POST.get("content"), editor_id = request.user.id)
             self.task.save()
                 
-            return HttpResponse('200')
-        return HttpResponse(status=403)
+            return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
+        return HttpResponse(status = 403)
 
     def view_task_progress(self, request):
         if request.user.has_perm("task.glance_over_task_details", self.task):
             return HttpResponse(self.task.task_progress)
-        return HttpResponse(status=403)
+        return HttpResponse(status = 403)
 
     def edit_task_progress(self, request):
         if request.user.has_perm("task.edit_task_progress", self.task):
@@ -260,13 +261,13 @@ class task(object):
                 self.task.task_progress = _publisher(self.task.task_progress).create(request.POST.get("content"), editor_id = request.user.id)
             self.task.save()
                 
-            return HttpResponse('200')
-        return HttpResponse(status=403)
+            return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
+        return HttpResponse(status = 403)
 
     def view_task_shedule(self, request):
         if request.user.has_perm("task.glance_over_task_details", self.task):
             return HttpResponse(self.task.task_schedule)
-        return HttpResponse(status=403)
+        return HttpResponse(status = 403)
 
     def edit_task_shedule(self, request):
         if request.user.has_perm("task.edit_task_shedule", self.task):
@@ -276,12 +277,12 @@ class task(object):
                 self.task.task_schedule = _publisher(self.task.task_schedule).create(request.POST.get("content"), editor_id = request.user.id)
             self.task.save()
                 
-            return HttpResponse('200')
-        return HttpResponse(status=403)
+            return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
+        return HttpResponse(status = 403)
 
     @staticmethod
     def create_page(request):
-        return render(request, "create_task.html", {"form": forms_task()})
+        return render(request, "create_task.html")
 
     @staticmethod
     def create_task(request):
@@ -342,11 +343,12 @@ class task(object):
 
             # 通知
 
-            return HttpResponse("200")
-        return HttpResponse("表单校验失败", status = 400)
+            return JsonResponse({"url": "/task/%d"%target_task.id, "status": 302}, safe=False)
+        return JsonResponse({"tip": "表单验证失败", "status": 400}, safe=False)
 
+    # 需要修改
     def edit_page(self, request):
-        return render(request, "create_task.html", {"form": forms_task(instance = self.task)})
+        return render(request, "create_task.html")
 
     def edit_task(self, request):
         form = forms_task(request.POST, instance = self.task)
@@ -429,8 +431,8 @@ class task(object):
 
                 # 通知
 
-            return HttpResponse("200")
-        return HttpResponse("表单校验失败", status = 400)
+            return JsonResponse({"url": "/task/%d"%self.task.id, "status": 302}, safe=False)
+        return JsonResponse({"tip": "表单验证失败", "status": 400}, safe=False)
 
     def delete_task(self, request):
         members = json.loads(self.task.members)
@@ -453,7 +455,7 @@ class task(object):
 
         # 通知
 
-        return HttpResponse("200")
+        return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
 
     def task_page(self, request):
         pass
@@ -463,7 +465,7 @@ class task(object):
         members = UserProfile.objects.filter(major=request.GET.get("key")) | UserProfile.objects.filter(name = request.GET.get("key"))
         members = members.values("name", "major", "user_id", "involved_projects_number", "managed_projects_number")
         
-        return HttpResponse(json.dumps(list(members)))
+        return JsonResponse(list(members), safe=False)
 
 class _publisher(object):
     detail = None

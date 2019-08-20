@@ -1,11 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,AbstractUser,AbstractBaseUser
 
 
 class UserProfile(models.Model):
+# class UserProfile(AbstractBaseUser):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length = 5, verbose_name = '姓名')
-    student_id = models.CharField(max_length = 11, verbose_name = '学号')
+    student_id = models.CharField(max_length = 11, verbose_name = '学号',unique=True)
     cloud_id = models.CharField(max_length = 20, verbose_name = '云顶号')
     email = models.CharField(max_length = 30, verbose_name = '邮箱')
     major = models.CharField(max_length = 1, choices=(('M','机电创新团队'), ('P','Python'),('N','Node.js'), 
@@ -22,3 +23,11 @@ class UserProfile(models.Model):
     managed_projects_number = models.IntegerField(default = 0)
     read_notifications = models.TextField(default = "[]")
     unread_notifications = models.TextField(default = "[]")
+
+
+    def __str__(self):
+        return '{}·{}·{}'.format(self.major,self.name,self.student_id)
+
+    class Meta:
+        verbose_name=u'用户信息'
+        verbose_name_plural = verbose_name
