@@ -343,12 +343,11 @@ class task(object):
 
             # 通知
 
-            return JsonResponse({"url": "/task/%d"%target_task.id, "status": 302}, safe=False)
+            return JsonResponse({"task_id": target_task.id, "status": 200}, safe=False)
         return JsonResponse({"tip": "表单验证失败", "status": 400}, safe=False)
 
-    # 需要修改
     def edit_page(self, request):
-        return render(request, "create_task.html")
+        return render(request, "create_task.html", {"task_name": self.task.task_name, "deadline": self.task.deadline, "task_status": self.task.task_status, "members": self.task.members, "leaders": self.task.leaders, "task_description": self.task.task_description})
 
     def edit_task(self, request):
         form = forms_task(request.POST, instance = self.task)
@@ -458,7 +457,11 @@ class task(object):
         return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
 
     def task_page(self, request):
-        pass
+        target_task = self.task.values("task_name", "publish_date", "deadline", "task_status", "members", "creator", "leaders", "task_description", "task_progress", "task_comment", "appendixes")
+        members = json.loads(target_task["members"])
+        target_task["members"] = json.dumps([{"id": each, "name": UserProfile.objects.get(user_id = each)["name"]} for each in members])
+        
+        return reander(request, target_task, "task_detail.html")
 
     @staticmethod
     def get_members(request):
