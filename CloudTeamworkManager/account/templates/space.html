@@ -1,3 +1,5 @@
+{% extends 'top_bar.html' %}
+{% block head %}
 <!DOCTYPE html>
 <html lang="zh-CN">
 
@@ -117,6 +119,9 @@
 </head>
 
 <body style="background-color: #F7F8FA;">
+    {% endblock %}
+
+    {% block body %}
     <div class="modal fade" id="mymodal">
         <div class="modal-dialog" style="margin: 0px; position: absolute; left: 75%; height: 100%; width: 25%;">
             <div class="modal-content"
@@ -380,3 +385,4 @@
 </body>
 
 </html>
+{% endblock %}

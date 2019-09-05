@@ -1,3 +1,5 @@
+{% extends 'top_bar.html' %}
+{% block head %}
 <!DOCTYPE html>
 <html lang="zh-CN">
 
@@ -97,6 +99,9 @@
 </head>
 
 <body style="background-color: #F7F8FA;">
+    {% endblock %}
+
+    {% block body %}
     {% csrf_token %}
     {% load guardian_tags %}
     {% get_obj_perms request.user for task as "flatpage_perms" %}
@@ -1109,3 +1114,4 @@
 </body>
 
 </html>
+{% endblock %}

@@ -1,3 +1,5 @@
+{% extends 'top_bar.html' %}
+{% block head %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,6 +27,9 @@
 </head>
 
 <body style="background-color: #F7F8FA;">
+    {% endblock %}
+
+    {% block body %}
     <div class="container" style="height: 100%">
         <div class="row no-gutter">
             <div class="col-10 offset-1">
@@ -281,3 +286,4 @@
 </body>
 
 </html>
+{% endblock %}

@@ -1,3 +1,5 @@
+{% extends 'top_bar.html' %}
+{% block head %}
 <!DOCTYPE html>
 <html lang="zh-CN">
 
@@ -63,6 +65,9 @@
 </head>
 
 <body style="background-color: #F7F8FA;">
+    {% endblock %}
+
+    {% block body %}
     {% csrf_token %}
     <div id="mainFunc">
         <div v-if="is_show" style="z-index: 999; position: fixed; width: 100%;"
@@ -1011,3 +1016,4 @@
 </body>
 
 </html>
+{% endblock %}
