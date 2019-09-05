@@ -8,6 +8,15 @@
     <link rel="stylesheet" type="text/css" href="/static/css/animation/component.css">
     <title>新建项目</title>
     <style>
+        @font-face {
+            font-family: 'SourceHanSansCN-Normal';
+            src: url('/static/font/SourceHanSansCN-Normal.otf');
+        }
+
+        body {
+            font-family: 'SourceHanSansCN-Normal';
+        }
+
         input.form-control:focus {
             box-shadow: 0 0 0;
         }
@@ -32,10 +41,15 @@
         .table td,
         .table th {
             border-top: 0px;
+            font-size: 18px;
+            color: #666666;
+            vertical-align: top;
+            letter-spacing: 4px;
         }
 
         .table th {
-            width: 20%;
+            width: 7rem;
+            font-weight: initial;
         }
 
         .card {
@@ -73,11 +87,11 @@
                         <div class="clearfix" style="width: 100%">
                             <div style="float: right; height: 6rem; width: 22rem">
                                 <div class="text-uppercase lead font-weight-bold"
-                                    style="font-size: 4rem; color: rgba(41, 98, 255, 0.05); z-index: -1">
+                                    style="font-size: 60px; color: rgba(41, 98, 255, 0.05); z-index: -1">
                                     new&nbsp;task
                                 </div>
                                 <div
-                                    style="font-size: 2rem; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
+                                    style="font-size: 30px; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
                                     任务信息
                                 </div>
                             </div>
@@ -88,7 +102,7 @@
                                     <tr>
                                         <th>任务名称</th>
                                         <td><input class="form-control" id="input_task" name="task_name" placeholder=""
-                                                style="border-top:none;border-left: 0; border-right: 0; padding: 0; width: 20%"
+                                                style="border-top:none;border-left: 0; border-right: 0; padding: 0; width: 192px;font-size: 18px"
                                                 v-model="task_name">
                                         </td>
                                     </tr>
@@ -96,13 +110,14 @@
                                         <th>截止日期</th>
                                         <td>
                                             <input type="date" class="form-control" name="deadline" formmethod="post"
-                                                v-model="deadline">
+                                                v-model="deadline" style="width: 192px;font-size: 18px">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>任务状态</th>
                                         <td>
-                                            <select name="task_status" v-model="task_status">
+                                            <select name="task_status" v-model="task_status"
+                                                style="height: 30px;color:#666666">
                                                 <option value="-2">请选择</option>
                                                 <option value='1'>进行中</option>
                                                 <option value='0'>已挂起</option>
@@ -115,8 +130,8 @@
                                         <td>
                                             <div>
                                                 <textarea class="form-control" rows="6" placeholder="请输入项目详情......"
-                                                    style="color: #666666;padding: 0;" name="task_description"
-                                                    v-model="task_description"></textarea>
+                                                    style="color: #666666;padding: 0;font-size: 18px"
+                                                    name="task_description" v-model="task_description"></textarea>
                                                 <small class="form-text text-muted"
                                                     style="margin-top: 10px;height: 40px;text-align: center;float: left;letter-spacing: 5px">
                                                     需要更详细的介绍?点击
@@ -132,88 +147,112 @@
                             </table>
                         </div>
                     </div>
-                    <div class="card" style="border-top: 0.25rem solid #448AFF;">
+                    <div class="card" style="border-top: 0.25rem solid #448AFF">
                         <div class="clearfix" style="width: 100%">
                             <div style="float: right; height: 6rem; width: 22rem">
                                 <div class="text-uppercase lead font-weight-bold"
-                                    style="font-size: 4rem; color: rgba(41, 98, 255, 0.05); z-index: -1">
+                                    style="font-size: 60px; color: rgba(41, 98, 255, 0.05); z-index: -1">
                                     members
                                 </div>
                                 <div
-                                    style="font-size: 2rem; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
+                                    style="font-size: 30px; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
                                     人员安排
                                 </div>
                             </div>
                         </div>
                         <div class="row no-gutters" style="margin: 0px 0px .75rem 0px">
-                            <div class="col-10 offset-1"
-                                style="font-weight: bold; margin-top: .75rem; margin-bottom: .75rem">
-                                添加成员
+                            <div class="col-10 offset-1" style="margin-top: .75rem; margin-bottom: .75rem">
+                                <div style="font-size: 22px; color: #333333;">
+                                    添加成员
+                                </div>
                             </div>
-                            <div class="col-10" style="left: 10%">
-                                <button type="button" class="btn btn-outline-primary md-trigger"
-                                    style="width: 140px; height: 50px;" data-modal="modal-5" @click="showall">
-                                    点击选择
-                                </button>
+                            <div class="col-10 offset-1" style="margin-top: .75rem; margin-bottom: .75rem">
+                                <div class="row justify-content-start col-10" style="left: 4.16%">
+                                    <button type="button" class="btn btn-outline-primary md-trigger"
+                                        style="width: 140px; height: 50px; border-radius: 0;" data-modal="modal-5"
+                                        @click="showall">
+                                        点击选择
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="row no-gutters" style="margin: 0rem 0px 1.2rem 0px">
-                            <div class="col-10 offset-1">
-                                <div style="font-weight: bold; margin: .75rem 0px .75rem 0px" v-show="act_all">
-                                    已选择的成员(点击选择组长)
+                        <div class="row no-gutters" style="margin-top: .75rem">
+                            <div class="col-10 offset-1" style="margin-top: .75rem; margin-bottom: .75rem">
+                                <div style="font-size: 22px; color: #333333;" v-show="act_all">
+                                    已选择成员(点击选择组长)
                                 </div>
                             </div>
-                            <div class="col-10" style="left: 10%">
-                                <div>
-                                    <div style="font-size: 20px; margin-bottom: .75rem" v-show="act_p">
+                            <div class="col-10 offset-1" style="margin-bottom: .75rem">
+                                <div style="margin-top: .75rem; margin-bottom: .75rem">
+                                    <div style="font-size: 18px; margin-bottom: .75rem; left: 2.08%; position: relative; color: #666666"
+                                        v-show="act_p">
                                         Python:
                                     </div>
-                                    <div class="row justify-content-start col-12">
-                                        <input class="btn btn-outline-primary" type="button"
-                                            style="margin-right: 1.5rem; width: 5rem"
-                                            v-for="(item,i) in selected_list_py" :key="item.user_id" :value="item.name"
-                                            @click="set_leader($event,item)">
-                                    </div>
                                 </div>
+                                <div class="row justify-content-start col-10" style="left: 4.16%;">
+                                    <input v-for="(item, i) in selected_list_py" class="btn btn-outline-primary"
+                                        :class="{active: (leader_list.indexOf(item) != -1)} " type="button"
+                                        style="margin-right: 1.5rem; width: 5rem;border-radius: 0" :key="item.user_id"
+                                        :value="item.name" @click="set_leader($event,item)">
+                                </div>
+
                                 <div>
-                                    <div style="font-size: 20px; margin-bottom: .75rem" v-show="act_j">
-                                        Java:
+                                    <div style="margin-top: .75rem; margin-bottom: .75rem">
+                                        <div style="font-size: 18px; margin-bottom: .75rem; left: 2.08%; position: relative; color: #666666"
+                                            v-show="act_j">
+                                            Java:
+                                        </div>
                                     </div>
-                                    <div class="row justify-content-start col-12">
+                                    <div class="row justify-content-start col-10" style="left: 4.16%;">
                                         <input class="btn btn-outline-primary" type="button"
-                                            style="margin-right: 1.5rem; width: 5rem"
+                                            :class="{active: (leader_list.indexOf(item) != -1)} "
+                                            style="margin-right: 1.5rem; width: 5rem;border-radius: 0;border-radius: 0"
                                             v-for="(item,i) in selected_list_ja" :key="item.user_id" :value="item.name"
                                             @click="set_leader($event,item)">
                                     </div>
                                 </div>
+
                                 <div>
-                                    <div style="font-size: 20px; margin-bottom: .75rem" v-show="act_n">
-                                        Node.js:
+                                    <div style="margin-top: .75rem; margin-bottom: .75rem">
+                                        <div style="font-size: 18px; margin-bottom: .75rem; left: 2.08%; position: relative; color: #666666"
+                                            v-show="act_n">
+                                            Node.js:
+                                        </div>
                                     </div>
-                                    <div class="row justify-content-start col-12">
+                                    <div class="row justify-content-start col-10" style="left: 4.16%;">
                                         <input class="btn btn-outline-primary" type="button"
+                                            :class="{active: (leader_list.indexOf(item) != -1)} "
                                             style="margin-right: 1.5rem; width: 5rem"
                                             v-for="(item,i) in selected_list_no" :key="item.user_id" :value="item.name"
                                             @click="set_leader($event,item)">
                                     </div>
                                 </div>
+
                                 <div>
-                                    <div style="font-size: 20px; margin-bottom: .75rem" v-show="act_f">
-                                        前端:
+                                    <div style="margin-top: .75rem; margin-bottom: .75rem">
+                                        <div style="font-size: 18px; margin-bottom: .75rem; left: 2.08%; position: relative; color: #666666"
+                                            v-show="act_f">
+                                            前端
+                                        </div>
                                     </div>
-                                    <div class="row justify-content-start col-12">
+                                    <div class="row justify-content-start col-10" style="left: 4.16%;">
                                         <input class="btn btn-outline-primary" type="button"
+                                            :class="{active: (leader_list.indexOf(item) != -1)} "
                                             style="margin-right: 1.5rem; width: 5rem"
                                             v-for="(item,i) in selected_list_fr" :key="item.user_id" :value="item.name"
                                             @click="set_leader($event,item)">
                                     </div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; margin-bottom: .75rem" v-show="act_d">
-                                        设计
+                                    <div style="margin-top: .75rem; margin-bottom: .75rem">
+                                        <div style="font-size: 18px; margin-bottom: .75rem; left: 2.08%; position: relative; color: #666666"
+                                            v-show="act_d">
+                                            设计
+                                        </div>
                                     </div>
                                     <div class="row justify-content-start col-12">
                                         <input class="btn btn-outline-primary" type="button"
+                                            :class="{active: (leader_list.indexOf(item) != -1)} "
                                             style="margin-right: 1.5rem; width: 5rem"
                                             v-for="(item,i) in selected_list_de" :key="item.user_id" :value="item.name"
                                             @click="set_leader($event,item)">
@@ -224,7 +263,8 @@
                     </div>
                     <div class="row justify-content-md-center" style="margin-bottom: 20px">
                         <input type="button" class="btn btn-primary" value="确认提交" :disabled="subm"
-                            style="width: 200px;height: 40px;text-align: center;color:#ffffff " @click="submit">
+                            style="width: 200px;height: 40px;text-align: center;color:#ffffff ;border-radius:0"
+                            @click="submit">
                     </div>
                 </div>
             </div>
@@ -258,16 +298,18 @@
                             <div class="col-3">
                                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
                                     aria-orientation="vertical">
-                                    <a class="nav-link show active" id="v-pills-python-tab" data-toggle="pill"
-                                        href="#v-pills-python" role="tab" aria-controls="v-pills-python"
+                                    <a class="nav-link show active" id="v-pills-home-tab" data-toggle="pill"
+                                        href="#v-pills-home" role="tab" aria-controls="v-pills-home"
                                         aria-selected="true">Python</a>
-                                    <a class="nav-link show" id="v-pills-java-tab" data-toggle="pill"
-                                        href="#v-pills-java" role="tab" aria-controls="v-pills-java"
+                                    <a class="nav-link show" id="v-pills-profile-tab" data-toggle="pill"
+                                        href="#v-pills-profile" role="tab" aria-controls="v-pills-profile"
                                         aria-selected="false">Java</a>
-                                    <a class="nav-link show" id="v-pills-js-tab" data-toggle="pill" href="#v-pills-js"
-                                        role="tab" aria-controls="v-pills-js" aria-selected="false">Js</a>
-                                    <a class="nav-link" id="v-pills-front-tab" data-toggle="pill" href="#v-pills-front"
-                                        role="tab" aria-controls="v-pills-front" aria-selected="false">前端</a>
+                                    <a class="nav-link show" id="v-pills-messages-tab" data-toggle="pill"
+                                        href="#v-pills-messages" role="tab" aria-controls="v-pills-messages"
+                                        aria-selected="false">Js</a>
+                                    <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill"
+                                        href="#v-pills-settings" role="tab" aria-controls="v-pills-settings"
+                                        aria-selected="false">前端</a>
                                     <a class="nav-link" id="v-pills-design-tab" data-toggle="pill"
                                         href="#v-pills-design" role="tab" aria-controls="v-pills-tabContent"
                                         aria-selected="false">设计</a>
@@ -275,42 +317,42 @@
                             </div>
                             <div class="col-9">
                                 <div class="tab-content" id="v-pills-tabContent">
-                                    <div class="tab-pane fade active show" id="v-pills-python" role="tabpanel"
+                                    <div class="tab-pane fade active show" id="v-pills-home" role="tabpanel"
                                         aria-labelledby="v-pills-home-tab">
                                         <div class="row">
                                             <div class="col-12" style="margin-bottom: 5px; height: 100px">
                                                 <input type="button" class="btn btn-outline-primary x"
-                                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                                     v-for="item in python_list" :key="item.user_id" :value="item.name"
                                                     @click="del(item.user_id)">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="v-pills-java" role="tabpanel"
+                                    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
                                         aria-labelledby="v-pills-profile-tab">
                                         <div class="row">
                                             <div class="col-12" style="margin-bottom: 5px">
-                                                <input type="button" class="btn btn-outline-warning x"
-                                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                                <input type="button" class="btn btn-outline-primary x"
+                                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                                     v-for="item_ja in java_list" :key="item_ja.id" :value="item_ja.name"
                                                     @click="del_ja(item_ja.user_id)">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="v-pills-js" role="tabpanel"
+                                    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel"
                                         aria-labelledby="v-pills-messages-tab">
                                         <div class="row">
-                                            <input type="button" class="btn btn-outline-danger x"
-                                                style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                            <input type="button" class="btn btn-outline-primary x"
+                                                style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                                 v-for="item_no in node_list" :key="item_no.id" :value="item_no.name"
                                                 @click="del_no(item_no.user_id)">
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="v-pills-front" role="tabpanel"
+                                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
                                         aria-labelledby="v-pills-settings-tab">
                                         <div class="row">
-                                            <input type="button" class="btn btn-outline-success x"
-                                                style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                            <input type="button" class="btn btn-outline-primary x"
+                                                style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                                 v-for="item_fr in front_list" :key="item_fr.id" :value="item_fr.name"
                                                 @click="del_fr(item_fr.user_id)">
                                         </div>
@@ -318,8 +360,8 @@
                                     <div class="tab-pane fade" id="v-pills-design" role="tabpanel"
                                         aria-labelledby="v-pills-tabContent-tab">
                                         <div class="row">
-                                            <input type="button" class="btn btn-outline-secondary x"
-                                                style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                            <input type="button" class="btn btn-outline-primary x"
+                                                style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                                 v-for="item_de in design_list" :key="item_de.id" :value="item_de.name"
                                                 @click="del_de(item_de.user_id)">
                                         </div>
@@ -331,23 +373,23 @@
                         <div class="row">
                             <div class="col-12">
                                 <input type="button" class="btn btn-outline-primary"
-                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                     v-for="item_s in selected_list_py" :key="item_s.user_id" :value="item_s.name"
                                     @click="add(item_s.user_id)">
-                                <input type="button" class="btn btn-outline-warning"
-                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                <input type="button" class="btn btn-outline-primary"
+                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                     v-for="item_ja in selected_list_ja" :key="item_ja.user_id" :value="item_ja.name"
                                     @click="add_ja(item_ja.user_id)">
-                                <input type="button" class="btn btn-outline-danger"
-                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                <input type="button" class="btn btn-outline-primary"
+                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                     v-for="item_no in selected_list_no" :key="item_no.user_id" :value="item_no.name"
                                     @click="add_no(item_no.user_id)">
-                                <input type="button" class="btn btn-outline-success"
-                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                <input type="button" class="btn btn-outline-primary"
+                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                     v-for="item_fr in selected_list_fr" :key="item_fr.user_id" :value="item_fr.name"
                                     @click="add_fr(item_fr.user_id)">
-                                <input type="button" class="btn btn-outline-secondary"
-                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem"
+                                <input type="button" class="btn btn-outline-primary"
+                                    style="width: 95px;height: 37px;text-align: center; margin-right: 1.2rem;border-radius: 0"
                                     v-for="item_de in selected_list_de" :key="item_de.user_id" :value="item_de.name"
                                     @click="add_de(item_de.user_id)">
                             </div>
@@ -360,63 +402,68 @@
                     <div style="min-height: 400px">
                         <div class="container-fluid">
                             <div class="row justify-content-between">
-                                <div class="col-4" style="margin-top: 10px; font-size: 24px">
+                                <div class="col-4" style="margin-top: .5rem; font-size: 24px">
                                     添加附件
                                 </div>
-                                <div class="col-2" style="margin-top: 10px;">
-                                    <button class="md-close btn-sm btn-primary"
-                                        style="background-color: transparent; border: none; height: 100%">
-                                        <img src="/static/pic/close.png">
-                                    </button>
+                                <span class="col-2 md-close" style="margin-top: .5rem; cursor: pointer;"
+                                    @click="hide_modal()">
+                                    <img src="/static/pic/close.png"
+                                        style="position: relative; top: 50%; transform: translateY(-50%); float: right">
+                                </span>
+                            </div>
+                            <div style="height: 24rem" v-if="!load">
+                                <div class="row no-gutters"
+                                    style="position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);text-align: center">
+                                    <div class="row col-10 offset-1">
+                                        <label for="file" class="btn btn-primary col-6 offset-3"
+                                            style="cursor: pointer;border-radius: 0">点击选择</label>
+                                        <input type="file" name="appendix" id="file" style="height: 0px; opacity: 0"
+                                            v-on:change="add_appendix($event)">
+                                        <small class="col-6 offset-3"
+                                            style="color: #C9C9C9;float:left; padding: 0px; text-align: left">文件不要超过10M！
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
-                            <div v-if="!load" class="row no-gutters"
-                                style="position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);text-align: center">
-                                <div class="row col-10 offset-1">
-                                    <label for="file" class="btn btn-primary col-6 offset-3"
-                                        style="cursor: pointer">点击选择</label>
-                                    <input type="file" name="appendix" id="file" style="height: 0px; opacity: 0"
-                                        v-on:change="append_appendix($event)">
-                                    <small class="col-6 offset-3"
-                                        style="color: red;float:left; padding: 0px; text-align: left">文件不要超过10M！
-                                    </small>
+                            <div v-if="load" style="height: 23rem; margin-top: 1rem">
+                                <div v-if="load">
+                                    <label for="file" class="btn btn-primary col-3"
+                                        style="cursor: pointer; margin: 0px 0px 0px 7.5px; border-radius: 0px">点击选择</label>
+                                    <input type="file" name="appendix" id="file" style="height: 0px; display: none"
+                                        v-on:change="add_appendix($event)">
+                                    <span
+                                        style="color: #C9C9C9; vertical-align: bottom; font-size: 80%; font-weight: 400; margin-left: .8rem">
+                                        文件不要超过10M！
+                                    </span>
                                 </div>
-                            </div>
-                            <div v-if="load" class="col-12"
-                                style="height: 19rem; overflow-y: auto; margin: 10px 0px">
-                                <table class="table" style="height: 18rem; overflow-y: auto; word-break: keep-all">
-                                    <tbody>
-                                        <tr v-for="(each, index) in appendix">
-                                            <th>
-                                                <img :src="each.name | getLogoSrc">
-                                            </th>
-                                            <td>
-                                                <div>
-                                                    [[each.name]]
-                                                </div>
-                                                <div style="margin-top: 1.2rem">
-                                                    [[each.size]]字节
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <button
-                                                        style="background: url(/static/pic/826.png); width:24px; height:24px; border:none; float: right"
-                                                        @click="del_appendix(index)">
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div v-if="load">
-                                <label for="file" class="btn btn-primary col-3" style="cursor: pointer">点击选择</label>
-                                <input type="file" name="appendix" id="file" style="height: 0px; opacity: 0"
-                                    v-on:change="append_appendix($event)">
-                                <div style="color: red; vertical-align: bottom; font-size: 80%; font-weight: 400">
-                                    文件不要超过10M！
+                                <div class="col-12" style="max-height: 18rem; overflow-y: auto; margin: 1rem 0px">
+                                    <table style="width: 100%; border-collapse:separate; border-spacing:0px 1rem;">
+                                        <tbody>
+                                            <tr v-for="(each, index) in appendix">
+                                                <th style="width: 4rem;">
+                                                    <img :src="each.name | getLogoSrc">
+                                                </th>
+                                                <td>
+                                                    <div>
+                                                        [[each.name]]
+                                                    </div>
+                                                    <div style="margin-top: 1.2rem">
+                                                        [[each.size]]字节
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <button
+                                                            style="background: url(/static/pic/826.png); width:24px; height:24px; border:none; float: right"
+                                                            @click="remove_appendix(index)">
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -596,7 +643,9 @@
                         this.selected_list_py.splice(index, 1);
                         if (this.selected_list_py.length == 0)
                             this.act_p = false;
-                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) { this.act_all = false; }
+                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
+                            this.act_all = false;
+                        }
                     },
                     del(id) {
                         let index = this.python_list.findIndex(obj => {
@@ -618,14 +667,12 @@
                             {
                                 this.leader_list.splice(this.leader_list.indexOf(item));
                             }
-                        }
-                        else {
+                        } else {
                             e.target.classList.add("active");
                             if (this.leader_list.indexOf(item) > -1)//判断组长是否被选中
                             {
                                 ;
-                            }
-                            else {
+                            } else {
                                 this.leader_list.push(item);
                             }
                         }
@@ -640,7 +687,9 @@
                         this.selected_list_ja.splice(index, 1);
                         if (this.selected_list_ja.length == 0)
                             this.act_j = false;
-                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) { this.act_all = false; }
+                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
+                            this.act_all = false;
+                        }
                     },
                     del_ja(id_ja) {
                         let index = this.java_list.findIndex(obj_ja => {
@@ -665,7 +714,9 @@
                         this.selected_list_no.splice(index, 1);
                         if (this.selected_list_no.length == 0)
                             this.act_n = false;
-                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) { this.act_all = false; }
+                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
+                            this.act_all = false;
+                        }
                     },
                     del_no(id_no) {
                         let index = this.node_list.findIndex(obj_no => {
@@ -691,7 +742,9 @@
                         this.selected_list_fr.splice(index, 1);
                         if (this.selected_list_fr.length == 0)
                             this.act_f = false;
-                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) { this.act_all = false; }
+                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
+                            this.act_all = false;
+                        }
                     },
                     del_fr(id_fr) {
                         let index = this.front_list.findIndex(obj_fr => {
@@ -716,7 +769,9 @@
                         this.selected_list_de.splice(index, 1)
                         if (this.selected_list_de.length == 0)
                             this.act_d = false;
-                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) { this.act_all = false; }
+                        if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
+                            this.act_all = false;
+                        }
                     },
                     del_de(id_de) {
                         let index = this.design_list.findIndex(obj_de => {
@@ -774,8 +829,7 @@
                                     this.upload_appendix();
                                     new Promise(resolve => setTimeout(resolve, 3000))
                                     window.location.href = '/task/task_page/' + this.task_id + '/';
-                                }
-                                else if (res.body.status == 400) {
+                                } else if (res.body.status == 400) {
                                     this.members = [];
                                     this.leaders = [];
                                     this.is_success = false;
@@ -785,12 +839,12 @@
                                 }
                             })
                     },
-                    append_appendix: function () {
+                    add_appendix: function () {
                         this.appendix.push(event.target.files[0]);
                         event.target = null;
                         this.load = true;
                     },
-                    del_appendix: function (index) {
+                    remove_appendix: function (index) {
                         this.appendix.splice(index, 1);
                         if (this.appendix.length == 0) {
                             this.load = false;
@@ -816,8 +870,7 @@
                             this.$http.post('/file/appendix/' + this.task_id + '/xxx/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
                                 if (result.status == 200) {
                                     ;
-                                }
-                                else if (result.status == 400) {
+                                } else if (result.status == 400) {
                                     ;
                                 }
                             })

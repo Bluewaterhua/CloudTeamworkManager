@@ -333,8 +333,8 @@ class task(object):
         members = json.loads(target_task["members"])
         leaders = json.loads(target_task["leaders"])
 
-        target_task["members"] = json.dumps([{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members])
-        target_task["leaders"] = json.dumps([{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders])
+        target_task["members"] = json.dumps([{**{"user_id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members])
+        target_task["leaders"] = json.dumps([{**{"user_id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders])
 
         return render(request, "edit_task.html", target_task)
 
@@ -360,10 +360,6 @@ class task(object):
             # 获取用户组
             target_group = Group.objects.get(name=str(self.task.id))
             target_group_leader = Group.objects.get(name = "%s%s"%(str(self.task.id), "leaders"))
-
-            # 更新参与过该任务的成员列表
-            form.instance.all_members = json.dumps(list(set(json.loads(form.instance.all_members) + list(current_members))))
-            self.task = form.save()
 
             # 建立成员类
             target_member = member(target_task = self.task, target_group = target_group, target_group_leader = target_group_leader)
@@ -434,6 +430,10 @@ class task(object):
                 target_member.assign_leader_perm()
 
                 # 通知
+
+            # 更新参与过该任务的成员列表
+            form.instance.all_members = json.dumps(list(set(json.loads(form.instance.all_members) + list(current_members))))
+            self.task = form.save()
 
             return JsonResponse({"url": "/task/task_page/%d"%self.task.id, "status": 302}, safe=False)
         return JsonResponse({"tip": "表单验证失败", "status": 400}, safe=False)

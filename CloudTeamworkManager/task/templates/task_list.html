@@ -184,7 +184,7 @@
                         <div class="tab-content row no-gutters col-12" id="pills-tabContent">
                             <div class="tab-pane fade show active col-12" id="pills-all" role="tabpanel"
                                 aria-labelledby="pills-all-tab">
-                                <div v-for="each in task_list" class="task_card offset-1 col-10"
+                                <div v-for="(each, index) in task_list" class="task_card offset-1 col-10"
                                     style="height: 6rem; margin-bottom: 1.5rem; cursor: pointer; padding-right: 0px"
                                     @click="show_detail(each.id)">
                                     <div style="display: inline-block;">
@@ -196,13 +196,13 @@
                                     <div v-if="each.is_creator" style="float: right; width: 6rem; height: 100%; display: none" class="options">
                                         <a @click.stop="show_detail(each.id)" class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">查看详情</a>
                                         <a @click.stop="edit_task(each.id)" class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">编辑</a>
-                                        <a @click.stop="delete_task(each.id)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
+                                        <a @click.stop="delete_task(each.id, index)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade row no-gutters col-12" id="pills-ongoing" role="tabpanel"
                                 aria-labelledby="pills-ongoing-tab">
-                                <div v-for="each in ongoing" class="task_card offset-1 col-10"
+                                <div v-for="(each, index) in task_list" class="task_card offset-1 col-10" v-if="each.task_status == 1"
                                     style="height: 6rem; margin-bottom: 1.5rem; padding: 1.2rem; cursor: pointer;">
                                     <div style="display: inline-block;">
                                         <div class="lead" style="color: #333333">[[each.task_name]]</div>
@@ -213,13 +213,13 @@
                                     <div v-if="each.is_creator" style="float: right; width: 6rem; height: 100%; display: none" class="options">
                                         <a @click.stop="show_detail(each.id)" class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">查看详情</a>
                                         <a @click.stop="edit_task(each.id)" class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">编辑</a>
-                                        <a @click.stop="delete_task(each.id)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
+                                        <a @click.stop="delete_task(each.id, index)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade row no-gutters col-12" id="pills-pause" role="tabpanel"
                                 aria-labelledby="pills-pause-tab">
-                                <div v-for="each in pause" class="task_card offset-1 col-10"
+                                <div v-for="(each, index) in task_list" class="task_card offset-1 col-10" v-if="each.task_status == 0"
                                     style="height: 6rem; margin-bottom: 1.5rem; padding: 1.2rem; cursor: pointer;">
                                     <div style="display: inline-block;">
                                         <div class="lead" style="color: #333333">[[each.task_name]]</div>
@@ -230,13 +230,13 @@
                                     <div v-if="each.is_creator" style="float: right; width: 6rem; height: 100%; display: none" class="options">
                                         <a @click.stop="show_detail(each.id)" class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">查看详情</a>
                                         <a @click.stop="edit_task(each.id)" class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">编辑</a>
-                                        <a @click.stop="delete_task(each.id)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
+                                        <a @click.stop="delete_task(each.id, index)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade row no-gutters col-12" id="pills-finished" role="tabpanel"
                                 aria-labelledby="pills-finished-tab">
-                                <div v-for="each in finished" class="task_card offset-1 col-10"
+                                <div v-for="(each, index) in task_list" class="task_card offset-1 col-10" v-if="each.task_status == -1"
                                     style="height: 6rem; margin-bottom: 1.5rem; padding: 1.2rem; cursor: pointer;">
                                     <div style="display: inline-block;">
                                         <div class="lead" style="color: #333333">[[each.task_name]]</div>
@@ -247,7 +247,7 @@
                                     <div v-if="each.is_creator" style="float: right; width: 6rem; height: 100%; display: none" class="options">
                                         <a @click.stop="show_detail(each.id)" class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">查看详情</a>
                                         <a @click.stop="edit_task(each.id)" class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">编辑</a>
-                                        <a @click.stop="delete_task(each.id)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
+                                        <a @click.stop="delete_task(each.id, index)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
                                     </div>
                                 </div>
                             </div>
@@ -279,35 +279,17 @@
             data: {
                 task_list: {{ content| safe }},
                 show_more: true,
-                ongoing: [],
-                pause: [],
-                finished: [],
-            },
-            mounted() {
-                this.classify()
             },
             methods: {
-                classify: function () {
-                    for (each of this.task_list) {
-                        if (each.task_status == 0) {
-                            this.pause.push(each)
-                        }
-                        else if (each.task_status == 1) {
-                            this.ongoing.push(each)
-                        }
-                        else if (each.task_status == -1) {
-                            this.finished.push(each)
-                        }
-                    }
-                },
                 show_detail: function (task_id) {
                     window.location.href = "/task/task_page/" + task_id + "/";
                 },
                 edit_task: function (task_id){
                     window.location.href = "/task/edit_task/" + task_id + "/";
                 },
-                delete_task: function (task_id){
+                delete_task: function (task_id, index){
                     this.$http.get('/task/delete_task/' + task_id + '/');
+                    this.task_list.splice(index, 1);
                 }
             }
         })

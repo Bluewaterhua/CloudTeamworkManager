@@ -330,7 +330,7 @@
                                         <td style="width: .6rem; padding: 0px"></td>
                                         <td style="width: .6rem; padding: 0px"></td>
                                         <td>
-                                            <div v-for='person in leaders'
+                                            <div v-for='person in pythonList'
                                                 :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
                                                 style="margin: .75rem 2rem .75rem 0rem; margin-right: 1.5rem; width: 85px; display: inline-block"
@@ -851,12 +851,14 @@
                     },
                     classify: function () {
                         for (each_member of this.members) {
-                            each_member.major == 'P' && this.pythonList.push(each_member)
-                            each_member.major == 'J' && this.javaList.push(each_member)
-                            each_member.major == 'N' && this.jsList.push(each_member)
-                            each_member.major == 'D' && this.designList.push(each_member)
-                            each_member.major == 'M' && this.mtList.push(each_member)
-                            each_member.major == 'F' && this.frontList.push(each_member)
+                            switch (each_member.major){
+                                case 'P': this.pythonList.push(each_member); break;
+                                case 'J': this.javaList.push(each_member); break;
+                                case 'N': this.jsList.push(each_member); break;
+                                case 'D': this.designList.push(each_member); break;
+                                case 'M': this.mtList.push(each_member); break;
+                                case 'F': this.frontList.push(each_member); break;
+                            }
                         }
                     },
                     show_deatils: function (personId) {
