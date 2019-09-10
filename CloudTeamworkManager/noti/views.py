@@ -14,8 +14,11 @@ def delete_all_read(request):
 
 def delete_target(request, notification_id):
     notification = Notification.objects.filter(id = notification_id)
-    notification.delete()
-    return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
+    if request.user.id == notification[0].recipient:
+        notification.delete()
+        return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
+    else:
+        return JsonResponse({"tip": "权限不足", "status": 400}, safe=False)
 
 def get_read(request):
     notifications = request.user.notifications.read()
@@ -33,8 +36,11 @@ def mark_all_as_read(request):
 
 def mark_target_as_read(request, notification_id):
     notification = Notification.objects.get(id = notification_id)
-    notification.mark_as_read()
-    return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
+    if request.user.id == notification.recipient:
+        notification.mark_as_read()
+        return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
+    else:
+        return JsonResponse({"tip": "权限不足", "status": 400}, safe=False)
 
 def notifications(request):
     read = list(request.user.notifications.read().values('data', 'verb', 'description', 'timestamp','id'))
@@ -50,7 +56,7 @@ def send_test(request, type):
     notify.send(actor, recipient=actor, verb='你好鸭，这是测试通知', description = "这是的是通知的正文部分", type=type)
     return HttpResponse("ok")
 
-def get_target_type(request, type): # 1系统 2组内
+def get_target_type(request, type): 
     unread = request.user.notifications.unread()
     read = request.user.notifications.read()
 

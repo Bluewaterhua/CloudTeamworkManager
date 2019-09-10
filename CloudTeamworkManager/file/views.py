@@ -34,7 +34,7 @@ def avatar(request):
 
     if request.method == "GET":
         user_id = str(request.GET.get('user_id'))
-        if not user_id:
+        if user_id == 'None':
             user_id = str(request.user.id)
 
         if os.path.exists("static/avatar/"+user_id+'.jpg'):

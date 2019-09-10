@@ -9,8 +9,17 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.min.css">
     <link href="/static/css/animation/component.css" rel="stylesheet">
-    <title>当前消息</title>
+    <title>消息中心</title>
     <style>
+        @font-face {
+            font-family: 'SourceHanSansCN-Normal';
+            src: url('/static/font/SourceHanSansCN-Normal.otf');
+        }
+
+        body {
+            font-family: 'SourceHanSansCN-Normal';
+        }
+
         li {
             line-height: 3rem;
             vertical-align: middle;
@@ -37,10 +46,11 @@
                     <div class="clearfix" style="width: 100%">
                         <div style="float: right; height: 6rem; width: 22rem">
                             <div class="text-uppercase lead font-weight-bold"
-                                style="font-size: 4rem; color: rgba(41, 98, 255, 0.05); z-index: -1">
-                                messages</div>
+                                 style="font-size: 60px; color: rgba(41, 98, 255, 0.05); z-index: -1">
+                                messages
+                            </div>
                             <div
-                                style="font-size: 2rem; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
+                                    style="font-size: 30px; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
                                 你的消息
                             </div>
                         </div>
@@ -51,17 +61,17 @@
                             <li class="nav-item col-3">
                                 <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home"
                                     role="tab" aria-controls="pills-home" aria-selected="true"
-                                    style="text-align: center">全部</a>
+                                    style="text-align: center;letter-spacing: 4px;font-size: 20px; border-radius: 0px">全部</a>
                             </li>
                             <li class="nav-item col-3">
                                 <a class="nav-link " id="pills-system-tab" data-toggle="pill" href="#pills-system"
                                     role="tab" aria-controls="pills-system" aria-selected="false"
-                                    style="text-align: center">系统消息</a>
+                                    style="text-align: center;letter-spacing: 4px;font-size: 20px; border-radius: 0px">系统消息</a>
                             </li>
                             <li class="nav-item col-3">
                                 <a class="nav-link" id="pills-group-tab" data-toggle="pill" href="#pills-group"
                                     role="tab" aria-controls="pills-group" aria-selected="false"
-                                    style="text-align: center">组内消息</a>
+                                    style="text-align: center;letter-spacing: 4px;font-size: 20px; border-radius: 0px">组内消息</a>
                             </li>
                         </ul>
                     </div>
@@ -69,9 +79,9 @@
                         <div class="tab-content col-10 offset-1" id="pills-tabContent" style="padding-bottom: .75rem">
                             <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
                                 aria-labelledby="pills-home-tab">
-                                <div class="unread_notific">
+                                <div class="unread_notific" >
                                     <div v-for="(each, index) in unread" class="row no-gutters md-trigger"
-                                        style="height: 5rem; cursor: pointer;; cursor: pointer;" data-modal="modal-8"
+                                        style="height: 5rem; cursor: pointer; margin-bottom: 1.5rem" data-modal="modal-8"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)">
                                         <div class="col-2" style="text-align: center">
                                             <img :src="JSON.parse(each.data).type == 1? sys_logo : team_logo"
@@ -79,7 +89,7 @@
                                         </div>
                                         <div class="col-10">
                                             <span style="position: relative; top: 1.1rem">
-                                                <span style="padding: 0">[[each.verb]]
+                                                <span style="padding: 0;letter-spacing: 3px">[[each.verb]]
                                                     <span class="badge badge-pill badge-primary">New</span>
                                                 </span>
                                                 <br>
@@ -94,7 +104,7 @@
                                 <hr v-if="read.length && unread.length" style="background-color: #007bff">
                                 <div class="read_notific">
                                     <div v-for="each in read" class="row no-gutters md-trigger"
-                                        style="height: 5rem; cursor: pointer;" data-modal="modal-8"
+                                        style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem;" data-modal="modal-8"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, -1)">
                                         <div class="col-2" style="text-align: center">
                                             <img :src="JSON.parse(each.data).type == 1? sys_logo : team_logo"
@@ -102,7 +112,7 @@
                                         </div>
                                         <div class="col-10">
                                             <span style="position: relative; top: 1.1rem">
-                                                <span style="padding: 0">[[each.verb]]</span>
+                                                <span style="padding: 0;letter-spacing: 3px">[[each.verb]]</span>
                                                 <br>
                                                 <small>[[each.description]]</small>
                                             </span>
@@ -124,7 +134,7 @@
                                         </div>
                                         <div class="col-10">
                                             <span style="position: relative; top: 1.1rem">
-                                                <span style="padding: 0">[[each.verb]]
+                                                <span style="padding: 0;letter-spacing: 3px">[[each.verb]]
                                                     <span class="badge badge-pill badge-primary">New</span>
                                                 </span>
                                                 <br>
@@ -138,7 +148,7 @@
                                 </div>
                                 <hr v-if="sys_read.length && sys_unread.length" style="background-color: #007bff">
                                 <div class="read_notific">
-                                    <div v-for="each in read" v-if="JSON.parse(each.data).type == 1" class="row no-gutters md-trigger" style="height: 5rem; cursor: pointer;"
+                                    <div v-for="each in read" v-if="JSON.parse(each.data).type == 1" class="row no-gutters md-trigger " style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem"
                                         data-modal="modal-8" @click="show_detail(each.verb, each.description, each.timestamp, each.id, -1)">
                                         <div class="col-2" style="text-align: center">
                                             <img :src="sys_logo"
@@ -146,7 +156,7 @@
                                         </div>
                                         <div class="col-10">
                                             <span style="position: relative; top: 1.1rem">
-                                                <span style="padding: 0">[[each.verb]]
+                                                <span style="padding: 0;letter-spacing: 3px">[[each.verb]]
                                                 </span>
                                                 <br>
                                                 <small>[[each.description]]</small>
@@ -161,7 +171,7 @@
                             <div class="tab-pane fade" id="pills-group" role="tabpanel"
                                 aria-labelledby="pills-contact-tab">
                                 <div class="unread_notific">
-                                    <div v-for="(each, index) in unread" v-if="JSON.parse(each.data).type == 2" class="row no-gutters md-trigger" style="height: 5rem; cursor: pointer;"
+                                    <div v-for="(each, index) in unread" v-if="JSON.parse(each.data).type == 2" class="row no-gutters md-trigger" style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem"
                                         data-modal="modal-8" @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)">
                                         <div class="col-2" style="text-align: center">
                                             <img :src="team_logo"
@@ -169,7 +179,7 @@
                                         </div>
                                         <div class="col-10">
                                             <span style="position: relative; top: 1.1rem">
-                                                <span style="padding: 0">[[each.verb]]
+                                                <span style="padding: 0;letter-spacing: 3px">[[each.verb]]
                                                     <span class="badge badge-pill badge-primary">New</span>
                                                 </span>
                                                 <br>
@@ -183,7 +193,7 @@
                                 </div>
                                 <hr v-if="team_read.length && team_unread.length" style="background-color: #007bff" />
                                 <div class="read_notific">
-                                    <div v-for="each in read" v-if="JSON.parse(each.data).type == 2" class="row no-gutters md-trigger" style="height: 5rem; cursor: pointer;"
+                                    <div v-for="each in read" v-if="JSON.parse(each.data).type == 2" class="row no-gutters md-trigger" style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem;"
                                         data-modal="modal-8" @click="show_detail(each.verb, each.description, each.timestamp, each.id)">
                                         <div class="col-2" style="text-align: center">
                                             <img :src="team_logo"
@@ -191,7 +201,7 @@
                                         </div>
                                         <div class="col-10">
                                             <span style="position: relative; top: 1.1rem">
-                                                <span style="padding: 0">[[each.verb]]</span>
+                                                <span style="padding: 0;letter-spacing: 3px">[[each.verb]]</span>
                                                 <br>
                                                 <small>[[each.description]]</small>
                                             </span>
@@ -221,8 +231,8 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <div class="lead">[[detail_title]]</div>
-                                                    <div class="text-left">
+                                                    <div class="lead" style="letter-spacing: 2px">[[detail_title]]</div>
+                                                    <div class="text-left" style="letter-spacing: 1px">
                                                         [[detail_body]]
                                                     </div>
                                                 </div>
