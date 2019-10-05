@@ -1,0 +1,57 @@
+.modal.fade .modal-dialog {
+    transform: translate3d(100%, 0, 0);
+}
+
+.modal.show .modal-dialog {
+    transform: translate3d(0, 0, 0);
+}
+
+.toast.hide, .toast:not(.show).fade{
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+}
+
+.toast.show{
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.toast.fade{
+    transition: all .3s linear;
+}
+
+.title_zh {
+    letter-spacing: 4px;
+    font-size: 30px;
+    color: #999999;
+    position: relative;
+    top: -65%;
+    left: 8%;
+    z-index: 1;
+}
+
+.title_en{
+    font-size: 60px; 
+    color: rgba(41, 98, 255, 0.05); 
+    z-index: -1;
+}
+
+.title{
+    float: right; 
+    height: 6rem; 
+    width: 22rem;
+}
+
+@font-face {
+    font-family: 'SourceHanSansCN-Normal';
+    src: url('/static/font/SourceHanSansCN-Normal.otf');
+}
+
+body {
+    font-family: 'SourceHanSansCN-Normal';
+}
+
+li {
+    line-height: 3rem;
+    vertical-align: middle;
+}

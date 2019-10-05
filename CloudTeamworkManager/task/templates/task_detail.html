@@ -1,29 +1,13 @@
 {% extends 'top_bar.html' %}
 {% block head %}
-<!DOCTYPE html>
-<html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/total.css">
     <link href="/static/css/animation/component.css" rel="stylesheet">
     <title>任务详情</title>
     <style>
-        @font-face {
-            font-family: 'SourceHanSansCN-Normal';
-            src: url('/static/font/SourceHanSansCN-Normal.otf');
-        }
-
-        body {
-            font-family: 'SourceHanSansCN-Normal';
-        }
-
-        li {
-            line-height: 3rem;
-            vertical-align: middle;
-        }
-
         hr {
             margin: 9px;
         }
@@ -48,6 +32,7 @@
             border-bottom: 0px;
             border-left: 0px;
             border-right: 0px;
+            border-top: 0.25rem solid #448AFF
         }
 
         .btn {
@@ -95,40 +80,52 @@
             border: 1px #80bdff solid;
             outline: 0px;
         }
+
+        table{
+            margin-bottom: 3rem;
+        }
+
+        .task_name{
+            font-size: 24px; 
+            color: #666666; 
+            padding: 0.75rem;
+        }
+
+        .cursor-pointer{
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body style="background-color: #F7F8FA;">
-    {% endblock %}
+{% endblock %}
 
-    {% block body %}
-    {% csrf_token %}
-    {% load guardian_tags %}
-    {% get_obj_perms request.user for task as "flatpage_perms" %}
+{% block body %}
+{% csrf_token %}
+{% load guardian_tags %}
+{% get_obj_perms request.user for task as "flatpage_perms" %}
     <div id="mainFunc">
         <div class="container">
             <div class="row no-gutters">
                 <div class="col-10 offset-1">
-                    <div class="card" style="border-top: 0.25rem solid #448AFF">
+                    <div class="card">
                         <div class="clearfix" style="width: 100%">
-                            <div style="float: right; height: 6rem; width: 22rem">
-                                <div class="text-uppercase lead font-weight-bold"
-                                    style="font-size: 60px; color: rgba(41, 98, 255, 0.05); z-index: -1">
+                            <div class="title">
+                                <div class="text-uppercase lead font-weight-bold title_en">
                                     the&nbsp;task
                                 </div>
-                                <div
-                                    style="letter-spacing: 4px; font-size: 30px; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
+                                <div class="title_zh">
                                     基本资料
                                 </div>
                             </div>
                         </div>
                         <div class="offset-1">
-                            <p class="card-text" style="font-size: 24px; color: #666666; padding: 0.75rem">
+                            <p class="card-text task_name">
                                 [[task_name]]
                             </p>
                         </div>
                         <div class="row no-gutters">
-                            <table class="table col-10 offset-1 " style="margin-bottom: 3rem;">
+                            <table class="table col-10 offset-1">
                                 <tbody>
                                     <tr>
                                         <th>创建时间</th>
@@ -137,13 +134,12 @@
                                     <tr>
                                         <th>任务详情</th>
                                         <td>
-                                            <div style="max-height: 200px; overflow-y: auto">
+                                            <div class="task_description" style="max-height: 200px; overflow-y: auto">
                                                 [[task_description]]
                                             </div>
                                             <small class="form-text text-muted"
                                                 style="margin-top: 10px;float: left;letter-spacing: 5px">
-                                                <span class="md-trigger" data-modal="modal-8" @click="get_appendixes()"
-                                                    style="cursor: pointer;">
+                                                <span class="md-trigger cursor-pointer" data-modal="modal-8" @click="get_appendixes()">
                                                     <img src="/static/pic/href_active.png">&nbsp;查看附件
                                                 </span>
                                             </small>
@@ -182,21 +178,19 @@
                             </table>
                         </div>
                     </div>
-                    <div class="card" style="border-top: 0.25rem solid #448AFF">
+                    <div class="card">
                         <div class="clearfix" style="width: 100%">
-                            <div style="float: right; height: 6rem; width: 22rem">
-                                <div class="text-uppercase lead font-weight-bold"
-                                    style="font-size: 60px; color: rgba(41, 98, 255, 0.05); z-index: -1">
+                            <div class="title">
+                                <div class="text-uppercase lead font-weight-bold title_en">
                                     THE&nbsp;TASK
                                 </div>
-                                <div
-                                    style="letter-spacing: 4px; font-size: 30px; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
+                                <div class="title_zh">
                                     任务进度
                                 </div>
                             </div>
                         </div>
                         <div class="row no-gutters">
-                            <table class="table col-10 offset-1 " style="margin-bottom: 3rem;">
+                            <table class="table col-10 offset-1">
                                 <tbody>
                                     <tr>
                                         <th>截止时间</th>
@@ -277,15 +271,13 @@
                             </table>
                         </div>
                     </div>
-                    <div class="card" style="border-top: 0.25rem solid #448AFF">
+                    <div class="card">
                         <div class="clearfix" style="width: 100%">
-                            <div style="float: right; height: 6rem; width: 22rem">
-                                <div class="text-uppercase lead font-weight-bold"
-                                    style="font-size: 60px; color: rgba(41, 98, 255, 0.05); z-index: -1">
+                            <div class="title">
+                                <div class="text-uppercase lead font-weight-bold title_en">
                                     members
                                 </div>
-                                <div
-                                    style="letter-spacing: 4px; font-size: 30px; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
+                                <div class="title_zh">
                                     人员安排
                                 </div>
                             </div>
@@ -319,7 +311,7 @@
                             </table>
                         </div>
                         <div class="row no-gutters">
-                            <table class="table col-10 offset-1 " style="margin-bottom: 3rem;">
+                            <table class="table col-10 offset-1" style="margin-bottom: 3rem;">
                                 <tbody>
                                     <tr>
                                         <th colspan="3">小组成员</th>
@@ -338,7 +330,7 @@
                                             <div v-for='person in pythonList'
                                                 :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
-                                                style="margin: .75rem 2rem .75rem 0rem; margin-right: 1.5rem; width: 85px; display: inline-block"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
@@ -360,7 +352,7 @@
                                             <div v-for='person in javaList'
                                                 :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
-                                                style="margin: .75rem 2rem .75rem 0rem; margin-right: 1.5rem; width: 85px; display: inline-block"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
@@ -382,7 +374,7 @@
                                             <div v-for='person in jsList'
                                                 :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
-                                                style="margin: .75rem 2rem .75rem 0rem; margin-right: 1.5rem; width: 85px; display: inline-block"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
@@ -404,7 +396,7 @@
                                             <div v-for='person in mtList'
                                                 :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
-                                                style="margin: .75rem 2rem .75rem 0rem; margin-right: 1.5rem; width: 85px; display: inline-block"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
@@ -426,7 +418,7 @@
                                             <div v-for='person in frontList'
                                                 :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
-                                                style="margin: .75rem 2rem .75rem 0rem; margin-right: 1.5rem; width: 85px; display: inline-block"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
@@ -448,7 +440,7 @@
                                             <div v-for='person in designList'
                                                 :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
-                                                style="margin: .75rem 2rem .75rem 0rem; margin-right: 1.5rem; width: 85px; display: inline-block"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
@@ -648,10 +640,9 @@
             <div class="md-overlay" @click="hide_modal()"></div>
         </div>
     </div>
-    <script src="/static/js/bootstrap/jquery.min.js"></script>
-    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
-    <script src="/static/js/vue/vue.js"></script>
-    <script src="/static/js/vue/vue-resource.min.js"></script>
+{% endblock %}
+
+{% block jsScript %}
     <script>
         Vue.filter('formatDate', time => {
             return new Date(parseInt(time * 1000)).toLocaleString().replace(/:\d{1,2}$/, ' ');

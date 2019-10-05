@@ -18,6 +18,14 @@ def logoutAccount(request):
     auth.logout(request)
     return HttpResponseRedirect("/account/login/")
 
+def login_check(request):
+    if request.user.is_authenticated:
+        name = UserProfile.objects.get(user_id = request.user.id).name
+        if not name:
+            name = "姓名未设定"
+        return JsonResponse({"is_login": True, "name": name, "status": 200}, safe=False)
+    return JsonResponse({"is_login": False, "status": 200}, safe=False)
+
 def login_page(request):
     if request.method == "GET":
         if request.user.is_authenticated:

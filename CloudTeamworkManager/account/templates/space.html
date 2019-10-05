@@ -1,42 +1,26 @@
 {% extends 'top_bar.html' %}
 {% block head %}
-<!DOCTYPE html>
-<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/total.css">
     <title>个人资料</title>
     <style>
-        @font-face {
-            font-family: 'SourceHanSansCN-Normal';
-            src: url('/static/font/SourceHanSansCN-Normal.otf');
-        }
-
-        body {
-            font-family: 'SourceHanSansCN-Normal';
-        }
-
-        li {
-            line-height: 3rem;
-            vertical-align: middle;
-        }
-
         .table td,
         .table th {
             border-top: 0px;
             font-size: 18px;
             color: #666666;
-            font-weight: initial;
             vertical-align: top;
-            width: 7em;
-            letter-spacing: 4px;
         }
 
-        .table td>input {
-            color: #666666;
+        .table th {
+            width: 9em;
+            font-weight: initial;
+            letter-spacing: 4px;
         }
 
         .card {
@@ -45,6 +29,7 @@
             border-bottom: 0px;
             border-right: 0px;
             border-top: 0px;
+            border-left: 0.25rem solid #448AFF;
         }
 
         input[readonly]:focus {
@@ -54,6 +39,7 @@
         }
 
         input[readonly] {
+            color: #666666;
             border: 0px solid !important;
             border-bottom: 1px rgba(255, 255, 255, 0) solid !important;
         }
@@ -69,6 +55,7 @@
         }
 
         input {
+            color: #666666;
             border-bottom: 1px #ced4da solid;
             border-top: 0px;
             border-left: 0px;
@@ -91,29 +78,35 @@
             outline: 0px;
         }
 
-        .task-card:hover .content {
-            left: 40% !important;
-        }
-
-        .task-card:hover .detail {
-            left: 80% !important;
-            display: block !important;
-        }
-
         .edit-icon:hover {
             opacity: 1 !important;
         }
 
-        .modal.fade .modal-dialog {
-            transform: translate3d(100%, 0, 0);
+        .edit-icon{
+            font-size: 0.9rem; 
+            padding: 0px; 
+            opacity: 0.3; 
+            width: 3rem; 
+            height: 1.5rem; 
+            position: absolute; 
+            left: 93%; 
+            bottom: 3%; 
+            border-radius: 0px;
         }
 
-        .modal.show .modal-dialog {
-            transform: translate3d(0, 0, 0);
+        .container{
+            height: 100%;
         }
 
-        .toast {
-            padding: 0px 10%;
+        .list-unstyled{
+            font-size: 18px; 
+            color: #666666;
+        }
+
+        #name{
+            font-size: 30px; 
+            margin: 0rem 0rem 3.0rem 0rem; 
+            color: #333333;
         }
     </style>
 </head>
@@ -122,74 +115,17 @@
     {% endblock %}
 
     {% block body %}
-    <div class="modal fade" id="mymodal">
-        <div class="modal-dialog" style="margin: 0px; position: absolute; left: 75%; height: 100%; width: 25%;">
-            <div class="modal-content"
-                style="border-radius: 0px; border: 0px; height: 100%; background-color: rgba(255, 255, 255, 0.7)">
-                <div class="modal-body" style="padding: 0px">
-                    <div>
-                        <div class="clearfix" style="width: 80%; margin-left: 10%; margin-top: 5%">
-                            <div style="float: left; transform: translateY(16%); text-align: center">
-                                <div style="color: #333333; font-size: 26px">快乐的萝卜</div>
-                                <a style="color: #F44336; font-size: 18px" href="">退出登录</a>
-                            </div>
-                            <div class="float-right" style="width: 30%">
-                                <img class="rounded-circle" src="/file/avatar/" width="100%">
-                            </div>
-                        </div>
-                        <div style="width: 100%; margin-top: 5%">
-                            <div class="toast fade" data-autohide="false" role="alert" aria-live="assertive"
-                                aria-atomic="true"
-                                style="box-shadow: 0px 0px 0px; border-top: 0px; border-left: 0px; border-right: 0px">
-                                <div class="toast-header"
-                                    style="border-bottom: 0px; padding: 0.75rem 0rem 0.75rem 0rem">
-                                    <strong class="mr-auto">已被设置为组长</strong> <small class="text-muted">11 mins
-                                        ago</small>
-                                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast"
-                                        aria-label="Close">
-                                        <span aria-hidden="true">×</span> </button>
-                                </div>
-                                <div class="toast-body" style="padding: 0rem 0rem 0.75rem 0rem">
-                                    您好! 您已被设置为任务管理系统项目组组长。
-                                </div>
-                            </div>
-                            <div class="toast fade" data-autohide="false" role="alert" aria-live="assertive"
-                                aria-atomic="true"
-                                style="box-shadow: 0px 0px 0px; border-top: 0px; border-left: 0px; border-right: 0px">
-                                <div class="toast-header"
-                                    style="border-bottom: 0px; padding: 0.75rem 0rem 0.75rem 0rem">
-                                    <strong class="mr-auto">已被设置为组长</strong>
-                                    <small class="text-muted">11 mins ago</small>
-                                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast"
-                                        aria-label="Close">
-                                        <span aria-hidden="true">×</span> </button>
-                                </div>
-                                <div class="toast-body" style="padding: 0rem 0rem 0.75rem 0rem">
-                                    您好! 您已被设置为任务管理系统项目组组长。
-                                </div>
-                            </div>
-                        </div>
-                        <a href=""
-                            style="position: fixed; top: 95%; color: #666666; font-size: 18px; text-align: center; width: 100%">进入消息中心</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container" style="height: 100%;" id="mainFunc">
+    <div class="container" id="mainFunc">
         {% csrf_token %}
         <div class="row">
             <div class="col-10 offset-1">
-                <div class="card" style="border-left: 0.25rem solid #448AFF;">
+                <div class="card">
                     <div class="clearfix" style="width: 100%">
-                        <div style="float: right; height: 6rem; width: 22rem">
-                            <div class="text-uppercase lead font-weight-bold"
-                                style="font-size: 60px; color: rgba(41, 98, 255, 0.05); z-index: -1">
+                        <div class="title">
+                            <div class="text-uppercase lead font-weight-bold title_en">
                                 about&nbsp;me
                             </div>
-                            <div
-                                style="letter-spacing: 4px; font-size: 30px; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
+                            <div class="title_zh">
                                 基本资料
                             </div>
                         </div>
@@ -202,10 +138,10 @@
                             </label>
                             <input type="file" name="avatar" accept=".jpg" @change="upload_avatar" id="file"
                                 style="height: 0px; opacity: 0;">
-                            <div style="font-size: 30px; margin: 0rem 0rem 3.0rem 0rem; color: #333333">[[name]]</div>
+                            <div id="name">[[name]]</div>
                         </div>
                         <div class="col-3 offset-1">
-                            <ul class="list-unstyled" style="font-size: 18px; color: #666666">
+                            <ul class="list-unstyled">
                                 <li>[[phone_number]]</li>
                                 <li>[[sex | sexFormat]]</li>
                                 <li>[[birthday]]</li>
@@ -215,15 +151,13 @@
                     </div>
                 </div>
 
-                <div class="card" style="border-left: 0.25rem solid #448AFF;">
+                <div class="card">
                     <div class="clearfix" style="width: 100%">
-                        <div style="float: right; height: 6rem; width: 22rem">
-                            <div class="text-uppercase lead font-weight-bold"
-                                style="font-size: 60px; color: rgba(41, 98, 255, 0.05); z-index: -1">
+                        <div class="title">
+                            <div class="text-uppercase lead font-weight-bold title_en">
                                 about&nbsp;me
                             </div>
-                            <div
-                                style="letter-spacing: 4px; font-size: 30px; color: #999999; position: relative; top: -65%; left: 8%; z-index: 1;">
+                            <div class="title_zh">
                                 详细资料
                             </div>
                         </div>
@@ -233,7 +167,7 @@
                         <table class="table col-10 offset-1" style="margin-bottom: 3rem">
                             <tbody>
                                 <tr>
-                                    <th scope="row" style="width: 20%">邮箱</th>
+                                    <th scope="row">邮箱</th>
                                     <td><input v-model="email" :readonly="edit_status? false : 'readonly'">
                                     </td>
                                 </tr>
@@ -269,8 +203,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <button @click="edit_info" class="edit-icon btn btn-primary" type="button"
-                            style="font-size: 0.9rem; padding: 0px; opacity: 0.3; width: 3rem; height: 1.5rem; position: absolute; left: 93%; bottom: 3%; border-radius: 0px">
+                        <button @click="edit_info" class="edit-icon btn btn-primary" type="button">
                             [[ edit_or_save ]]
                         </button>
                     </div>
@@ -278,13 +211,9 @@
             </div>
         </div>
     </div>
+    {% endblock %}
 
-    <script src="/static/js/bootstrap/jquery.min.js"></script>
-    <script src="/static/js/bootstrap/popper.min.js"></script>
-    <script src="/static/js/bootstrap/bootstrap.bundle.min.js"></script>
-    <script src="/static/js/vue/vue.js"></script>
-    <script src="/static/js/vue/vue-resource.min.js"></script>
-
+    {% block jsScript %}
     <script>
         Vue.filter('majorFormat', function (major) {
             if (major == "P") {
