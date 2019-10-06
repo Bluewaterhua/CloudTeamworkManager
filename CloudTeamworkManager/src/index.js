@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import './total.css'
+import '../static/css/animation/component.css'
 import superComponent from "./VueComponent/superComponent.vue"
 import VueResource from 'vue-resource'
 import $ from 'jquery'

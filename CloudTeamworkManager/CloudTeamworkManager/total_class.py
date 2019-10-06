@@ -333,10 +333,10 @@ class task(object):
         members = json.loads(target_task["members"])
         leaders = json.loads(target_task["leaders"])
 
-        target_task["members"] = json.dumps([{**{"user_id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members])
-        target_task["leaders"] = json.dumps([{**{"user_id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders])
+        target_task["members"] = [{**{"user_id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members]
+        target_task["leaders"] = [{**{"user_id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders]
 
-        return render(request, "edit_task.html", target_task)
+        return JsonResponse({"info": target_task, "status": 200}, safe=False)
 
     def edit_task(self, request):
         form = forms_task(request.POST, instance = self.task)
@@ -497,12 +497,11 @@ class task(object):
         members = json.loads(target_task["members"])
         leaders = json.loads(target_task["leaders"])
 
-        target_task["members"] = json.dumps([{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members])
-        target_task["leaders"] = json.dumps([{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders])
+        target_task["members"] = [{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members]
+        target_task["leaders"] = [{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders]
         target_task["user_id"] = request.user.id
-        target_task["task"] = self.task
 
-        return render(request, "task_detail.html", target_task)
+        return JsonResponse({"info": target_task, "status": 200}, safe=False)
 
     @staticmethod
     def get_members(request):

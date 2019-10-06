@@ -17,7 +17,7 @@ def delete_all_read(request):
 @login_required
 def delete_target(request, notification_id):
     notification = Notification.objects.filter(id = notification_id)
-    if request.user.id == notification[0].recipient:
+    if request.user.id == notification[0].recipient.id:
         notification.delete()
         return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
     else:
@@ -43,7 +43,7 @@ def mark_all_as_read(request):
 @login_required
 def mark_target_as_read(request, notification_id):
     notification = Notification.objects.get(id = notification_id)
-    if request.user.id == notification.recipient:
+    if request.user.id == notification.recipient.id:
         notification.mark_as_read()
         return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
     else:
@@ -57,7 +57,7 @@ def notifications(request):
     unread = list(request.user.notifications.unread().values('data', 'verb', 'description', 'timestamp','id',))
     for i in unread:
         i['timestamp'] = str(i['timestamp'])[:-7]
-    return render(request, 'notification.html', {"read": json.dumps(read),"unread": json.dumps(unread),})
+    return JsonResponse({"info": {"read": read, "unread": unread}, "status": 200}, safe=False)
 
 def send_test(request, type):
     actor = request.user

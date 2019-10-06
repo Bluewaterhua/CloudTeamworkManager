@@ -2,7 +2,7 @@
     <!-- 底 -->
     <div style="height: 100%;">
         <!-- 主体 -->
-        <mainland></mainland>
+        <mainFuncTotal></mainFuncTotal>
     </div>
 </template>
 
@@ -33,10 +33,6 @@
 
 <script>
     import Vue from 'vue'
-
-    Vue.component('accountTotal',function(resolve){
-        require(['./accountTotal.vue'],resolve)
-    })
 
     Vue.component('mainFuncTotal',function(resolve){
         require(['./mainFuncTotal.vue'],resolve)

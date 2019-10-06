@@ -480,7 +480,7 @@
                         var textClassFilenameExtension = ['txt'];
                         var pdfClassFilenameExtension = ['pdf'];
 
-                        filenameExtension = name.substring(name.lastIndexOf('.') + 1);
+                        var filenameExtension = name.substring(name.lastIndexOf('.') + 1);
                         if (pptClassFilenameExtension.indexOf(filenameExtension) != -1) {
                             return '/static/pic/ppt.png'
                         }

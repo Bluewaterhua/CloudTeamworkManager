@@ -6,6 +6,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
+from django.middleware import csrf
 from .forms import RegisterForm, LoginForm, ResetPasswordForm, extend_info, SetPasswordForm, my_clean_phone_number
 from .forms import change_info as change_info_form
 from .models import UserProfile
@@ -127,7 +128,7 @@ def space_page(request):
     target_userprofile = UserProfile.objects.get(user_id = request.user.id)
     target_user = request.user
 
-    return render(request, 'space.html', {"name": target_userprofile.name, "phone_number": target_user.username, "gender": target_userprofile.sex, "student_id": target_userprofile.student_id, "birthday": target_userprofile.birthday, "email": target_userprofile.email, "major": target_userprofile.major, "grade": target_userprofile.grade, "room": target_userprofile.room, "home_address": target_userprofile.home_address, "guardian_phone": target_userprofile.guardian_phone, "introduction": target_userprofile.introduction, "user_id": target_user.id, "sex": target_userprofile.sex, "birthday": target_userprofile.birthday, "edit_status": "false", "edit_or_save": "编辑"})
+    return JsonResponse({"info": {"name": target_userprofile.name, "phone_number": target_user.username, "gender": target_userprofile.sex, "student_id": target_userprofile.student_id, "birthday": target_userprofile.birthday, "email": target_userprofile.email, "major": target_userprofile.major, "grade": target_userprofile.grade, "room": target_userprofile.room, "home_address": target_userprofile.home_address, "guardian_phone": target_userprofile.guardian_phone, "introduction": target_userprofile.introduction, "user_id": target_user.id, "sex": target_userprofile.sex, "birthday": target_userprofile.birthday, "edit_status": "false", "edit_or_save": "编辑"}, "status": 200}, safe=False)
 
 def home(request):
     if request.user.is_authenticated:
@@ -192,4 +193,8 @@ def task_list(request):
         each_task["members"] = [UserProfile.objects.get(user_id = each).name for each in members]
         each_task["is_creator"] = (int)(request.user.id == each_task['creator'])
         each_task.pop('creator')
-    return render(request, "task_list.html", {"content": temp, "name": user.name})
+    return JsonResponse({"info": {"content": temp, "name": user.name, "create_task": request.user.has_perm('task.create_tasks')}, "status": 200}, safe=False)
+
+def csrf_token(request):
+	token = csrf.get_token(request)
+	return JsonResponse({'info': token})

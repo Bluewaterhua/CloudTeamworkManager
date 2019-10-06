@@ -1,95 +1,102 @@
 <template>
-    <div>
-        <div class="text-right clearfix">
-            <div class="text-uppercase font-weight-light" style="letter-spacing: 4px; color: #536DFE; font-size: 48px">
-                perfect&nbsp;info
-            </div>
-            <div style="letter-spacing: 4px; font-size: 22px; color: #333333">补全你的个人信息
-            </div>
-            <hr noshade=true style="width: 17%; height: 1px; background-color: #536DFE; float: right;">
-        </div>
-        <div class="row justify-content-center no-gutters p-0 mb-5 bg-white" style="border-radius: 0px; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16)" id="mainFunc">
-            <div class="col-10" style="margin-top: 10%; margin-bottom: 10%">
-                <transition :name="basic_info_part_one_name">
-                    <form v-if="basic_info_part_one" class="clearfix">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的姓名</label>
-                        <input v-model="name" class="form-control" placeholder="示例: 王美美" style="margin-bottom: 1rem; border-radius: 0px">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的生日</label>
-                        <input v-model="birthday" type="date" class="form-control" style="margin-bottom: 1rem; border-radius: 0px">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的性别</label>
-                        <select v-model="sex" class="form-control" style="margin-bottom: 1rem; border-radius: 0px">
-                            <option selected value="">请选择</option>
-                            <option value='m'>男</option>
-                            <option value='f'>女</option>
-                        </select>
-                    </form>
-                </transition>
-                <transition :name="basic_info_part_two_name">
-                    <form v-if="basic_info_part_two" class="clearfix">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的学号</label>
-                        <input v-model="student_id" type="text" class="form-control"
-                            placeholder="示例: 2015006797" style="margin-bottom: 1rem; border-radius: 0px">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的云ID</label>
-                        <input v-model="cloud_id" type="text" class="form-control" placeholder="示例: 1234567" style="margin-bottom: 1rem; border-radius: 0px">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的方向</label>
-                        <select v-model="major" class="form-control" style="margin-bottom: 1rem; border-radius: 0px">
-                            <option selected value="">请选择</option>
-                            <option value='M'>机电创新团队</option>
-                            <option value='P'>Python</option>
-                            <option value='N'>Node.js</option>
-                            <option value='J'>Java</option>
-                            <option value='F'>前端</option>
-                            <option value='D'>设计</option>
-                        </select>
-                    </form>
-                </transition>
-                <transition :name="extend_info_part_one_name">
-                    <form v-if="extend_info_part_one" class="clearfix">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的邮箱</label>
-                        <input v-model="email" type="text" class="form-control"
-                            placeholder="示例: someone@example.com" style="margin-bottom: 1rem; border-radius: 0px">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的宿舍</label>
-                        <input v-model="room" type="text" class="form-control" placeholder="示例: 2#227" style="margin-bottom: 1rem; border-radius: 0px">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的家庭地址</label>
-                        <input v-model="home_address" type="text" class="form-control" placeholder="示例:山西省太原市小店区" style="margin-bottom: 1rem; border-radius: 0px">
-                    </form>
-                </transition>
-                <transition :name="extend_info_part_two_name">
-                    <form v-if="extend_info_part_two" class="clearfix">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的监护人的电话</label>
-                        <input v-model="guardian_phone" type="text" class="form-control"
-                            placeholder="示例: 15698310000" style="margin-bottom: 1rem; border-radius: 0px">
-                        <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的个人介绍</label>
-                        <textarea v-model="introduction" type="text" class="form-control"
-                            placeholder="我是一个活泼开朗的..."
-                            style="height: 113px; border: 1px solid #ced4da; margin-bottom: 1rem; border-radius: 0px"></textarea>
-                    </form>
-                </transition>
-                <transition :name="extend_info_avatar_name">
-                    <form v-if="extend_info_avatar" class="clearfix">
-                        <div style="text-align: center; height: 187.16px">
-                            <img :src="src" style="width: 40%" :style="{height: avatar_height}"
-                                class="rounded-circle" id="avatar">
-                        </div>
-                        <label for="file" class="btn btn-primary col-6 offset-3"
-                            style="cursor: pointer; border-radius: 0px">请选择你的头像</label>
-                        <input type="file" name="avatar" accept=".jpg" v-on:change="show_avatar($event)"
-                            id="file" style="height: 0px; opacity: 0;">
-                    </form>
-                </transition>
-                <div class="tip" style="height: 14px; margin-top: 1.5rem; font-size: 14px; color: #E86263">
-                    {{  tip  }}
+    <div class="container" id="mainFunc">
+        <div class="row no-gutters justify-content-md-center" style="height: 100%">
+            <div class="col-5 align-self-center">
+                <div class="text-right clearfix">
+                    <div class="text-uppercase font-weight-light" style="letter-spacing: 4px; color: #536DFE; font-size: 48px">
+                        perfect&nbsp;info
+                    </div>
+                    <div style="letter-spacing: 4px; font-size: 22px; color: #333333">补全你的个人信息
+                    </div>
+                    <hr noshade=true style="width: 17%; height: 1px; background-color: #536DFE; float: right;">
                 </div>
-                <input v-if="!basic_info_part_one" @click="previous" type="button" class="btn btn-primary col-2"
-                    value="<" style="float: left; font-size: 18px; margin-top: 3.6rem; border-radius: 0px">
-                <input @click="next" type="button" class="btn btn-primary col-6 offset-4" :value="right_button"
-                    style="float: right; font-size: 18px; margin-top: 3.6rem; border-radius: 0px">
+                <div class="row justify-content-center no-gutters p-0 mb-5 bg-white" style="border-radius: 0px; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16)" id="mainFunc">
+                    <div class="col-10" style="margin-top: 10%; margin-bottom: 10%">
+                        <transition :name="basic_info_part_one_name">
+                            <form v-if="basic_info_part_one" class="clearfix">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的姓名</label>
+                                <input v-model="name" class="form-control" placeholder="示例: 王美美" style="margin-bottom: 1rem; border-radius: 0px">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的生日</label>
+                                <input v-model="birthday" type="date" class="form-control" style="margin-bottom: 1rem; border-radius: 0px">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的性别</label>
+                                <select v-model="sex" class="form-control" style="margin-bottom: 1rem; border-radius: 0px">
+                                    <option selected value="">请选择</option>
+                                    <option value='m'>男</option>
+                                    <option value='f'>女</option>
+                                </select>
+                            </form>
+                        </transition>
+                        <transition :name="basic_info_part_two_name">
+                            <form v-if="basic_info_part_two" class="clearfix">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的学号</label>
+                                <input v-model="student_id" type="text" class="form-control"
+                                    placeholder="示例: 2015006797" style="margin-bottom: 1rem; border-radius: 0px">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的云ID</label>
+                                <input v-model="cloud_id" type="text" class="form-control" placeholder="示例: 1234567" style="margin-bottom: 1rem; border-radius: 0px">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的方向</label>
+                                <select v-model="major" class="form-control" style="margin-bottom: 1rem; border-radius: 0px">
+                                    <option selected value="">请选择</option>
+                                    <option value='M'>机电创新团队</option>
+                                    <option value='P'>Python</option>
+                                    <option value='N'>Node.js</option>
+                                    <option value='J'>Java</option>
+                                    <option value='F'>前端</option>
+                                    <option value='D'>设计</option>
+                                </select>
+                            </form>
+                        </transition>
+                        <transition :name="extend_info_part_one_name">
+                            <form v-if="extend_info_part_one" class="clearfix">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的邮箱</label>
+                                <input v-model="email" type="text" class="form-control"
+                                    placeholder="示例: someone@example.com" style="margin-bottom: 1rem; border-radius: 0px">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的宿舍</label>
+                                <input v-model="room" type="text" class="form-control" placeholder="示例: 2#227" style="margin-bottom: 1rem; border-radius: 0px">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的家庭地址</label>
+                                <input v-model="home_address" type="text" class="form-control" placeholder="示例:山西省太原市小店区" style="margin-bottom: 1rem; border-radius: 0px">
+                            </form>
+                        </transition>
+                        <transition :name="extend_info_part_two_name">
+                            <form v-if="extend_info_part_two" class="clearfix">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的监护人的电话</label>
+                                <input v-model="guardian_phone" type="text" class="form-control"
+                                    placeholder="示例: 15698310000" style="margin-bottom: 1rem; border-radius: 0px">
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的个人介绍</label>
+                                <textarea v-model="introduction" type="text" class="form-control"
+                                    placeholder="我是一个活泼开朗的..."
+                                    style="height: 113px; border: 1px solid #ced4da; margin-bottom: 1rem; border-radius: 0px"></textarea>
+                            </form>
+                        </transition>
+                        <transition :name="extend_info_avatar_name">
+                            <form v-if="extend_info_avatar" class="clearfix">
+                                <div style="text-align: center; height: 187.16px">
+                                    <img :src="src" style="width: 40%" :style="{height: avatar_height}"
+                                        class="rounded-circle" id="avatar">
+                                </div>
+                                <label for="file" class="btn btn-primary col-6 offset-3"
+                                    style="cursor: pointer; border-radius: 0px">请选择你的头像</label>
+                                <input type="file" name="avatar" accept=".jpg" v-on:change="show_avatar($event)"
+                                    id="file" style="height: 0px; opacity: 0;">
+                            </form>
+                        </transition>
+                        <div class="tip" style="height: 14px; margin-top: 1.5rem; font-size: 14px; color: #E86263">
+                            {{  tip  }}
+                        </div>
+                        <input v-if="!basic_info_part_one" @click="previous" type="button" class="btn btn-primary col-2"
+                            value="<" style="float: left; font-size: 18px; margin-top: 3.6rem; border-radius: 0px">
+                        <input @click="next" type="button" class="btn btn-primary col-6 offset-4" :value="right_button"
+                            style="float: right; font-size: 18px; margin-top: 3.6rem; border-radius: 0px">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+    #mainFunc{
+        height: 100%;
+    }
     /* 这是next动画 */
     .basic_info_part_one_next-enter {
         transform: translateX(10%);
@@ -438,7 +445,7 @@
                 }
                 this.$http.post('/account/perfect_information/', { "name": this.name, "birthday": this.birthday, "sex": this.sex, "student_id": this.student_id, "grade": this.student_id.substr(0, 4), "cloud_id": this.cloud_id, "major": this.major, "email": this.email, "room": this.room, "home_address": this.home_address, "guardian_phone": this.guardian_phone, "introduction": this.introduction }, { emulateJSON: true }).then(result => {
                     if (result.body.status == 302) {
-                        window.location.href = result.body.url;
+                        this.mySwitch('space');
                     }
                     else {
                         this.tip = result.body.tip;
