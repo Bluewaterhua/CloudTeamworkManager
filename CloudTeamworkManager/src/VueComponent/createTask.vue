@@ -356,7 +356,7 @@
                                     <div class="row col-10 offset-1">
                                         <label for="file" class="btn btn-primary col-6 offset-3"
                                             style="cursor: pointer;border-radius: 0">点击选择</label>
-                                        <input type="file" name="appendix" id="file" style="height: 0px; opacity: 0"
+                                        <input ref="referenceUpload" type="file" name="appendix" id="file" style="height: 0px; opacity: 0"
                                             v-on:change="add_appendix($event)">
                                         <small class="col-6 offset-3"
                                             style="color: #C9C9C9;float:left; padding: 0px; text-align: left">文件不要超过10M！
@@ -368,7 +368,7 @@
                                 <div v-if="load">
                                     <label for="file" class="btn btn-primary col-3"
                                         style="cursor: pointer; margin: 0px 0px 0px 7.5px; border-radius: 0px">点击选择</label>
-                                    <input type="file" name="appendix" id="file" style="height: 0px; display: none"
+                                    <input ref="referenceUpload" type="file" name="appendix" id="file" style="height: 0px; display: none"
                                         v-on:change="add_appendix($event)">
                                     <span
                                         style="color: #C9C9C9; vertical-align: bottom; font-size: 80%; font-weight: 400; margin-left: .8rem">
@@ -861,7 +861,7 @@
             },
             add_appendix: function () {
                 this.appendix.push(event.target.files[0]);
-                event.target = null;
+                this.$refs.referenceUpload.value = null;
                 this.load = true;
             },
             remove_appendix: function (index) {

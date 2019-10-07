@@ -13,6 +13,11 @@
         height: 100%;
     }
 
+    
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+        display: none;
+    }
+
     @font-face {
         font-family: 'SourceHanSansCN-Normal';
         src: url('/static/font/SourceHanSansCN-Normal.otf');

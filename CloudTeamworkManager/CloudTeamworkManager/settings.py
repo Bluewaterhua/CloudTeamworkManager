@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
     'noti',
-    'notifications'
+    'notifications',
+    'dwebsocket',
 ]
 
 # Middleware framework

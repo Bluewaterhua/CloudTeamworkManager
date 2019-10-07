@@ -75,7 +75,7 @@
                                 </div>
                                 <label for="file" class="btn btn-primary col-6 offset-3"
                                     style="cursor: pointer; border-radius: 0px">请选择你的头像</label>
-                                <input type="file" name="avatar" accept=".jpg" v-on:change="show_avatar($event)"
+                                <input ref="referenceUpload" type="file" name="avatar" accept=".jpg" v-on:change="show_avatar($event)"
                                     id="file" style="height: 0px; opacity: 0;">
                             </form>
                         </transition>
@@ -426,7 +426,7 @@
             show_avatar: function (event) {
                 this.avatar = event.target.files[0];
                 this.src = window.URL.createObjectURL(this.avatar);
-                event.target.files[0].name = "null";
+                this.$refs.referenceUpload.value = null;
                 this.avatar_height = document.getElementById("avatar").scrollWidth + 'px';
             },
             submit: function () {

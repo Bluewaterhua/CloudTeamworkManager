@@ -12,4 +12,5 @@ urlpatterns = [
     path('send_test/<int:type>', views.send_test),
     path('',views.notifications),
     path('get_target_type/<int:type>/', views.get_target_type),
+    path('receive_noti/', views.messaging),
 ]

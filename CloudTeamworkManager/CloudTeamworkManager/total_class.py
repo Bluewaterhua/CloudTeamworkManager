@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.contrib.auth.models import User, Group, Permission
+from notifications.signals import notify
 from guardian.shortcuts import assign_perm, remove_perm
 from task.models import task as models_task
 from task.forms import task as forms_task
@@ -12,6 +13,7 @@ import json
 import time
 import os
 
+WebSocket_Connections = {}
 
 class member(object):
     user_buildin = None
@@ -307,6 +309,14 @@ class task(object):
                 target_member.assign_member_perm()
                 target_member.create_personal_archive()
 
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已加入项目组", description = "%s%s%s" % ('您已加入', target_task.task_name, '项目组'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"info": {"id": noti[0][1][0]['id'], "verb": "已加入项目组", "description": noti[0][1][0]['description'], "timestamp": (int)(time.time())}, "status": 200}).encode())
+                    except:
+                        pass
+
             # 配置组长相关
             for each in json.loads(form.instance.leaders):
                 try:
@@ -320,11 +330,17 @@ class task(object):
                 target_member.set_leader_in_profile()
                 target_member.assign_leader_perm()
 
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已成为组长", description = "%s%s%s" % ('您已成为', target_task.task_name, '项目组组长'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"info": {"id": noti[0][1][0]['id'], "verb": "已成为组长", "description": noti[0][1][0]['description'], "timestamp": (int)(time.time())}, "status": 200}).encode())
+                    except:
+                        pass
+
             # 建立附件目录
             os.makedirs("./file/appendixes/%s/"%(target_task.id))
-
-            # 通知
-
+   
             return JsonResponse({"task_id": target_task.id, "status": 200}, safe=False)
         return JsonResponse({"tip": "表单验证失败", "status": 400}, safe=False)
 

@@ -4,10 +4,13 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from notifications.signals import notify
 from notifications.models import Notification
+from dwebsocket.decorators import require_websocket, accept_websocket
+from CloudTeamworkManager.total_class import WebSocket_Connections
 import json
+import time
 
 
-# 类型定义: 1是系统消息，2是组内消息
+# 类型定义: 1是系统消息，0是组内消息
 @login_required
 def delete_all_read(request):
     notifications = request.user.notifications.read()
@@ -27,13 +30,21 @@ def delete_target(request, notification_id):
 def get_read(request):
     notifications = request.user.notifications.read()
     notifications = notifications.values('id', 'actor_content_type', 'verb', 'description', 'timestamp')
-    return JsonResponse(list(notifications), safe=False)
+    notifications = list(notifications)
+    for i in notifications:
+        i['timestamp'] = int(time.mktime(time.strptime(str(i['timestamp'])[:-7], "%Y-%m-%d %H:%M:%S")))
+
+    return JsonResponse(notifications, safe=False)
 
 @login_required
 def get_unread(request):
     notifications = request.user.notifications.unread()
     notifications = notifications.values('id', 'actor_content_type', 'verb', 'description', 'timestamp')
-    return JsonResponse(list(notifications), safe=False)
+    notifications = list(notifications)
+    for i in notifications:
+        i['timestamp'] = int(time.mktime(time.strptime(str(i['timestamp'])[:-7], "%Y-%m-%d %H:%M:%S")))
+    
+    return JsonResponse(notifications, safe=False)
 
 @login_required
 def mark_all_as_read(request):
@@ -59,10 +70,17 @@ def notifications(request):
         i['timestamp'] = str(i['timestamp'])[:-7]
     return JsonResponse({"info": {"read": read, "unread": unread}, "status": 200}, safe=False)
 
+@accept_websocket
 def send_test(request, type):
+    global WebSocket_Connections
     actor = request.user
-    notify.send(actor, recipient=actor, verb='你好鸭，这是测试通知', description = "这是的是通知的正文部分", type=type)
-    return HttpResponse("ok")
+    noti = notify.send(actor, recipient=actor, verb='你好鸭，这是测试通知', description = "这是的是通知的正文部分", type=type)
+    temp = WebSocket_Connections.get(request.user.id, None)
+    if temp:
+        try:
+            temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time())}).encode())
+        except:
+            pass
 
 @login_required
 def get_target_type(request, type): 
@@ -82,3 +100,11 @@ def get_target_type(request, type):
         i['timestamp'] = str(i['timestamp'])[:-7]
 
     return JsonResponse({"content": {"unread": unread, "read": read}, "status": 200}, safe=False)
+
+@require_websocket
+def messaging(request):
+    global WebSocket_Connections
+    WebSocket_Connections[request.user.id] = request.websocket
+
+    while 1:
+        time.sleep(300)

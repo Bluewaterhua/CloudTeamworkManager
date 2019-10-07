@@ -53,49 +53,22 @@
                                         style="width: 30%; top: 50%; transform: translateY(-50%); position: relative;">
                                 </div>
                                 <div style="width: 100%; margin-top: 5%">
-                                    <div class="toast fade" data-autohide="false" role="alert" aria-live="assertive"
-                                        aria-atomic="true" style="box-shadow: 0px 0px 0px; border: 0px; border-radius: 0px">
+                                    <div v-if="Number(notifications) == 0" style="padding-left: .75rem; font-weight: bold">暂无消息</div>
+                                    <div class="toast fade" data-autohide="false" role="console.log" aria-live="assertive"
+                                        aria-atomic="true" style="box-shadow: 0px 0px 0px; border: 0px; border-radius: 0px" v-for="(each, index) in notifications" :key="index">
                                         <div class="toast-header" style="border-bottom: 0px;">
-                                            <strong class="mr-auto">已被设置为组长</strong>
-                                            <small class="text-muted">11 mins ago</small>
+                                            <strong class="mr-auto">{{  each.verb  }}</strong>
+                                            <small class="text-muted">{{  each.timestamp  }}</small>
                                             <button type="button" class="ml-2 close" data-dismiss="toast"
                                                 aria-label="Close">
                                                 <span aria-hidden="true">&times;</span> </button>
                                         </div>
-                                        <div class="toast-body">
-                                            您好! 您已被设置为任务管理系统项目组组长。
-                                        </div>
-                                    </div>
-                                    <div class="toast fade" data-autohide="false" role="alert" aria-live="assertive"
-                                        aria-atomic="true" style="box-shadow: 0px 0px 0px; border: 0px; border-radius: 0px">
-                                        <div class="toast-header" style="border-bottom: 0px;">
-                                            <strong class="mr-auto">已被设置为组长</strong>
-                                            <small class="text-muted">11 mins ago</small>
-                                            <button type="button" class="ml-2 close" data-dismiss="toast"
-                                                aria-label="Close">
-                                                <span aria-hidden="true">&times;</span> </button>
-                                        </div>
-                                        <div class="toast-body">
-                                            您好! 您已被设置为任务管理系统项目组组长。
-                                        </div>
-                                    </div>
-                                    <div class="toast fade" data-autohide="false" role="alert" aria-live="assertive"
-                                        aria-atomic="true" style="box-shadow: 0px 0px 0px; border: 0px; border-radius: 0px">
-                                        <div class="toast-header" style="border-bottom: 0px;">
-                                            <strong class="mr-auto">已被设置为组长</strong>
-                                            <small class="text-muted">11 mins ago</small>
-                                            <button type="button" class="ml-2 close" data-dismiss="toast"
-                                                aria-label="Close">
-                                                <span aria-hidden="true">&times;</span> </button>
-                                        </div>
-                                        <div class="toast-body">
-                                            您好! 您已被设置为任务管理系统项目组组长。
-                                        </div>
+                                        <div class="toast-body">{{  each.description  }}</div>
                                     </div>
                                 </div>
                                 <div style="position: fixed; bottom: 1rem; width: 100%; text-align: center;">
                                     <a href="" style="font-size: 12px; float: right; text-decoration: none; margin-right: 1rem"
-                                        @click.prevent="mark_all_read()">标记全部为已读</a>
+                                        @click.prevent="mark_all_read()" v-if="Number(notifications) != 0">标记全部为已读</a>
                                     <a href="/noti/"
                                         style="color: #666666; font-size: 18px; display: block; clear: both; text-decoration: none" v-on:click.prevent="hideBarAndSwitch('noti')">进入消息中心</a>
                                 </div>
@@ -125,10 +98,12 @@
                 is_login: false,
                 name: "",
                 comName: "",
+                notifications: [],
             }
         },
         created() {
             this.login_check();
+            this.receive_noti();
         },
         methods: {
             login_check: function () {
@@ -165,6 +140,38 @@
             },
             mySwitch: function(target) {
                 this.$emit('switch', target);
+            },
+            receive_noti: function() {
+                this.$http.get('/noti/get_unread/').then(result => {
+                    if (result.status == 200){
+                        this.notifications = result.body;
+                    }
+                })
+
+                var that = this;
+                if ("WebSocket" in window) {
+                    console.log("您的浏览器支持 WebSocket!");
+
+                    var ws = new WebSocket("ws://" + window.location.host + "/noti/receive_noti/");
+
+                    ws.onopen = function () {
+                        console.log("与服务器连接成功!");
+                    };
+
+                    ws.onmessage = function (evt) {
+                        var received_msg = evt.data;
+                        that.notifications.push(JSON.parse(received_msg));
+                    };
+
+                    ws.onclose = function () {
+                        console.log("连接已关闭...");
+                    };
+                }
+
+                else {
+                    // 浏览器不支持 WebSocket
+                    console.log("您的浏览器不支持 WebSocket!");
+                }
             }
         }
     }
