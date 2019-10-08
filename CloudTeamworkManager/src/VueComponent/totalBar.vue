@@ -224,6 +224,11 @@
                 setTimeout(() => { target.toast("hide") }, time * 150);
             },
             mySwitch: function(target) {
+                if (target != 'signUp' && !this.is_login){
+                    this.$emit('switch', 'signIn');
+                    return;
+                }
+                
                 this.$emit('switch', target);
             },
             show_detail: function (title, body, date, id, index) {

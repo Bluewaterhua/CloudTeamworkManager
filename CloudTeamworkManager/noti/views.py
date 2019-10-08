@@ -70,7 +70,6 @@ def notifications(request):
         i['timestamp'] = str(i['timestamp'])[:-7]
     return JsonResponse({"info": {"read": read, "unread": unread}, "status": 200}, safe=False)
 
-@accept_websocket
 def send_test(request, type):
     global WebSocket_Connections
     actor = request.user
@@ -81,6 +80,7 @@ def send_test(request, type):
             temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "你好鸭，这是测试通知", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
         except:
             pass
+    return HttpResponse("OK")
 
 @login_required
 def get_target_type(request, type): 

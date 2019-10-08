@@ -46,6 +46,11 @@
                 })
             },
             mySwitch: function(target) {
+                if (target != 'signUp' && !this.is_login){
+                    this.$emit('switch', 'signIn');
+                    return;
+                }
+
                 this.$emit('switch', target)
             }
         }
