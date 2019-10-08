@@ -313,7 +313,7 @@ class task(object):
                 temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
                 if temp:
                     try:
-                        temp.send(json.dumps({"info": {"id": noti[0][1][0]['id'], "verb": "已加入项目组", "description": noti[0][1][0]['description'], "timestamp": (int)(time.time())}, "status": 200}).encode())
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已加入项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
                     except:
                         pass
 
@@ -334,7 +334,7 @@ class task(object):
                 temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
                 if temp:
                     try:
-                        temp.send(json.dumps({"info": {"id": noti[0][1][0]['id'], "verb": "已成为组长", "description": noti[0][1][0]['description'], "timestamp": (int)(time.time())}, "status": 200}).encode())
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
                     except:
                         pass
 
@@ -393,7 +393,13 @@ class task(object):
                 target_member.cancel_leader_in_profile()
                 target_member.remove_leader_perm()
 
-                # 通知
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已被撤销组长", description = "%s%s%s" % ('您在', target_task.task_name, '项目组组长的组长职务已被撤销'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已被撤销组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                    except:
+                        pass
 
             # 移除组员
             for each in removed_members:
@@ -409,7 +415,13 @@ class task(object):
                 target_member.remove_member_perm()
                 target_member.remove_archive_edit_perm()
 
-                # 通知
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已被移出项目组", description = "%s%s%s" % ('您已被移出', target_task.task_name, '项目组'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已被移出项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                    except:
+                        pass
 
             # 配置新增组员
             for each in new_members:
@@ -430,7 +442,13 @@ class task(object):
                     target_member.join_task_in_profile()
                     target_member.assign_member_perm()
 
-                # 通知
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已加入项目组", description = "%s%s%s" % ('您已加入', target_task.task_name, '项目组'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已加入项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                    except:
+                        pass
 
             # 配置新增组长
             for each in new_leaders:
@@ -445,7 +463,13 @@ class task(object):
                 target_member.set_leader_in_profile()
                 target_member.assign_leader_perm()
 
-                # 通知
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已成为组长", description = "%s%s%s" % ('您已成为', target_task.task_name, '项目组组长'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                    except:
+                        pass
 
             # 更新参与过该任务的成员列表
             form.instance.all_members = json.dumps(list(set(json.loads(form.instance.all_members) + list(current_members))))
@@ -503,7 +527,13 @@ class task(object):
             target_member.remove_member_perm()
             target_member.remove_archive_edit_perm()
 
-        # 通知
+            noti = notify.send(request.user, recipient=target_member.user_buildin, verb="项目组已被解散", description = "%s%s" % (target_task.task_name, '项目组已被解散'), type=0)
+            temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+            if temp:
+                try:
+                    temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "项目组已被解散", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                except:
+                    pass
 
         return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
 

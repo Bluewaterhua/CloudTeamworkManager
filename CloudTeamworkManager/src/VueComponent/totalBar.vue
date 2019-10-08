@@ -53,8 +53,8 @@
                                         style="width: 30%; top: 50%; transform: translateY(-50%); position: relative;">
                                 </div>
                                 <div style="width: 100%; margin-top: 5%">
-                                    <div v-if="Number(notifications) == 0" style="padding-left: .75rem; font-weight: bold">暂无消息</div>
-                                    <div class="toast fade" data-autohide="false" role="console.log" aria-live="assertive"
+                                    <div v-if="Number(notifications) == 0" style="padding-left: .75rem; font-weight: bold">暂无未读消息</div>
+                                    <div class="toast fade md-trigger" data-modal="modal-8" data-autohide="false" role="console.log" aria-live="assertive" @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)"
                                         aria-atomic="true" style="box-shadow: 0px 0px 0px; border: 0px; border-radius: 0px" v-for="(each, index) in notifications" :key="index">
                                         <div class="toast-header" style="border-bottom: 0px;">
                                             <strong class="mr-auto">{{  each.verb  }}</strong>
@@ -77,6 +77,42 @@
                     </div>
                 </div>
             </div>
+
+            <div>
+                <div class="md-modal md-effect-8" id="modal-8">
+                    <div class="md-content">
+                        <div>
+                            <div class="container-fluid">
+                                <div class="row justify-content-between">
+                                    <div class="col-4" style="margin-top: 10px; font-size: 24px">
+                                        消息详情
+                                    </div>
+                                    <div class="col-2" style="margin-top: 10px;">
+                                        <button class="md-close btn-sm btn-primary"
+                                            style="background-color: transparent; border: none; height: 100%">
+                                            <img src="/static/pic/close.png">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="lead" style="letter-spacing: 2px">{{detail_title}}</div>
+                                        <div class="text-left" style="letter-spacing: 1px">
+                                            {{detail_body}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <small>{{detail_date}}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-overlay"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -92,6 +128,8 @@
 </style>
 
 <script>
+    import classie from '../../static/js/animation/classie.js'
+
     export default {
         data() {
             return {
@@ -99,13 +137,58 @@
                 name: "",
                 comName: "",
                 notifications: [],
+                detail_title: "",
+                detail_body: "",
+                detail_date: "",
             }
         },
         created() {
             this.login_check();
             this.receive_noti();
         },
+        updated() {
+            this.modalEffects();
+        },
         methods: {
+            modalEffects: function() {
+
+                var overlay = document.querySelector( '.md-overlay' );
+                
+                [].slice.call( document.querySelectorAll( '.md-trigger' ) ).forEach( function( el, i ) {
+
+                    var modal = document.querySelector( '#' + el.getAttribute( 'data-modal' ) ),
+                        close = modal.querySelector( '.md-close' );
+
+                    function removeModal( hasPerspective ) {
+                        classie.remove( modal, 'md-show' );
+
+                        if( hasPerspective ) {
+                            classie.remove( document.documentElement, 'md-perspective' );
+                        }
+                    }
+
+                    function removeModalHandler() {
+                        removeModal( classie.has( el, 'md-setperspective' ) ); 
+                    }
+
+                    el.addEventListener( 'click', function( ev ) {
+                        classie.add( modal, 'md-show' );
+                        overlay.removeEventListener( 'click', removeModalHandler );
+                        overlay.addEventListener( 'click', removeModalHandler );
+
+                        if( classie.has( el, 'md-setperspective' ) ) {
+                            setTimeout( function() {
+                                classie.add( document.documentElement, 'md-perspective' );
+                            }, 25 );
+                        }
+                    });
+
+                    close.addEventListener( 'click', function( ev ) {
+                        ev.stopPropagation();
+                        removeModalHandler();
+                    });
+                } );
+            },
             login_check: function () {
                 this.$http.get('/account/login_check/').then(result => {
                     if (result.body.status == 200) {
@@ -134,12 +217,22 @@
                     this.doSetTimeout(noti.eq(noti_num * 1), time);
                 }
                 setTimeout(() => { $("#sidebar").modal("toggle"); }, time * 150);
+
+                this.$http.get('/noti/mark_all_as_read/');
             },
             doSetTimeout: function(target, time){
                 setTimeout(() => { target.toast("hide") }, time * 150);
             },
             mySwitch: function(target) {
                 this.$emit('switch', target);
+            },
+            show_detail: function (title, body, date, id, index) {
+                this.detail_title = title;
+                this.detail_body = body;
+                this.detail_date = date;
+                this.$http.get('/noti/mark_target_as_read/' + id)
+
+                this.notifications.splice(index, 1);
             },
             receive_noti: function() {
                 this.$http.get('/noti/get_unread/').then(result => {
@@ -159,13 +252,22 @@
                     };
 
                     ws.onmessage = function (evt) {
-                        var received_msg = evt.data;
-                        that.notifications.push(JSON.parse(received_msg));
+                        var received_msg = JSON.parse(evt.data);
+                        
+                        if (received_msg.status == 200){
+                            that.notifications.push(received_msg);
+                        }
                     };
 
                     ws.onclose = function () {
-                        console.log("连接已关闭...");
+                        console.log("连接已断开");
                     };
+
+                    // else if (received_msg.status == 201){
+                    //     ws.send(SON.stringify({"tip": "客户端在线", "status": 201}));
+                    // }
+
+                    window.s = ws;
                 }
 
                 else {

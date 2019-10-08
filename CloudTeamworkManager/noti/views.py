@@ -78,7 +78,7 @@ def send_test(request, type):
     temp = WebSocket_Connections.get(request.user.id, None)
     if temp:
         try:
-            temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time())}).encode())
+            temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "你好鸭，这是测试通知", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
         except:
             pass
 
@@ -107,4 +107,13 @@ def messaging(request):
     WebSocket_Connections[request.user.id] = request.websocket
 
     while 1:
-        time.sleep(300)
+        try:
+            message = request.websocket.wait()
+        except:
+            WebSocket_Connections.pop(request.user.id)
+            print("client_offline")
+            break
+
+        if message:
+            if json.loads(message)["status"] == 201:
+                request.websocket.send(json.dumps({"tip": "server_online", "status": 201}).encode())
