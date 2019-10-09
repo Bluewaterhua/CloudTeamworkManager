@@ -3,17 +3,17 @@
         <div id="bar">
             <nav class="navbar navbar-expand-sm navbar-light bg-light" style="height: 4rem; z-index: 1">
                 <div class="container">
-                    <a class="navbar-brand col-3" href="/" v-on:click.prevent="mySwitch('home')"><img class="rounded" src="/static/pic/logo2.png"></a>
+                    <a class="navbar-brand col-3" href="/" v-on:click.prevent="mySwitch(['home', null])"><img class="rounded" src="/static/pic/logo2.png"></a>
                     <div class="collapse navbar-collapse container" id="navbarNav">
                         <ul class="navbar-nav col-8 container-fluid row">
                             <li class="nav-item col-4">
-                                <a href="/space/" class="nav-link" v-on:click.prevent="mySwitch('space')">个人中心</a>
+                                <a href="/space/" class="nav-link" v-on:click.prevent="mySwitch(['space', null])">个人中心</a>
                             </li>
                             <li class="nav-item col-4">
-                                <a href="/task_list/" class="nav-link" v-on:click.prevent="mySwitch('taskList')">任务列表</a>
+                                <a href="/task_list/" class="nav-link" v-on:click.prevent="mySwitch(['taskList', null])">任务列表</a>
                             </li>
                             <li class="nav-item col-4">
-                                <a href="/noti/" class="nav-link" v-on:click.prevent="mySwitch('noti')">消息中心</a>
+                                <a href="/noti/" class="nav-link" v-on:click.prevent="mySwitch(['noti', null])">消息中心</a>
                             </li>
                         </ul>
                         <div class="collapse navbar-collapse justify-content-end" id="navbarNav-1">
@@ -39,7 +39,7 @@
                                     <img src="/static/pic/user.png"
                                         style="position: relative; left: 50%; transform: translateX(-50%)">
                                     <div class="lead" style="color: #333333; margin-top: .5rem">您还未<a
-                                            href="/account/login" v-on:click.prevent="hideBarAndSwitch('signIn')">登录</a></div>
+                                            href="/account/login" v-on:click.prevent="hideBarAndSwitch(['signIn', null])">登录</a></div>
                                 </div>
                             </div>
                             <div v-if="is_login">
@@ -54,7 +54,7 @@
                                 </div>
                                 <div style="width: 100%; margin-top: 5%">
                                     <div v-if="Number(notifications) == 0" style="padding-left: .75rem; font-weight: bold">暂无未读消息</div>
-                                    <div class="toast fade md-trigger" data-modal="modal-8" data-autohide="false" role="console.log" aria-live="assertive" @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)"
+                                    <div class="toast fade md-trigger" data-modal="modal-4" data-autohide="false" role="console.log" aria-live="assertive" @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)"
                                         aria-atomic="true" style="box-shadow: 0px 0px 0px; border: 0px; border-radius: 0px" v-for="(each, index) in notifications" :key="index">
                                         <div class="toast-header" style="border-bottom: 0px;">
                                             <strong class="mr-auto">{{  each.verb  }}</strong>
@@ -70,7 +70,7 @@
                                     <a href="" style="font-size: 12px; float: right; text-decoration: none; margin-right: 1rem"
                                         @click.prevent="mark_all_read()" v-if="Number(notifications) != 0">标记全部为已读</a>
                                     <a href="/noti/"
-                                        style="color: #666666; font-size: 18px; display: block; clear: both; text-decoration: none" v-on:click.prevent="hideBarAndSwitch('noti')">进入消息中心</a>
+                                        style="color: #666666; font-size: 18px; display: block; clear: both; text-decoration: none" v-on:click.prevent="hideBarAndSwitch(['noti', null])">进入消息中心</a>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +79,7 @@
             </div>
 
             <div>
-                <div class="md-modal md-effect-8" id="modal-8">
+                <div class="md-modal md-effect-8" id="modal-4">
                     <div class="md-content">
                         <div>
                             <div class="container-fluid">
@@ -224,8 +224,8 @@
                 setTimeout(() => { target.toast("hide") }, time * 150);
             },
             mySwitch: function(target) {
-                if (target != 'signUp' && !this.is_login){
-                    this.$emit('switch', 'signIn');
+                if (target[0] != 'signUp' && !this.is_login){
+                    this.$emit('switch', ['signIn', null]);
                     return;
                 }
                 

@@ -3,7 +3,7 @@
         <div v-if="is_show" style="z-index: 999; position: fixed; width: 100%;"
             class="alert alert-dismissible show fade" :class="[is_success? 'alert-success' : 'alert-warning']"
             role="alert">
-            <strong>[[ strongTip ]]</strong>[[ tip ]]
+            <strong>{{ strongTip }}</strong>{{ tip }}
             <button type="button" class="close" @click="is_show = !is_show" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -384,10 +384,10 @@
                                                 </th>
                                                 <td>
                                                     <div>
-                                                        [[each.name]]
+                                                        {{each.name}}
                                                     </div>
                                                     <div style="margin-top: 1.2rem">
-                                                        [[each.size]]字节
+                                                        {{each.size}}字节
                                                     </div>
                                                 </td>
                                                 <td>
@@ -569,7 +569,7 @@
         methods: {
             modalEffects: function() {
 
-                var overlay = document.querySelector( '.md-overlay' );
+                var overlay = document.querySelectorAll( '.md-overlay' )[1];
                 
                 [].slice.call( document.querySelectorAll( '.md-trigger' ) ).forEach( function( el, i ) {
 
@@ -848,7 +848,7 @@
                             this.task_id = res.body.task_id;
                             this.upload_appendix();
                             new Promise(resolve => setTimeout(resolve, 3000))
-                            window.location.href = '/task/task_page/' + this.task_id + '/';
+                            this.$emit('switch', ['taskDetail', this.task_id]);
                         } else if (res.body.status == 400) {
                             this.members = [];
                             this.leaders = [];
@@ -857,7 +857,7 @@
                             this.tip = res.body.tip;
                             this.is_show = true;
                         }
-                    })
+                    });
             },
             add_appendix: function () {
                 this.appendix.push(event.target.files[0]);
@@ -884,6 +884,7 @@
                 this.tip = "正在上传附件，请稍后..."
                 this.is_show = true;
 
+                var each = null;
                 for (each of this.appendix) {
                     var formData = new FormData()
                     formData.append('appendix', each)

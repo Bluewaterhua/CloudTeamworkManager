@@ -455,7 +455,6 @@
     export default {
         data() {
             return {
-                task_id: 0,
                 leader_list: [],
                 members_loaded: false,
 
@@ -569,13 +568,14 @@
         created() {
             this.getInfo();
         },
+        props: ['task_id'],
         updated() {
             this.modalEffects();
         },
         methods: {
             modalEffects: function() {
 
-                var overlay = document.querySelector( '.md-overlay' );
+                var overlay = document.querySelectorAll( '.md-overlay' )[1];
                 
                 [].slice.call( document.querySelectorAll( '.md-trigger' ) ).forEach( function( el, i ) {
 
@@ -613,7 +613,7 @@
                 } );
             },
             getInfo() {
-                this.$http.get('/task/edit_task/12/').then(result => {
+                this.$http.get('/task/edit_task/' + this.task_id +'/').then(result => {
                     if (result.status == 200){
                         this.task_name = result.body.info.task_name;
                         this.deadline = result.body.info.deadline;
@@ -630,6 +630,7 @@
                 // 生命周期中页面加载时请求的数据
                 // java组
                 var i = null;
+                var j = null;
                 for (i of this.members_accept) {
                     //如果方向为python
                     if (i.major == 'P') {
@@ -996,7 +997,7 @@
                     }, { emulateJSON: true }).then(res => {
                         if (res.body.status == 302) {
                             this.task_id = res.body.task_id;
-                            window.location.href = res.body.url;
+                            this.$emit('switch', 'taskDetail');
                         } else if (res.body.status == 400) {
                             this.is_success = false;
                             this.strongTip = "任务编辑失败！"

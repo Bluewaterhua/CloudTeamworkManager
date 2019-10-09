@@ -15,7 +15,7 @@
         </transition>
 
         <transition mode="out-in">
-            <component :is="comName" v-on:switch="switchFunc"></component>
+            <component :is="comName" v-on:switch="switchFunc" :task_id="target_task"></component>
         </transition>
     </div>
 </template>
@@ -135,12 +135,14 @@
                 comName: 'home',
                 showTotalBar: true,
                 showBlueBar: false,
+                target_task: 22,
             }
         },
         methods: {
             switchFunc: function(target){
-                this.comName = target;
-                if (['signIn', 'signUp', 'resetPassword', 'setPassword', 'perfectInfo'].indexOf(target) + 1){
+                this.comName = target[0];
+                this.target_task = target[1];
+                if (['signIn', 'signUp', 'resetPassword', 'setPassword', 'perfectInfo'].indexOf(target[0]) + 1){
                     this.showTotalBar = false;
                     this.showBlueBar = true;
                 }

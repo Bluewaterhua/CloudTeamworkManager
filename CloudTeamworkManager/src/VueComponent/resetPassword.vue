@@ -146,11 +146,14 @@
 
                 return true;
             },
+            mySwitch: function(target) {
+                this.$emit('switch', target)
+            },
             submit: function () {
                 if (this.check()) {
                     this.$http.post('account/reset_password/', { phone_number: this.phone_number, password: this.password }, { emulateJSON: true }).then(result => {
                         if (result.body.status == 302) {
-                            this.mySwitch('home');
+                            this.mySwitch(['home', null]);
                         }
                         else if (result.body.status == 400) {
                             this.tip = result.body.tip

@@ -513,7 +513,7 @@
                                                         </button>
                                                         <button
                                                             style="background: url(/static/pic/829.png); width:24px; height:24px; border:none; float: right;"
-                                                            @click="location.href = '/file/appendix/' + task_id + '/' + each.name + '/'">
+                                                            @click="download_file(each.name)">
                                                         </button>
                                                     </div>
                                                 </td>
@@ -678,7 +678,6 @@
                 task_progress: '',
                 task_comment: '',
                 task_schedule: '',
-                task_id: '',
                 progress: 0,
 
                 // 当前用户信息
@@ -728,13 +727,14 @@
             this.getInfo();
             this.progress = new Date(this.deadline).getTime() - this.date.getTime() > 0 ? 100 - parseInt((new Date(this.deadline).getTime() - this.date.getTime()) / (new Date(this.deadline).getTime() - new Date(this.publish_date).getTime()) * 100) + '%' : '100%';
         },
+        props: ['task_id'],
         updated() {
             this.modalEffects();
         },
         methods: {
             modalEffects: function() {
 
-                var overlay = document.querySelector( '.md-overlay' );
+                var overlay = document.querySelectorAll( '.md-overlay' )[1];
                 
                 [].slice.call( document.querySelectorAll( '.md-trigger' ) ).forEach( function( el, i ) {
 
@@ -772,7 +772,7 @@
                 } );
             },
             getInfo() {
-                this.$http.get('/task/task_page/12/').then(result => {
+                this.$http.get('/task/task_page/' + this.task_id + '/').then(result => {
                     if (result.status == 200){
                         this.task_name = result.body.info.task_name;
                         this.publish_date = result.body.info.publish_date;
@@ -800,6 +800,9 @@
                         }
                     }
                 })
+            },
+            download_file: function(filename) {
+                location.href = '/file/appendix/' + this.task_id + '/' + filename + '/';
             },
             hide_modal: function () {
                 this.edit_button = true;

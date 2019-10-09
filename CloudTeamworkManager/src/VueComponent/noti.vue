@@ -298,7 +298,7 @@
         methods: {
             modalEffects: function() {
 
-                var overlay = document.querySelector( '.md-overlay' );
+                var overlay = document.querySelectorAll( '.md-overlay' )[1];
                 
                 [].slice.call( document.querySelectorAll( '.md-trigger' ) ).forEach( function( el, i ) {
 

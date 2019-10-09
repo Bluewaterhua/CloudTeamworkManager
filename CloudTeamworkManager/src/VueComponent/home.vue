@@ -11,10 +11,10 @@
                         <div>
                             <a v-if="!is_login" href="/account/login"
                                 class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3"
-                                style="width: 30%; border-radius: 0px" v-on:click.prevent="mySwitch('signIn')">登录</a>
+                                style="width: 30%; border-radius: 0px" v-on:click.prevent="mySwitch(['signIn', null])">登录</a>
                             <a v-if="!is_login" href="/account/register"
                                 class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3"
-                                style="width: 30%; border-radius: 0px" v-on:click.prevent="mySwitch('signUp')">注册</a>
+                                style="width: 30%; border-radius: 0px" v-on:click.prevent="mySwitch(['signUp', null])">注册</a>
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
             },
             mySwitch: function(target) {
                 if (target != 'signUp' && !this.is_login){
-                    this.$emit('switch', 'signIn');
+                    this.$emit('switch', ['signIn', null]);
                     return;
                 }
 

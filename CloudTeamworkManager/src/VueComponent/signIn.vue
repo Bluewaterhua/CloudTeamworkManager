@@ -28,7 +28,7 @@
                                 @blur="show_password_label = !show_password_label" @keyon.enter="submit">
                         </form>
                         <a href="/account/reset_password"
-                            style="margin-top: 0.5rem; font-size: 14px; float: right;" v-on:click.prevent="mySwitch('resetPassword')">忘记密码</a>
+                            style="margin-top: 0.5rem; font-size: 14px; float: right;" v-on:click.prevent="mySwitch(['resetPassword', null])">忘记密码</a>
                         <div class="tip" style="margin-top: 0.5rem; font-size: 14px; color: #E86263">{{ tip }}</div>
                         <input @click="submit" type="button" class="btn btn-primary col-6 offset-6" value="登录"
                             style="float: right; font-size: 18px; margin-top: 3.6rem; border-radius: 0px">
@@ -36,7 +36,7 @@
                     <div class="text-center col-12 align-self-end rounded-bottom align-middle"
                         style="height: 50px; background-color: rgba(130, 178, 255, 0.2); font-size: 16px">
                         <div style="position: relative; top: 50%; transform: translateY(-50%); color: #999999">没有账号？<a
-                                href="/account/register" v-on:click.prevent="mySwitch('signUp')">点击注册</a>
+                                href="/account/register" v-on:click.prevent="mySwitch(['signUp', null])">点击注册</a>
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
             submit: function () {
                 this.$http.post('/account/login/', { 'phone_number': this.phone_number, 'password': this.password }, { emulateJSON: true }).then(result => {
                     if (result.body.status == 302) {
-                        this.mySwitch('home');
+                        this.mySwitch(['home', null]);
                     }
                     else {
                         this.tip = result.body.tip;

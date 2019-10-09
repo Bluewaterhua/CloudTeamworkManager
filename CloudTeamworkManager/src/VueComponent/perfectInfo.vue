@@ -445,7 +445,7 @@
                 }
                 this.$http.post('/account/perfect_information/', { "name": this.name, "birthday": this.birthday, "sex": this.sex, "student_id": this.student_id, "grade": this.student_id.substr(0, 4), "cloud_id": this.cloud_id, "major": this.major, "email": this.email, "room": this.room, "home_address": this.home_address, "guardian_phone": this.guardian_phone, "introduction": this.introduction }, { emulateJSON: true }).then(result => {
                     if (result.body.status == 302) {
-                        this.mySwitch('space');
+                        this.mySwitch(['space', null]);
                     }
                     else {
                         this.tip = result.body.tip;

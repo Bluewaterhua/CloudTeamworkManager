@@ -89,7 +89,7 @@
                 if (this.submit_check()) {
                     this.$http.post('/account/set_password/', { 'phone_number': this.phone_number, 'new_password': this.password, 'old_password': this.old_password, 'picode': this.picode }, { emulateJSON: true }).then(result => {
                         if (result.body.status == 302) {
-                            this.mySwitch('login');
+                            this.mySwitch(['login', null]);
                         }
                         else {
                             this.tip = result.body.tip;
@@ -97,6 +97,9 @@
                         }
                     })
                 }
+            },
+            mySwitch: function(target) {
+                this.$emit('switch', target)
             },
             submit_check: function () {
                 if (this.phone_number.length < 11) {

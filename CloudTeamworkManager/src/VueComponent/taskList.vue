@@ -5,7 +5,7 @@
                 <div class="card" style="border: 0rem">
                     <div class="row no-gutters">
                         <div class="avatar col-2 offset-1">
-                            <a href="/account/space/" v-on:click.prevent="mySwitch('space')">
+                            <a href="/account/space/" v-on:click.prevent="mySwitch(['space', null])">
                                 <div
                                     style="cursor: pointer; text-align: center; display: none; width: 100%; height: 6rem; background-color: rgba(0, 0, 0, 0.3)">
                                     <div style="color: #ffffff; line-height: 6rem;">点击打开个人主页</div>
@@ -18,7 +18,7 @@
                         </div>
                         <div class="add col-3 offset-1" style="text-align: center; cursor: pointer;" v-if="create_task">
                             <a href="/task/create_task/"
-                                style="display: none; line-height: 6rem; text-decoration: none; color: #ffffff" v-on:click.prevent="mySwitch('createTask')">发布新任务
+                                style="display: none; line-height: 6rem; text-decoration: none; color: #ffffff" v-on:click.prevent="mySwitch(['createTask', null])">发布新任务
                             </a>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                             <div class="tab-pane fade show active col-12" id="pills-all" role="tabpanel"
                                 aria-labelledby="pills-all-tab">
                                 <div v-for="(each, index) in task_list" class="task_card offset-1 col-10" :key="index"
-                                    style="height: 6rem; margin-bottom: 1.5rem; cursor: pointer; padding-right: 0px" v-on:click.prevent="mySwitch('taskDetail')">
+                                    style="height: 6rem; margin-bottom: 1.5rem; cursor: pointer; padding-right: 0px" v-on:click.prevent="mySwitch(['taskDetail', each.id])">
                                     <div style="display: inline-block;">
                                         <div class="lead" style="color: #333333; margin-top: 1.2rem">{{each.task_name}}</div>
                                         <small style="color: #999999;">参与成员:
@@ -75,8 +75,8 @@
                                             ...</small>
                                     </div>
                                     <div v-if="each.is_creator" style="float: right; width: 6rem; height: 100%; display: none" class="options">
-                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click="mySwitch('taskDetail')">查看详情</a>
-                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click.stop="mySwitch('editTask')">编辑</a>
+                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click="mySwitch(['taskDetail', each.id])">查看详情</a>
+                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click.stop="mySwitch(['editTask', each.id])">编辑</a>
                                         <a @click.stop="delete_task(each.id, index)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
                             <div class="tab-pane fade row no-gutters col-12" id="pills-ongoing" role="tabpanel"
                                 aria-labelledby="pills-ongoing-tab">
                                 <div v-for="(each, index) in task_list" class="task_card offset-1 col-10" v-if="each.task_status == 1"
-                                    style="height: 6rem; margin-bottom: 1.5rem; padding: 1.2rem; cursor: pointer;" :key="index" v-on:click.prevent="mySwitch('taskDetail')">
+                                    style="height: 6rem; margin-bottom: 1.5rem; padding: 1.2rem; cursor: pointer;" :key="index" v-on:click.prevent="mySwitch(['taskDetail', each.id])">
                                     <div style="display: inline-block;">
                                         <div class="lead" style="color: #333333">{{each.task_name}}</div>
                                         <small style="color: #999999">参与成员:
@@ -92,8 +92,8 @@
                                             ...</small>
                                     </div>
                                     <div v-if="each.is_creator" style="float: right; width: 6rem; height: 100%; display: none" class="options">
-                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click="mySwitch('taskDetail')">查看详情</a>
-                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click.stop="mySwitch('editTask')">编辑</a>
+                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click="mySwitch(['taskDetail', each.id])">查看详情</a>
+                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click.stop="mySwitch(['editTask', each.id])">编辑</a>
                                         <a @click.stop="delete_task(each.id, index)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
                                     </div>
                                 </div>
@@ -101,7 +101,7 @@
                             <div class="tab-pane fade row no-gutters col-12" id="pills-pause" role="tabpanel"
                                 aria-labelledby="pills-pause-tab">
                                 <div v-for="(each, index) in task_list" class="task_card offset-1 col-10" v-if="each.task_status == 0"
-                                    style="height: 6rem; margin-bottom: 1.5rem; padding: 1.2rem; cursor: pointer;" :key="index" v-on:click.prevent="mySwitch('taskDetail')">
+                                    style="height: 6rem; margin-bottom: 1.5rem; padding: 1.2rem; cursor: pointer;" :key="index" v-on:click.prevent="mySwitch(['taskDetail', each.id])">
                                     <div style="display: inline-block;">
                                         <div class="lead" style="color: #333333">{{each.task_name}}</div>
                                         <small style="color: #999999">参与成员:
@@ -109,8 +109,8 @@
                                             ...</small>
                                     </div>
                                     <div v-if="each.is_creator" style="float: right; width: 6rem; height: 100%; display: none" class="options">
-                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click="mySwitch('taskDetail')">查看详情</a>
-                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click.stop="mySwitch('editTask')">编辑</a>
+                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click="mySwitch(['taskDetail', each.id])">查看详情</a>
+                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click.stop="mySwitch(['editTask', each.id])">编辑</a>
                                         <a @click.stop="delete_task(each.id, index)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
                                     </div>
                                 </div>
@@ -118,7 +118,7 @@
                             <div class="tab-pane fade row no-gutters col-12" id="pills-finished" role="tabpanel"
                                 aria-labelledby="pills-finished-tab">
                                 <div v-for="(each, index) in task_list" class="task_card offset-1 col-10" v-if="each.task_status == -1"
-                                    style="height: 6rem; margin-bottom: 1.5rem; padding: 1.2rem; cursor: pointer;" :key="index" v-on:click.prevent="mySwitch('taskDetail')">
+                                    style="height: 6rem; margin-bottom: 1.5rem; padding: 1.2rem; cursor: pointer;" :key="index" v-on:click.prevent="mySwitch(['taskDetail', each.id])">
                                     <div style="display: inline-block;">
                                         <div class="lead" style="color: #333333">{{each.task_name}}</div>
                                         <small style="color: #999999">参与成员:
@@ -126,8 +126,8 @@
                                             ...</small>
                                     </div>
                                     <div v-if="each.is_creator" style="float: right; width: 6rem; height: 100%; display: none" class="options">
-                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click="mySwitch('taskDetail')">查看详情</a>
-                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click.stop="mySwitch('editTask')">编辑</a>
+                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click="mySwitch(['taskDetail', each.id])">查看详情</a>
+                                        <a class="btn btn-primary" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff" v-on:click.stop="mySwitch(['editTask', each.id])">编辑</a>
                                         <a @click.stop="delete_task(each.id, index)" class="btn btn-danger" style="border-radius: 0px; height: 33.3%; width: 100%; line-height: 100%; color: #ffffff">删除</a>
                                     </div>
                                 </div>
