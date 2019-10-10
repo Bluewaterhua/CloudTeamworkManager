@@ -16,4 +16,5 @@ urlpatterns = [
     path('task_list/', views.task_list),
     path('login_check/', views.login_check),
     path('csrf_token/', views.csrf_token),
+    path('basic_info/', views.basic_info),
 ]

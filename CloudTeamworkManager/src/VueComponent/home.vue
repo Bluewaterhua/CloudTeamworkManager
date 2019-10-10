@@ -9,10 +9,10 @@
                         <p class="lead my-3">由云顶书院任务管理系统项目组倾力打造。在任务管理系统的帮助下，您可以将更多精
                             力用于项目开发。监控项目进度和成员时间规划等琐事，交给我们！</p>
                         <div>
-                            <a v-if="!is_login" href="/account/login"
+                            <a v-if="!globle_props.is_login" href="/account/login"
                                 class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3"
                                 style="width: 30%; border-radius: 0px" v-on:click.prevent="mySwitch(['signIn', null])">登录</a>
-                            <a v-if="!is_login" href="/account/register"
+                            <a v-if="!globle_props.is_login" href="/account/register"
                                 class="btn btn-outline-primary mb-3 mb-md-0 mr-md-3"
                                 style="width: 30%; border-radius: 0px" v-on:click.prevent="mySwitch(['signUp', null])">注册</a>
                         </div>
@@ -31,26 +31,15 @@
     export default {
         data() {
             return {
-                is_login: false,
+
             }
         },
+        props: ['globle_props'],
         created() {
-            this.login_check();
+
         },
         methods: {
-            login_check: function () {
-                this.$http.get('/account/login_check/').then(result => {
-                    if (result.body.status == 200) {
-                        this.is_login = result.body.is_login;
-                    }
-                })
-            },
             mySwitch: function(target) {
-                if (target != 'signUp' && !this.is_login){
-                    this.$emit('switch', ['signIn', null]);
-                    return;
-                }
-
                 this.$emit('switch', target)
             }
         }

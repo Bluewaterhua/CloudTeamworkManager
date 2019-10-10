@@ -568,7 +568,7 @@
         created() {
             this.getInfo();
         },
-        props: ['task_id'],
+        props: ['globle_props'],
         updated() {
             this.modalEffects();
         },
@@ -613,7 +613,7 @@
                 } );
             },
             getInfo() {
-                this.$http.get('/task/edit_task/' + this.task_id +'/').then(result => {
+                this.$http.get('/task/edit_task/' + this.globle_props.task_id +'/').then(result => {
                     if (result.status == 200){
                         this.task_name = result.body.info.task_name;
                         this.deadline = result.body.info.deadline;
@@ -621,7 +621,6 @@
                         this.members_accept = result.body.info.members;
                         this.leaders_accept = result.body.info.leaders;
                         this.task_description = result.body.info.task_description;
-                        this.task_id = result.body.info.id;
                     }
                     this.classify();
                 })
@@ -986,7 +985,7 @@
                 this.members = JSON.stringify(this.members);
                 this.leaders = JSON.stringify(this.leaders);
 
-                this.$http.post('/task/edit_task/' + this.task_id + '/',
+                this.$http.post('/task/edit_task/' + this.globle_props.task_id + '/',
                     {
                         'members': this.members,
                         'leaders': this.leaders,
@@ -996,7 +995,6 @@
                         'task_description': this.task_description,
                     }, { emulateJSON: true }).then(res => {
                         if (res.body.status == 302) {
-                            this.task_id = res.body.task_id;
                             this.$emit('switch', 'taskDetail');
                         } else if (res.body.status == 400) {
                             this.is_success = false;
@@ -1016,7 +1014,7 @@
 
                 var formData = new FormData()
                 formData.append('appendix', this.appendixes[this.appendixes.length - 1])
-                this.$http.post('/file/appendix/' + this.task_id + '/xxx/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
+                this.$http.post('/file/appendix/' + this.globle_props.task_id + '/xxx/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
                     if (result.body.status == 200) {
                         this.appendixes[this.appendixes.length - 1]["id"] = result.body.id;
                     } else if (result.body.status == 400) {
@@ -1031,7 +1029,7 @@
                     this.is_empty = true;
                 }
 
-                this.$http.get('/file/delete_appendix/' + this.task_id + '/' + appendix_id + '/').then(result => {
+                this.$http.get('/file/delete_appendix/' + this.globle_props.task_id + '/' + appendix_id + '/').then(result => {
                     if (result.body.status == 200) {
                         ;
                     } else if (result.body.status == 400) {
@@ -1040,7 +1038,7 @@
                 })
             },
             get_appendixes: function () {
-                this.$http.get('/file/appendix_list/' + this.task_id + '/').then(res => {
+                this.$http.get('/file/appendix_list/' + this.globle_props.task_id + '/').then(res => {
                     this.appendixes = res.body;
                     if (this.appendixes.length > 0) {
                         this.is_empty = false;

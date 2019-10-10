@@ -313,7 +313,7 @@ class task(object):
                 temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
                 if temp:
                     try:
-                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已加入项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已加入项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
                     except:
                         pass
 
@@ -334,7 +334,7 @@ class task(object):
                 temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
                 if temp:
                     try:
-                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
                     except:
                         pass
 
@@ -397,7 +397,7 @@ class task(object):
                 temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
                 if temp:
                     try:
-                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已被撤销组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已被撤销组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
                     except:
                         pass
 
@@ -419,7 +419,7 @@ class task(object):
                 temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
                 if temp:
                     try:
-                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已被移出项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已被移出项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
                     except:
                         pass
 
@@ -446,7 +446,7 @@ class task(object):
                 temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
                 if temp:
                     try:
-                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已加入项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已加入项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
                     except:
                         pass
 
@@ -467,7 +467,7 @@ class task(object):
                 temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
                 if temp:
                     try:
-                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
                     except:
                         pass
 
@@ -531,7 +531,7 @@ class task(object):
             temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
             if temp:
                 try:
-                    temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "项目组已被解散", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+                    temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "项目组已被解散", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
                 except:
                     pass
 

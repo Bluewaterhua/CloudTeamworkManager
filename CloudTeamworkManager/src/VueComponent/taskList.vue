@@ -14,9 +14,9 @@
                             </a>
                         </div>
                         <div class="col-3 offset-1" style="color: #666666; font-size: 1.3rem; line-height: 6rem">
-                            {{ name }}
+                            {{ globle_props.name }}
                         </div>
-                        <div class="add col-3 offset-1" style="text-align: center; cursor: pointer;" v-if="create_task">
+                        <div class="add col-3 offset-1" style="text-align: center; cursor: pointer;" v-if="globle_props.create_task">
                             <a href="/task/create_task/"
                                 style="display: none; line-height: 6rem; text-decoration: none; color: #ffffff" v-on:click.prevent="mySwitch(['createTask', null])">发布新任务
                             </a>
@@ -246,28 +246,19 @@
             return {
                 task_list: [],
                 show_more: true,
-                name: "",
-                create_task: false,
             }
         },
         created() {
             this.getList();
         },
+        props: ['globle_props'],
         methods: {
             getList: function(){
                 this.$http.get("/account/task_list/").then(result => {
                     if (result.status == 200){
                         this.task_list = result.body.info.content;
-                        this.name = result.body.info.name;
-                        this.create_task = result.body.info.create_task;
                     }
                 })
-            },
-            show_detail: function (task_id) {
-                window.location.href = "/task/task_page/" + task_id + "/";
-            },
-            edit_task: function (task_id){
-                window.location.href = "/task/edit_task/" + task_id + "/";
             },
             delete_task: function (task_id, index){
                 this.$http.get('/task/delete_task/' + task_id + '/');

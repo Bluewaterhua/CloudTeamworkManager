@@ -1,7 +1,7 @@
 <template>
     <div id="mainFuncTotal">
         <transition name="totalbar" mode="out-in">
-            <totalBar v-show="showTotalBar" v-on:switch="switchFunc"></totalBar>
+            <totalBar v-if="showTotalBar" v-on:switch="switchFunc" :globle_props="globle_props"></totalBar>
         </transition>
 
         <transition mode="out-in">
@@ -15,7 +15,7 @@
         </transition>
 
         <transition mode="out-in">
-            <component :is="comName" v-on:switch="switchFunc" :task_id="target_task"></component>
+            <component :is="comName" v-on:switch="switchFunc" :globle_props="globle_props" v-on:fresh_user_info="getInfo"></component>
         </transition>
     </div>
 </template>
@@ -133,15 +133,37 @@
         data() {
             return {
                 comName: 'home',
-                showTotalBar: true,
+                showTotalBar: false,
                 showBlueBar: false,
-                target_task: 22,
+                init_over: false,
+
+                globle_props: null,
             }
         },
+        created() {
+            this.getInfo();
+        },
         methods: {
+            getInfo: function() {
+                this.$http.get("/account/basic_info/").then(result => {
+                    this.globle_props = result.body;
+                    this.showTotalBar = true;
+                })
+            },
             switchFunc: function(target){
+                this.refreshCsrfToken();
+
+                if (!this.globle_props.is_login){
+                    if (target[0] != "signUp" && target[0] != "home"){
+                        target = ['signIn', null];
+                    }
+                }
+                else if (!this.globle_props.perfected_info){
+                    target = ['perfectInfo', null];
+                }
+
                 this.comName = target[0];
-                this.target_task = target[1];
+                this.globle_props.task_id = target[1];
                 if (['signIn', 'signUp', 'resetPassword', 'setPassword', 'perfectInfo'].indexOf(target[0]) + 1){
                     this.showTotalBar = false;
                     this.showBlueBar = true;
@@ -150,8 +172,6 @@
                     this.showTotalBar = true;
                     this.showBlueBar = false;
                 }
-
-                this.refreshCsrfToken();
             },
             refreshCsrfToken: function() {
                 this.$http.get("/csrf_token/").then(result => {
@@ -159,7 +179,7 @@
                         Vue.http.headers.common['X-CSRFToken'] = result.body.info;
                     }
                 })
-            }
+            },
         }
     }
 </script>

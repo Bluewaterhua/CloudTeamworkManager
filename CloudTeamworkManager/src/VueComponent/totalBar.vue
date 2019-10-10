@@ -34,7 +34,7 @@
                     <div class="modal-content"
                         style="border-radius: 0px; border: 0px; height: 100%; background-color: rgba(255, 255, 255, 0.7)">
                         <div class="modal-body" style="padding: 0px">
-                            <div v-if="!is_login">
+                            <div v-if="!globle_props.is_login">
                                 <div style="position: absolute; top: 30%; left: 50%; transform: translateX(-50%)">
                                     <img src="/static/pic/user.png"
                                         style="position: relative; left: 50%; transform: translateX(-50%)">
@@ -42,20 +42,20 @@
                                             href="/account/login" v-on:click.prevent="hideBarAndSwitch(['signIn', null])">登录</a></div>
                                 </div>
                             </div>
-                            <div v-if="is_login">
+                            <div v-if="globle_props.is_login">
                                 <div class="clearfix" style="width: 80%; height: 7.5rem; margin-left: 10%; margin-top: 5%">
                                     <div
                                         style="float: left; transform: translateY(-50%); text-align: center; top: 50%; position: relative;">
-                                        <div style="color: #333333; font-size: 26px">{{  name  }}</div>
+                                        <div style="color: #333333; font-size: 26px">{{  globle_props.name  }}</div>
                                         <a style="color: #F44336; font-size: 18px" href="/account/logout/" @click.prevent="logout">退出登录</a>
                                     </div>
-                                    <img class="float-right rounded-circle" :src="is_login ? '/file/avatar/' : false"
+                                    <img class="float-right rounded-circle" :src="globle_props.is_login ? '/file/avatar/' : false"
                                         style="width: 30%; top: 50%; transform: translateY(-50%); position: relative;">
                                 </div>
                                 <div style="width: 100%; margin-top: 5%">
-                                    <div v-if="Number(notifications) == 0" style="padding-left: .75rem; font-weight: bold">暂无未读消息</div>
+                                    <div v-if="Number(globle_props.unread_notifications) == 0" style="padding-left: .75rem; font-weight: bold">暂无未读消息</div>
                                     <div class="toast fade md-trigger" data-modal="modal-4" data-autohide="false" role="console.log" aria-live="assertive" @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)"
-                                        aria-atomic="true" style="box-shadow: 0px 0px 0px; border: 0px; border-radius: 0px" v-for="(each, index) in notifications" :key="index">
+                                        aria-atomic="true" style="box-shadow: 0px 0px 0px; border: 0px; border-radius: 0px" v-for="(each, index) in globle_props.unread_notifications" :key="index">
                                         <div class="toast-header" style="border-bottom: 0px;">
                                             <strong class="mr-auto">{{  each.verb  }}</strong>
                                             <small class="text-muted">{{  each.timestamp  }}</small>
@@ -68,7 +68,7 @@
                                 </div>
                                 <div style="position: fixed; bottom: 1rem; width: 100%; text-align: center;">
                                     <a href="" style="font-size: 12px; float: right; text-decoration: none; margin-right: 1rem"
-                                        @click.prevent="mark_all_read()" v-if="Number(notifications) != 0">标记全部为已读</a>
+                                        @click.prevent="mark_all_read()" v-if="Number(globle_props.unread_notifications) != 0">标记全部为已读</a>
                                     <a href="/noti/"
                                         style="color: #666666; font-size: 18px; display: block; clear: both; text-decoration: none" v-on:click.prevent="hideBarAndSwitch(['noti', null])">进入消息中心</a>
                                 </div>
@@ -133,20 +133,14 @@
     export default {
         data() {
             return {
-                is_login: false,
-                name: "",
-                comName: "",
-                notifications: [],
                 detail_title: "",
                 detail_body: "",
                 detail_date: "",
             }
         },
-        created() {
-            this.login_check();
+        props: ['globle_props'],
+        mounted() {
             this.receive_noti();
-        },
-        updated() {
             this.modalEffects();
         },
         methods: {
@@ -189,17 +183,9 @@
                     });
                 } );
             },
-            login_check: function () {
-                this.$http.get('/account/login_check/').then(result => {
-                    if (result.body.status == 200) {
-                        this.is_login = result.body.is_login;
-                        this.name = result.body.name;
-                    }
-                })
-            },
             logout: function() {
                 this.$http.get('/account/logout/');
-                this.hideBarAndSwitch("signIn");
+                this.hideBarAndSwitch(["signIn", null]);
             },
             hideBarAndSwitch: function(target) {
                 $('#sidebar').modal('hide'); 
@@ -224,7 +210,7 @@
                 setTimeout(() => { target.toast("hide") }, time * 150);
             },
             mySwitch: function(target) {
-                if (target[0] != 'signUp' && !this.is_login){
+                if (target[0] != 'signUp' && !this.globle_props.is_login){
                     this.$emit('switch', ['signIn', null]);
                     return;
                 }
@@ -237,15 +223,9 @@
                 this.detail_date = date;
                 this.$http.get('/noti/mark_target_as_read/' + id)
 
-                this.notifications.splice(index, 1);
+                this.globle_props.read_notifications.unshift(this.globle_props.unread_notifications.splice(index, 1)[0]);
             },
             receive_noti: function() {
-                this.$http.get('/noti/get_unread/').then(result => {
-                    if (result.status == 200){
-                        this.notifications = result.body;
-                    }
-                })
-
                 var that = this;
                 if ("WebSocket" in window) {
                     console.log("您的浏览器支持 WebSocket!");
@@ -260,17 +240,13 @@
                         var received_msg = JSON.parse(evt.data);
                         
                         if (received_msg.status == 200){
-                            that.notifications.push(received_msg);
+                            that.globle_props.unread_notifications.push(received_msg);
                         }
                     };
 
                     ws.onclose = function () {
                         console.log("连接已断开");
                     };
-
-                    // else if (received_msg.status == 201){
-                    //     ws.send(SON.stringify({"tip": "客户端在线", "status": 201}));
-                    // }
 
                     window.s = ws;
                 }

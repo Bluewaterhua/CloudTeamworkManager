@@ -74,6 +74,7 @@
                 })
             },
             mySwitch: function(target) {
+                this.$emit('fresh_user_info', target);
                 this.$emit('switch', target);
             }
         }

@@ -29,7 +29,7 @@ def delete_target(request, notification_id):
 @login_required
 def get_read(request):
     notifications = request.user.notifications.read()
-    notifications = notifications.values('id', 'actor_content_type', 'verb', 'description', 'timestamp')
+    notifications = notifications.values('id', 'actor_content_type', 'verb', 'description', 'timestamp', 'data')
     notifications = list(notifications)
     for i in notifications:
         i['timestamp'] = int(time.mktime(time.strptime(str(i['timestamp'])[:-7], "%Y-%m-%d %H:%M:%S")))
@@ -39,7 +39,7 @@ def get_read(request):
 @login_required
 def get_unread(request):
     notifications = request.user.notifications.unread()
-    notifications = notifications.values('id', 'actor_content_type', 'verb', 'description', 'timestamp')
+    notifications = notifications.values('id', 'actor_content_type', 'verb', 'description', 'timestamp', 'data')
     notifications = list(notifications)
     for i in notifications:
         i['timestamp'] = int(time.mktime(time.strptime(str(i['timestamp'])[:-7], "%Y-%m-%d %H:%M:%S")))
@@ -77,7 +77,7 @@ def send_test(request, type):
     temp = WebSocket_Connections.get(request.user.id, None)
     if temp:
         try:
-            temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "你好鸭，这是测试通知", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "status": 200}).encode())
+            temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "你好鸭，这是测试通知", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
         except:
             pass
     return HttpResponse("OK")

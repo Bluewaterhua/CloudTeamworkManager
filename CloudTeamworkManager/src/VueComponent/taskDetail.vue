@@ -727,7 +727,7 @@
             this.getInfo();
             this.progress = new Date(this.deadline).getTime() - this.date.getTime() > 0 ? 100 - parseInt((new Date(this.deadline).getTime() - this.date.getTime()) / (new Date(this.deadline).getTime() - new Date(this.publish_date).getTime()) * 100) + '%' : '100%';
         },
-        props: ['task_id'],
+        props: ['globle_props'],
         updated() {
             this.modalEffects();
         },
@@ -772,7 +772,7 @@
                 } );
             },
             getInfo() {
-                this.$http.get('/task/task_page/' + this.task_id + '/').then(result => {
+                this.$http.get('/task/task_page/' + this.globle_props.task_id + '/').then(result => {
                     if (result.status == 200){
                         this.task_name = result.body.info.task_name;
                         this.publish_date = result.body.info.publish_date;
@@ -785,7 +785,6 @@
                         this.task_progress = JSON.parse(result.body.info.task_progress).reverse();
                         this.task_comment = JSON.parse(result.body.info.task_comment).reverse();
                         this.task_schedule = JSON.parse(result.body.info.task_schedule).reverse();
-                        this.task_id = result.body.info.id;
                         this.user_id = result.body.info.user_id;
                     }
                     this.classify();
@@ -802,7 +801,7 @@
                 })
             },
             download_file: function(filename) {
-                location.href = '/file/appendix/' + this.task_id + '/' + filename + '/';
+                location.href = '/file/appendix/' + this.globle_props.task_id + '/' + filename + '/';
             },
             hide_modal: function () {
                 this.edit_button = true;
@@ -818,7 +817,7 @@
                 this.isActive = false;
             },
             get_appendixes: function () {
-                this.$http.get('/file/appendix_list/' + this.task_id + '/').then(res => {
+                this.$http.get('/file/appendix_list/' + this.globle_props.task_id + '/').then(res => {
                     this.appendixes = res.body;
                     if (this.appendixes.length > 0) {
                         this.is_empty = false;
@@ -836,7 +835,7 @@
 
                 var formData = new FormData()
                 formData.append('appendix', this.appendixes[this.appendixes.length - 1])
-                this.$http.post('/file/appendix/' + this.task_id + '/xxx/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
+                this.$http.post('/file/appendix/' + this.globle_props.task_id + '/xxx/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
                     if (result.body.status == 200) {
                         this.appendixes[this.appendixes.length - 1]["id"] = result.body.id;
                     }
@@ -852,7 +851,7 @@
                     this.is_empty = true;
                 }
 
-                this.$http.get('/file/delete_appendix/' + this.task_id + '/' + appendix_id + '/').then(result => {
+                this.$http.get('/file/delete_appendix/' + this.globle_props.task_id + '/' + appendix_id + '/').then(result => {
                     if (result.body.status == 200) {
                         ;
                     }
@@ -866,7 +865,7 @@
                 this.add_button = true;
                 this.isActive = false;
                 if (!this.personalProcess.length) {
-                    this.$http.get('/publisher/personal_process/' + this.task_id + '/' + this.person_id + '/').then(result => {
+                    this.$http.get('/publisher/personal_process/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
                         this.personalProcess = result.body.reverse();
                     })
                 }
@@ -876,7 +875,7 @@
                 this.add_button = true;
                 this.isActive = false;
                 if (!this.personalSchedule.length) {
-                    this.$http.get('/publisher/personal_schedule/' + this.task_id + '/' + this.person_id + '/').then(result => {
+                    this.$http.get('/publisher/personal_schedule/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
                         this.personalSchedule = result.body.reverse();
                     })
                 }
@@ -886,7 +885,7 @@
                 this.add_button = true;
                 this.isActive = false;
                 if (!this.personalComments.length) {
-                    this.$http.get('/publisher/personal_comments/' + this.task_id + '/' + this.person_id + '/').then(result => {
+                    this.$http.get('/publisher/personal_comments/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
                         this.personalComments = result.body.reverse();
                     })
                 }
@@ -912,7 +911,7 @@
                 $('#v-pills-process-tab').tab('show');
                 this.clean_personal_achieve();
                 this.person_id = personId;
-                this.$http.get('/publisher/personal_process/' + this.task_id + '/' + this.person_id + '/').then(result => {
+                this.$http.get('/publisher/personal_process/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
                     this.personalProcess = result.body;
                 })
             },
@@ -924,7 +923,7 @@
                 else if (!this.isActive) {
                     this.add_button = true
                     this.task_schedule[0].content = document.getElementById("target_task_schedule").value
-                    this.$http.post("/publisher/task_schedule/" + this.task_id + "/", { "content": this.task_schedule[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/task_schedule/" + this.globle_props.task_id + "/", { "content": this.task_schedule[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -944,7 +943,7 @@
                     this.task_schedule[0].content = document.getElementById("target_task_schedule").value
                     this.edit_button = true;
                     this.isActive = false;
-                    this.$http.post("/publisher/task_schedule/" + this.task_id + "/", { "content": this.task_schedule[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/task_schedule/" + this.globle_props.task_id + "/", { "content": this.task_schedule[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -962,7 +961,7 @@
                 else if (!this.isActive) {
                     this.add_button = true
                     this.task_progress[0].content = document.getElementById("target_task_progress").value
-                    this.$http.post("/publisher/task_progress/" + this.task_id + "/", { "content": this.task_progress[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/task_progress/" + this.globle_props.task_id + "/", { "content": this.task_progress[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -982,7 +981,7 @@
                     this.task_progress[0].content = document.getElementById("target_task_progress").value
                     this.edit_button = true;
                     this.isActive = false;
-                    this.$http.post("/publisher/task_progress/" + this.task_id + "/", { "content": this.task_progress[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/task_progress/" + this.globle_props.task_id + "/", { "content": this.task_progress[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -1000,7 +999,7 @@
                 else if (!this.isActive) {
                     this.add_button = true
                     this.task_comment[0].content = document.getElementById("target_task_comment").value
-                    this.$http.post("/publisher/task_comment/" + this.task_id + "/", { "content": this.task_comment[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/task_comment/" + this.globle_props.task_id + "/", { "content": this.task_comment[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -1020,7 +1019,7 @@
                     this.task_comment[0].content = document.getElementById("target_task_comment").value
                     this.edit_button = true;
                     this.isActive = false;
-                    this.$http.post("/publisher/task_comment/" + this.task_id + "/", { "content": this.task_comment[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/task_comment/" + this.globle_props.task_id + "/", { "content": this.task_comment[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -1038,7 +1037,7 @@
                 else if (!this.isActive) {
                     this.add_button = true
                     this.personalProcess[0].content = document.getElementById("target_progress").value
-                    this.$http.post("/publisher/personal_process/" + this.task_id + "/" + this.person_id + "/", { "content": this.personalProcess[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/personal_process/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalProcess[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -1058,7 +1057,7 @@
                     this.personalProcess[0].content = document.getElementById("target_progress").value
                     this.edit_button = true;
                     this.isActive = false;
-                    this.$http.post("/publisher/personal_process/" + this.task_id + "/" + this.person_id + "/", { "content": this.personalProcess[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/personal_process/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalProcess[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -1076,7 +1075,7 @@
                 else if (!this.isActive) {
                     this.add_button = true
                     this.personalComments[0].content = document.getElementById("target_comments").value
-                    this.$http.post("/publisher/personal_comments/" + this.task_id + "/" + this.person_id + "/", { "content": this.personalComments[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/personal_comments/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalComments[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -1096,7 +1095,7 @@
                     this.personalComments[0].content = document.getElementById("target_comments").value
                     this.edit_button = true;
                     this.isActive = false;
-                    this.$http.post("/publisher/personal_comments/" + this.task_id + "/" + this.person_id + "/", { "content": this.personalComments[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/personal_comments/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalComments[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -1114,7 +1113,7 @@
                 else if (!this.isActive) {
                     this.add_button = true
                     this.personalSchedule[0].content = document.getElementById("target_schedule").value
-                    this.$http.post("/publisher/personal_schedule/" + this.task_id + "/" + this.person_id + "/", { "content": this.personalSchedule[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/personal_schedule/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalSchedule[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }
@@ -1134,7 +1133,7 @@
                     this.personalSchedule[0].content = document.getElementById("target_schedule").value
                     this.edit_button = true;
                     this.isActive = false;
-                    this.$http.post("/publisher/personal_schedule/" + this.task_id + "/" + this.person_id + "/", { "content": this.personalSchedule[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                    this.$http.post("/publisher/personal_schedule/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalSchedule[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
                         }

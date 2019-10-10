@@ -42,7 +42,7 @@
                             <div class="tab-pane fade show active" id="pills-all" role="tabpanel"
                                 aria-labelledby="pills-all-tab">
                                 <div class="unread_notific">
-                                    <div v-for="(each, index) in unread" class="row no-gutters md-trigger"
+                                    <div v-for="(each, index) in globle_props.unread_notifications" class="row no-gutters md-trigger"
                                         style="height: 5rem; cursor: pointer; margin-bottom: 1.5rem"
                                         data-modal="modal-8" :key="index"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)">
@@ -64,9 +64,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <hr v-if="read.length && unread.length" style="background-color: #007bff">
+                                <hr v-if="globle_props.read_notifications.length && globle_props.unread_notifications.length" style="background-color: #007bff">
                                 <div class="read_notific">
-                                    <div v-for="each in read" class="row no-gutters md-trigger"
+                                    <div v-for="each in globle_props.read_notifications" class="row no-gutters md-trigger"
                                         style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem;"
                                         data-modal="modal-8" :key="each"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, -1)">
@@ -91,7 +91,7 @@
                             <div class="tab-pane fade" id="pills-system" role="tabpanel"
                                 aria-labelledby="pills-profile-tab">
                                 <div class="unread_notific">
-                                    <div v-for="(each, index) in unread" v-if="JSON.parse(each.data).type == 1"
+                                    <div v-for="(each, index) in globle_props.unread_notifications" v-if="JSON.parse(each.data).type == 1"
                                         class="row no-gutters md-trigger" style="height: 5rem; cursor: pointer;"
                                         data-modal="modal-8" :key="index"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)">
@@ -115,7 +115,7 @@
                                 </div>
                                 <hr v-if="sys_read.length && sys_unread.length" style="background-color: #007bff">
                                 <div class="read_notific">
-                                    <div v-for="each in read" v-if="JSON.parse(each.data).type == 1"
+                                    <div v-for="each in globle_props.read_notifications" v-if="JSON.parse(each.data).type == 1"
                                         class="row no-gutters md-trigger " :key="each"
                                         style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem" data-modal="modal-8"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, -1)">
@@ -141,7 +141,7 @@
                             <div class="tab-pane fade" id="pills-group" role="tabpanel"
                                 aria-labelledby="pills-contact-tab">
                                 <div class="unread_notific">
-                                    <div v-for="(each, index) in unread" v-if="JSON.parse(each.data).type == 0"
+                                    <div v-for="(each, index) in globle_props.unread_notifications" v-if="JSON.parse(each.data).type == 0"
                                         class="row no-gutters md-trigger" :key="index"
                                         style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem" data-modal="modal-8"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)">
@@ -165,7 +165,7 @@
                                 </div>
                                 <hr v-if="team_read.length && team_unread.length" style="background-color: #007bff" />
                                 <div class="read_notific">
-                                    <div v-for="each in read" v-if="JSON.parse(each.data).type == 0"
+                                    <div v-for="each in globle_props.read_notifications" v-if="JSON.parse(each.data).type == 0"
                                         class="row no-gutters md-trigger"
                                         style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem;"
                                         data-modal="modal-8" :key="each"
@@ -228,13 +228,13 @@
 
                     <div class="row no-gutters"
                     style="background-color: #E4EBFF; height: 4rem; cursor: pointer;">
-                    <div style="text-decoration: none; color: #999999; margin-left: auto; margin-right: auto">
-                        <div style="position: relative; transform: translateY(-50%); top: 50%">
-                            <div>点击加载更多</div>
-                            <div style="text-align: center; transform: rotate(180deg)">^</div>
+                        <div style="text-decoration: none; color: #999999; margin-left: auto; margin-right: auto">
+                            <div style="position: relative; transform: translateY(-50%); top: 50%">
+                                <div>点击加载更多</div>
+                                <div style="text-align: center; transform: rotate(180deg)">^</div>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
@@ -276,23 +276,21 @@
     export default {
         data() {
             return {
-                unread: [],
-                read: [],
                 detail_title: "",
                 detail_body: "",
                 detail_date: "",
+
                 team_unread: 0,
                 team_read: 0,
                 sys_unread: 0,
                 sys_read: 0,
+                
                 sys_logo: "/static/pic/系统消息logo.png",
                 team_logo: "/static/pic/组内消息logo.png"
             }
         },
-        created() {
-            this.getNoti();
-        },
-        updated() {
+        props: ['globle_props'],
+        mounted() {
             this.modalEffects();
         },
         methods: {
@@ -335,14 +333,6 @@
                     });
                 } );
             },
-            getNoti: function() {
-                this.$http.get("/noti/").then(result => {
-                    if (result.status == 200){
-                        this.unread = result.body.info.unread;
-                        this.read = result.body.info.read;
-                    }
-                })
-            },
             show_detail: function (title, body, date, id, index = -1) {
                 this.detail_title = title;
                 this.detail_body = body;
@@ -351,7 +341,7 @@
                 document.getElementById("modal-8").classList.add("md-show");
 
                 if (index != -1) {
-                    this.read.unshift(this.unread.splice(index, 1)[0]);
+                    this.globle_props.read_notifications.unshift(this.globle_props.unread_notifications.splice(index, 1)[0]);
                 }
             },
         }

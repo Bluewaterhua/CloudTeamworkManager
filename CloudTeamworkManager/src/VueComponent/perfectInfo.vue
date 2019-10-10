@@ -423,6 +423,9 @@
             }
         },
         methods: {
+            mySwitch: function(target) {
+                this.$emit('switch', target);
+            },
             show_avatar: function (event) {
                 this.avatar = event.target.files[0];
                 this.src = window.URL.createObjectURL(this.avatar);

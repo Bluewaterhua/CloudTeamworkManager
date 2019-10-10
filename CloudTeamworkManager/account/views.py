@@ -13,7 +13,47 @@ from .models import UserProfile
 from .msgcode import sendcode
 from task.models import task
 import json
+import time
 
+
+def basic_info(request):
+    info = {}
+
+    if request.user.is_authenticated:
+        info["is_login"] = True
+
+        notifications = request.user.notifications.unread()
+        notifications = notifications.values('id', 'actor_content_type', 'verb', 'description', 'timestamp', 'data')
+        notifications = list(notifications)
+        for i in notifications:
+            i['timestamp'] = int(time.mktime(time.strptime(str(i['timestamp'])[:-7], "%Y-%m-%d %H:%M:%S")))
+    
+        info["unread_notifications"] = notifications
+
+        notifications = request.user.notifications.read()
+        notifications = notifications.values('id', 'actor_content_type', 'verb', 'description', 'timestamp', 'data')
+        notifications = list(notifications)
+        for i in notifications:
+            i['timestamp'] = int(time.mktime(time.strptime(str(i['timestamp'])[:-7], "%Y-%m-%d %H:%M:%S")))
+
+        info["read_notifications"] = notifications
+
+        if request.user.has_perm("task.create_tasks"):
+            info["is_creater"] = True
+        else:
+            info["is_creater"] = False
+
+        user_profile = UserProfile.objects.get(user_id = request.user.id)
+        if user_profile.name:
+            info["perfected_info"] = True
+            info["name"] = user_profile.name
+        else:
+            info["perfected_info"] = False
+            info["name"] = None
+    else:
+        info["is_login"] = False
+
+    return JsonResponse(info, safe = False)
 
 def logoutAccount(request):
     auth.logout(request)
@@ -131,12 +171,12 @@ def space_page(request):
     return JsonResponse({"info": {"name": target_userprofile.name, "phone_number": target_user.username, "gender": target_userprofile.sex, "student_id": target_userprofile.student_id, "birthday": target_userprofile.birthday, "email": target_userprofile.email, "major": target_userprofile.major, "grade": target_userprofile.grade, "room": target_userprofile.room, "home_address": target_userprofile.home_address, "guardian_phone": target_userprofile.guardian_phone, "introduction": target_userprofile.introduction, "user_id": target_user.id, "sex": target_userprofile.sex, "birthday": target_userprofile.birthday, "edit_status": "false", "edit_or_save": "编辑"}, "status": 200}, safe=False)
 
 def home(request):
-    if request.user.is_authenticated:
-        user_info = UserProfile.objects.get(user_id = request.user.id)
+    #if request.user.is_authenticated:
+    #    user_info = UserProfile.objects.get(user_id = request.user.id)
 
-        if user_info.name:
-            return render(request, 'home.html')
-        return HttpResponseRedirect("/account/perfect_information/")
+    #    if user_info.name:
+    #        return render(request, 'home.html')
+    #    return HttpResponseRedirect("/account/perfect_information/")
     return render(request, 'home.html')
 
 @login_required

@@ -19,7 +19,7 @@
                             <label for="file" style="cursor: pointer">
                                 <img :src="avatarsrc" class="rounded-circle" style="width: 7.5rem; height: 7.5rem">
                             </label>
-                            <input type="file" name="avatar" accept=".jpg" @change="upload_avatar" id="file"
+                            <input ref="referenceUpload" type="file" name="avatar" accept=".jpg" @change="upload_avatar" id="file"
                                 style="height: 0px; opacity: 0;">
                             <div id="name">{{name}}</div>
                         </div>
@@ -294,7 +294,7 @@
             upload_avatar: function () {
                 this.avatar = event.target.files[0];
                 this.avatarsrc = window.URL.createObjectURL(this.avatar);
-                event.target = null;
+                this.$refs.referenceUpload.value = null;
 
                 var formData = new FormData();
                 formData.append('avatar', this.avatar);
