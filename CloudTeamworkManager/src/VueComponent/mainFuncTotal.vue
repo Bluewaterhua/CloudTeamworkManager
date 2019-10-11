@@ -157,7 +157,7 @@
                 this.globle_props.randint = Math.ceil(Math.random()*1000);
 
                 if (!this.globle_props.is_login){
-                    if (target[0] != "signUp" && target[0] != "home"){
+                    if (target[0] != "signUp" && target[0] != "home" && target[0] != "resetPassword"){
                         target = ['signIn', null];
                     }
                 }

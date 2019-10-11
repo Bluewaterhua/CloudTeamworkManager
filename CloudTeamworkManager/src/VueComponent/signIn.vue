@@ -66,6 +66,7 @@
             submit: function () {
                 this.$http.post('/account/login/', { 'phone_number': this.phone_number, 'password': this.password }, { emulateJSON: true }).then(result => {
                     if (result.body.status == 302) {
+                        this.$emit('fresh_user_info', '');
                         this.mySwitch(['home', null]);
                     }
                     else {
@@ -74,7 +75,6 @@
                 })
             },
             mySwitch: function(target) {
-                this.$emit('fresh_user_info', target);
                 this.$emit('switch', target);
             }
         }
