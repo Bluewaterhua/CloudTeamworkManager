@@ -6,7 +6,7 @@ from . import views
 urlpatterns = [
     url(r'^picode/.*$', views.picode_code),
     path('image/<str:file_name>/', views.show_image),
-    path('avatar/', views.avatar),
+    path('avatar/<int:randint>/', views.avatar),
     path('appendix/<int:task_id>/<str:file_name>/', views.appendix),
     path('rename_appendix/<int:task_id>/<int:appendix_id>/', views.rename),
     path('delete_appendix/<int:task_id>/<int:appendix_id>/', views.delete),

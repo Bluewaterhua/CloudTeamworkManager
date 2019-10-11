@@ -436,7 +436,7 @@
                 if (this.avatar){
                     var formData = new FormData();
                     formData.append('avatar', this.avatar);
-                    this.$http.post('/file/avatar/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
+                    this.$http.post('/file/avatar/1/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
                     if (result.body.status == 200) {
                         ;
                     }

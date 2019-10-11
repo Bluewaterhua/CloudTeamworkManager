@@ -59,7 +59,7 @@
                                                 <small>{{each.description}}</small>
                                             </span>
                                             <div style="float: right; margin-right: 8.33%">
-                                                <span>{{each.timestamp}}</span>
+                                                <span>{{timestamp_to_date(each.timestamp)}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -81,7 +81,7 @@
                                                 <small>{{each.description}}</small>
                                             </span>
                                             <div style="float: right; margin-right: 8.33%">
-                                                <span>{{each.timestamp}}</span>
+                                                <span>{{timestamp_to_date(each.timestamp)}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@
                                                 <small>{{each.description}}</small>
                                             </span>
                                             <div style="float: right; margin-right: 8.33%">
-                                                <span>{{each.timestamp}}</span>
+                                                <span>{{timestamp_to_date(each.timestamp)}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -131,7 +131,7 @@
                                                 <small>{{each.description}}</small>
                                             </span>
                                             <div style="float: right; margin-right: 8.33%">
-                                                <span>{{each.timestamp}}</span>
+                                                <span>{{timestamp_to_date(each.timestamp)}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -158,7 +158,7 @@
                                                 <small>{{each.description}}</small>
                                             </span>
                                             <div style="float: right; margin-right: 8.33%">
-                                                <span>{{each.timestamp}}</span>
+                                                <span>{{timestamp_to_date(each.timestamp)}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -181,7 +181,7 @@
                                                 <small>{{each.description}}</small>
                                             </span>
                                             <div style="float: right; margin-right: 8.33%">
-                                                <span>{{each.timestamp}}</span>
+                                                <span>{{timestamp_to_date(each.timestamp)}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -215,7 +215,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <small>{{detail_date}}</small>
+                                                    <small>{{timestamp_to_date(detail_date)}}</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -290,6 +290,13 @@
             }
         },
         props: ['globle_props'],
+        computed: {
+            timestamp_to_date() {
+                return function(timestamp) {
+                    return new Date(parseInt(timestamp * 1000)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                }
+            }
+        },
         mounted() {
             this.modalEffects();
         },

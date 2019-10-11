@@ -288,6 +288,7 @@ class task(object):
             assign_perm('task.view_personal_schedule', target_group_leader, target_task)
             assign_perm('task.edit_appendix', target_group_leader, target_task)
             assign_perm('task.delete_appendix', target_group_leader, target_task)
+            assign_perm('task.edit_task', target_group_leader, target_task)
 
             # 配置创建者权限
             target_member = member(user_buildin = request.user, user_profile = UserProfile.objects.get(user_id = request.user.id), target_task = target_task, target_group = target_group, target_group_leader = target_group_leader)

@@ -28,7 +28,7 @@ def show_image(request, file_name):
     return HttpResponse(img.read(), 'image/jpg')
 
 
-def avatar(request):
+def avatar(request, randint):
     if not request.user.is_authenticated:
         return HttpResponse(status="403")
 

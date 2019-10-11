@@ -188,7 +188,7 @@
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
                                                 style="margin-right: 2rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
-                                                <img :src="'/file/avatar/?user_id=' + person.id"
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
@@ -221,7 +221,7 @@
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
-                                                <img :src="'/file/avatar/?user_id=' + person.id"
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
@@ -243,7 +243,7 @@
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
-                                                <img :src="'/file/avatar/?user_id=' + person.id"
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
@@ -265,7 +265,7 @@
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
-                                                <img :src="'/file/avatar/?user_id=' + person.id"
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
@@ -287,7 +287,7 @@
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
-                                                <img :src="'/file/avatar/?user_id=' + person.id"
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
@@ -309,7 +309,7 @@
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
-                                                <img :src="'/file/avatar/?user_id=' + person.id"
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
@@ -331,7 +331,7 @@
                                                 data-modal="modal-5" @click="show_deatils(person.id)"
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
-                                                <img :src="'/file/avatar/?user_id=' + person.id"
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
                                                     style="height: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}

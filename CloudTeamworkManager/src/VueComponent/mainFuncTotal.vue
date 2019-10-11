@@ -132,7 +132,7 @@
     export default {
         data() {
             return {
-                comName: 'home',
+                comName: '',
                 showTotalBar: false,
                 showBlueBar: false,
                 init_over: false,
@@ -147,11 +147,14 @@
             getInfo: function() {
                 this.$http.get("/account/basic_info/").then(result => {
                     this.globle_props = result.body;
+                    this.globle_props.randint = Math.ceil(Math.random()*1000);
                     this.showTotalBar = true;
+                    this.comName = 'home';
                 })
             },
             switchFunc: function(target){
                 this.refreshCsrfToken();
+                this.globle_props.randint = Math.ceil(Math.random()*1000);
 
                 if (!this.globle_props.is_login){
                     if (target[0] != "signUp" && target[0] != "home"){

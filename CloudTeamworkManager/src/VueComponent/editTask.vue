@@ -995,7 +995,7 @@
                         'task_description': this.task_description,
                     }, { emulateJSON: true }).then(res => {
                         if (res.body.status == 302) {
-                            this.$emit('switch', 'taskDetail');
+                            this.$emit('switch', ['taskDetail', this.globle_props.task_id]);
                         } else if (res.body.status == 400) {
                             this.is_success = false;
                             this.strongTip = "任务编辑失败！"

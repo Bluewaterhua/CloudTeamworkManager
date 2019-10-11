@@ -229,7 +229,7 @@
     export default {
         data() {
             return {
-                avatarsrc: "/file/avatar/",
+                avatarsrc: '/file/avatar/' + Math.ceil(Math.random()*1000),
                 edit_status: false,
                 edit_or_save: "",
                 email: "",
@@ -298,7 +298,7 @@
 
                 var formData = new FormData();
                 formData.append('avatar', this.avatar);
-                this.$http.post('/file/avatar/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
+                this.$http.post('/file/avatar/1/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
                     if (result.body.status == 200) {
                         ;
                     }

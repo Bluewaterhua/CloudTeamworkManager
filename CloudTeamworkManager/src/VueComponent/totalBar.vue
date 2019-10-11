@@ -49,7 +49,7 @@
                                         <div style="color: #333333; font-size: 26px">{{  globle_props.name  }}</div>
                                         <a style="color: #F44336; font-size: 18px" href="/account/logout/" @click.prevent="logout">退出登录</a>
                                     </div>
-                                    <img class="float-right rounded-circle" :src="globle_props.is_login ? '/file/avatar/' : false"
+                                    <img class="float-right rounded-circle" :src="globle_props.is_login ? '/file/avatar/' + globle_props.randint : false"
                                         style="width: 30%; top: 50%; transform: translateY(-50%); position: relative;">
                                 </div>
                                 <div style="width: 100%; margin-top: 5%">
@@ -58,7 +58,7 @@
                                         aria-atomic="true" style="box-shadow: 0px 0px 0px; border: 0px; border-radius: 0px" v-for="(each, index) in globle_props.unread_notifications" :key="index">
                                         <div class="toast-header" style="border-bottom: 0px;">
                                             <strong class="mr-auto">{{  each.verb  }}</strong>
-                                            <small class="text-muted">{{  each.timestamp  }}</small>
+                                            <small class="text-muted">{{  timestamp_to_date(each.timestamp)  }}</small>
                                             <button type="button" class="ml-2 close" data-dismiss="toast"
                                                 aria-label="Close">
                                                 <span aria-hidden="true">&times;</span> </button>
@@ -104,7 +104,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        <small>{{detail_date}}</small>
+                                        <small>{{timestamp_to_date(detail_date)}}</small>
                                     </div>
                                 </div>
                             </div>
@@ -139,6 +139,27 @@
             }
         },
         props: ['globle_props'],
+        computed: {
+            timestamp_to_date() {
+                return function(timestamp) {
+                    timestamp = Date.parse(new Date()) / 1000 - timestamp;
+
+                    if (timestamp < 60*60){
+                        return Math.round(timestamp/60) + '分钟前';
+                    }
+
+                    if (timestamp < 60*60*24){
+                        return Math.round(timestamp/3600) + '小时前';
+                    }
+
+                    if (timestamp < 60*60*24*30){
+                        return Math.round(timestamp/86400) + '天前';
+                    }
+
+                    return '很久前';
+                }
+            }
+        },
         mounted() {
             this.receive_noti();
             this.modalEffects();
@@ -203,6 +224,7 @@
                     this.doSetTimeout(noti.eq(noti_num * 1), time);
                 }
                 setTimeout(() => { $("#sidebar").modal("toggle"); }, time * 150);
+                setTimeout(() => { this.globle_props.unread_notifications = []; }, time * 150 + 500);
 
                 this.$http.get('/noti/mark_all_as_read/');
             },
