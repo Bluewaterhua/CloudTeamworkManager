@@ -144,6 +144,10 @@
                 return function(timestamp) {
                     timestamp = Date.parse(new Date()) / 1000 - timestamp;
 
+                    if (timestamp < 60){
+                        return '不久前';
+                    }
+
                     if (timestamp < 60*60){
                         return Math.round(timestamp/60) + '分钟前';
                     }

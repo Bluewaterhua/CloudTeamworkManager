@@ -15,7 +15,7 @@
         </transition>
 
         <transition mode="out-in">
-            <component :is="comName" v-on:switch="switchFunc" :globle_props="globle_props" v-on:fresh_user_info="getInfo"></component>
+            <component :is="comName" v-on:switch="switchFunc" :globle_props="globle_props" v-on:fresh_user_info="fresh_user_info"></component>
         </transition>
     </div>
 </template>
@@ -135,7 +135,6 @@
                 comName: '',
                 showTotalBar: false,
                 showBlueBar: false,
-                init_over: false,
 
                 globle_props: null,
             }
@@ -150,6 +149,12 @@
                     this.globle_props.randint = Math.ceil(Math.random()*1000);
                     this.showTotalBar = true;
                     this.comName = 'home';
+                })
+            },
+            fresh_user_info: function() {
+                this.$http.get("/account/basic_info/").then(result => {
+                    this.globle_props = result.body;
+                    this.globle_props.randint = Math.ceil(Math.random()*1000);
                 })
             },
             switchFunc: function(target){

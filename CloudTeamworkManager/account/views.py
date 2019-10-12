@@ -99,13 +99,9 @@ def register_page(request):
         forms = RegisterForm(request.POST)
 
         if forms.is_valid():
-            try:
-                user = User.objects.get(username = forms.cleaned_data['phone_number'])
-            except:
-                user = User.objects.create_user(username = forms.cleaned_data['phone_number'], password=forms.cleaned_data['password'])
-                UserProfile.objects.create(user_id = user.id)
-                return JsonResponse({"url": "/account/login", "status": 302}, safe=False)
-            return JsonResponse({"tip": "手机号已被注册", "status": 400}, safe=False)
+            user = User.objects.create_user(username = forms.cleaned_data['phone_number'], password=forms.cleaned_data['password'])
+            UserProfile.objects.create(user_id = user.id)
+            return JsonResponse({"url": "/account/login", "status": 302}, safe=False)
         return JsonResponse({"tip": list(forms.errors.values())[0][0], "status": 400}, safe=False)
 
 def reset_password_page(request):

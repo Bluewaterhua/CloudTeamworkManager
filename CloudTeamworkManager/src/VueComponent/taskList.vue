@@ -265,11 +265,11 @@
             }
         },
         created() {
-            this.getList();
+            this.getInfo();
         },
         props: ['globle_props'],
         methods: {
-            getList: function(){
+            getInfo: function(){
                 this.$http.get("/account/task_list/").then(result => {
                     if (result.status == 200){
                         this.task_list = result.body.info.content;

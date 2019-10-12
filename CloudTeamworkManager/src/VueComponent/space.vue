@@ -271,7 +271,7 @@
                 })
             },
             auto_height: function () {
-                var textarea = document.getElementById("textarea")
+                let textarea = document.getElementById("textarea");
                 textarea.style.height = 'auto';
                 textarea.style.height = textarea.scrollHeight + 5 + "px";
             },
@@ -296,14 +296,13 @@
                 this.avatarsrc = window.URL.createObjectURL(this.avatar);
                 this.$refs.referenceUpload.value = null;
 
-                var formData = new FormData();
+                let formData = new FormData();
                 formData.append('avatar', this.avatar);
                 this.$http.post('/file/avatar/1/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
                     if (result.body.status == 200) {
                         ;
                     }
                     else {
-                        console.log(result.body.tip)
                         return;
                     }
                 })

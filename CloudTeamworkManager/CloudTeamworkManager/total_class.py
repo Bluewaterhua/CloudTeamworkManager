@@ -7,6 +7,7 @@ from guardian.shortcuts import assign_perm, remove_perm
 from task.models import task as models_task
 from task.forms import task as forms_task
 from publisher.models import personal_comment, personal_progress, personal_schedule
+from file.models import personal_appendix
 from account.models import UserProfile
 import re
 import json
@@ -85,6 +86,11 @@ class member(object):
         temp = personal_progress.objects.create(id = "%s&%s"%(self.target_task.id, self.user_buildin.id), detail = "[]")
         assign_perm('publisher.edit_personal_progress', self.user_buildin, temp)
         assign_perm('publisher.view_personal_progress', self.user_buildin, temp)
+        temp = personal_appendix.objects.create(id = "%s&%s"%(self.target_task.id, self.user_buildin.id), detail = "[]")
+        assign_perm('file.download_personal_appendix', self.user_buildin, temp)
+        assign_perm('file.delete_personal_appendix', self.user_buildin, temp)
+        assign_perm('file.upload_personal_appendix', self.user_buildin, temp)
+        os.makedirs("./file/appendixes/%s/%s"%(self.target_task.id, self.user_buildin.id))
         temp = personal_schedule.objects.create(id = "%s&%s"%(self.target_task.id, self.user_buildin.id), detail = "[]")
         assign_perm('publisher.edit_personal_schedule', self.user_buildin, temp)
         assign_perm('publisher.view_personal_schedule', self.user_buildin, temp)
@@ -92,10 +98,16 @@ class member(object):
     def recover_archive_edit_perm(self):
         assign_perm('publisher.edit_personal_progress', self.user_buildin, personal_progress.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id)))
         assign_perm('publisher.edit_personal_schedule', self.user_buildin, personal_schedule.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id)))
+        temp = personal_appendix.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id))
+        assign_perm('file.upload_personal_appendix', self.user_buildin, temp)
+        assign_perm('file.delete_personal_appendix', self.user_buildin, temp)
 
     def remove_archive_edit_perm(self):
         remove_perm('publisher.edit_personal_progress', self.user_buildin, personal_progress.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id)))
         remove_perm('publisher.edit_personal_schedule', self.user_buildin, personal_schedule.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id)))
+        temp = personal_appendix.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id))
+        remove_perm('file.upload_personal_appendix', self.user_buildin, temp)
+        remove_perm('file.delete_personal_appendix', self.user_buildin, temp)
 
     def set_leader_in_profile(self):
         temp = json.loads(self.user_profile.managed_projects)
@@ -137,6 +149,7 @@ class member(object):
         assign_perm('task.view_personal_schedule', self.user_buildin, self.target_task)
         assign_perm('task.edit_appendix', self.user_buildin, self.target_task)
         assign_perm('task.delete_appendix', self.user_buildin, self.target_task)
+        assign_perm('task.download_personal_appendix', self.user_buildin, self.target_task)
 
     def remove_creater_perm(self):
         remove_perm('task.edit_task', self.user_buildin, self.target_task)
@@ -146,6 +159,7 @@ class member(object):
         remove_perm('task.view_personal_schedule', self.user_buildin, self.target_task)
         remove_perm('task.edit_appendix', self.user_buildin, self.target_task)
         remove_perm('task.delete_appendix', self.user_buildin, self.target_task)
+        remove_perm('task.download_personal_appendix', self.user_buildin, self.target_task)
 
     def view_personal_comments(self, request):
         if request.user.has_perm("task.view_personal_comments", self.target_task):
@@ -289,6 +303,7 @@ class task(object):
             assign_perm('task.edit_appendix', target_group_leader, target_task)
             assign_perm('task.delete_appendix', target_group_leader, target_task)
             assign_perm('task.edit_task', target_group_leader, target_task)
+            assign_perm('task.download_personal_appendix', target_group_leader, target_task)
 
             # 配置创建者权限
             target_member = member(user_buildin = request.user, user_profile = UserProfile.objects.get(user_id = request.user.id), target_task = target_task, target_group = target_group, target_group_leader = target_group_leader)
@@ -340,7 +355,8 @@ class task(object):
                         pass
 
             # 建立附件目录
-            os.makedirs("./file/appendixes/%s/"%(target_task.id))
+            if not os.path.exists("./file/appendixes/%s/"%(target_task.id)):
+                os.makedirs("./file/appendixes/%s/"%(target_task.id))
    
             return JsonResponse({"task_id": target_task.id, "status": 200}, safe=False)
         return JsonResponse({"tip": "表单验证失败", "status": 400}, safe=False)

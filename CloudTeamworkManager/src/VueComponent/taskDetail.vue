@@ -50,20 +50,20 @@
                                                         {{item.publish_date |
                                                         formatDate}}</div>
                                                     <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
-                                                        :readonly="i == 0? (isActive? false : 'readonly' ) : true"
+                                                        :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
                                                         style="color: #747474; resize: none"
-                                                        :id="i == 0? (isActive? 'target_task_comment' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                        :id="i == 0? (is_edit_and_add_button_available? 'target_task_comment' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
                                                     <hr v-if="i != task_comment.length - 1">
                                                 </div>
                                             </div>
-                                            <input type="button" :value="isActive? '保存' : '添加'"
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
                                                 class="btn btn-outline-primary"
                                                 style="float:right; margin-left: 1.5rem; margin-top: .5rem"
                                                 :style="{visibility: add_button? 'visible' : 'hidden'}"
                                                 @click="add_task_comment()" v-if="is_creator">
-                                            <input type="button" :value="isActive? '保存' : '编辑'"
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
                                                 class="btn btn-outline-primary" style="float:right; margin-top: .5rem"
-                                                :style="{visibility: edit_button && task_comment.length? 'visible' : 'hidden'}"
+                                                :style="{visibility: is_edit_button_available && task_comment.length? 'visible' : 'hidden'}"
                                                 @click="edit_task_comment()" v-if="is_creator">
                                         </td>
                                     </tr>
@@ -113,20 +113,20 @@
                                                     <div style="font-size: 14px">{{item.publish_date |
                                                         formatDate}}</div>
                                                     <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
-                                                        :readonly="i == 0? (isActive? false : 'readonly' ) : true"
+                                                        :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
                                                         style="color: #747474; resize: none"
-                                                        :id="i == 0? (isActive? 'target_task_schedule' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                        :id="i == 0? (is_edit_and_add_button_available? 'target_task_schedule' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
                                                     <hr v-if="i != task_schedule.length - 1">
                                                 </div>
                                             </div>
-                                            <input type="button" :value="isActive? '保存' : '添加'"
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
                                                 class="btn btn-outline-primary"
                                                 style="float:right; margin-left: 1.5rem; margin-top: .5rem"
                                                 :style="{visibility: add_button? 'visible' : 'hidden'}"
                                                 @click="add_task_schedule()" v-if="is_leader">
-                                            <input type="button" :value="isActive? '保存' : '编辑'"
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
                                                 class="btn btn-outline-primary" style="float:right; margin-top: .5rem"
-                                                :style="{visibility: edit_button && task_schedule.length? 'visible' : 'hidden'}"
+                                                :style="{visibility: is_edit_button_available && task_schedule.length? 'visible' : 'hidden'}"
                                                 @click="edit_task_schedule()" v-if="is_leader">
                                         </td>
                                     </tr>
@@ -139,20 +139,20 @@
                                                     <div style="font-size: 14px">{{item.publish_date |
                                                         formatDate}}</div>
                                                     <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
-                                                        :readonly="i == 0? (isActive? false : 'readonly' ) : true"
+                                                        :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
                                                         style="color: #747474; resize: none"
-                                                        :id="i == 0? (isActive? 'target_task_progress' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                        :id="i == 0? (is_edit_and_add_button_available? 'target_task_progress' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
                                                     <hr v-if="i != task_progress.length - 1">
                                                 </div>
                                             </div>
-                                            <input type="button" :value="isActive? '保存' : '添加'"
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
                                                 class="btn btn-outline-primary"
                                                 style="float:right; margin-left: 1.5rem; margin-top: .5rem"
                                                 :style="{visibility: add_button? 'visible' : 'hidden'}"
                                                 @click="add_task_process()" v-if="is_leader">
-                                            <input type="button" :value="isActive? '保存' : '编辑'"
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
                                                 class="btn btn-outline-primary" style="float:right; margin-top: .5rem"
-                                                :style="{visibility: edit_button && task_progress.length? 'visible' : 'hidden'}"
+                                                :style="{visibility: is_edit_button_available && task_progress.length? 'visible' : 'hidden'}"
                                                 @click="edit_task_process()" v-if="is_leader">
                                         </td>
                                     </tr>
@@ -189,7 +189,7 @@
                                                 style="margin-right: 2rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/1/?user_id=' + person.id"
-                                                    style="height: 30px; border-radius: 15px">
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
                                                 </div>
@@ -222,7 +222,7 @@
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/1/?user_id=' + person.id"
-                                                    style="height: 30px; border-radius: 15px">
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
                                                 </div>
@@ -244,7 +244,7 @@
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/1/?user_id=' + person.id"
-                                                    style="height: 30px; border-radius: 15px">
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
                                                 </div>
@@ -266,7 +266,7 @@
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/1/?user_id=' + person.id"
-                                                    style="height: 30px; border-radius: 15px">
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
                                                 </div>
@@ -288,7 +288,7 @@
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/1/?user_id=' + person.id"
-                                                    style="height: 30px; border-radius: 15px">
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
                                                 </div>
@@ -310,7 +310,7 @@
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/1/?user_id=' + person.id"
-                                                    style="height: 30px; border-radius: 15px">
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
                                                 </div>
@@ -332,7 +332,7 @@
                                                 style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
                                                 :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
                                                 <img :src="'/file/avatar/1/?user_id=' + person.id"
-                                                    style="height: 30px; border-radius: 15px">
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
                                                 <div style="font-size: 14px; display: inline-block;">
                                                     {{person.name}}
                                                 </div>
@@ -386,19 +386,19 @@
                                             <div v-for="(item,i) in personalProcess" :key="item.id">
                                                 <div>{{item.publish_date | formatDate}}</div>
                                                 <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
-                                                    :readonly="i == 0? (isActive? false : 'readonly' ) : true"
+                                                    :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
                                                     style="color: #747474; resize: none"
-                                                    :id="i == 0? (isActive? 'target_progress' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                    :id="i == 0? (is_edit_and_add_button_available? 'target_progress' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
                                                 <hr v-if="i != personalProcess.length - 1">
                                             </div>
                                         </div>
-                                        <input type="button" :value="isActive? '保存' : '添加'"
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
                                             class="btn btn-outline-primary" style="float:right; margin-left: 1.5rem"
-                                            :style="{visibility: add_button && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            :style="{visibility: is_add_button_available && this.user_id == this.person_id? 'visible' : 'hidden'}"
                                             @click="add_personal_process()">
-                                        <input type="button" :value="isActive? '保存' : '编辑'"
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
                                             class="btn btn-outline-primary" style="float:right"
-                                            :style="{visibility: edit_button && personalProcess.length && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            :style="{visibility: is_edit_button_available && personalProcess.length && this.user_id == this.person_id? 'visible' : 'hidden'}"
                                             @click="edit_personal_process()">
                                     </div>
                                     <div class="tab-pane fade" id="v-pills-schedule" role="tabpanel"
@@ -408,19 +408,19 @@
                                             <div v-for="(item,i) in personalSchedule" :key="item.id">
                                                 <div>{{item.publish_date | formatDate}}</div>
                                                 <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
-                                                    :readonly="i == 0? (isActive? false : 'readonly' ) : true"
+                                                    :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
                                                     style="color: #747474; resize: none"
-                                                    :id="i == 0? (isActive? 'target_schedule' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                    :id="i == 0? (is_edit_and_add_button_available? 'target_schedule' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
                                                 <hr v-if="i != personalSchedule.length - 1">
                                             </div>
                                         </div>
-                                        <input type="button" :value="isActive? '保存' : '添加'"
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
                                             class="btn btn-outline-primary" style="float:right; margin-left: 1.5rem"
-                                            :style="{visibility: add_button && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            :style="{visibility: is_add_button_available && this.user_id == this.person_id? 'visible' : 'hidden'}"
                                             @click="add_personal_schedule()">
-                                        <input type="button" :value="isActive? '保存' : '编辑'"
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
                                             class="btn btn-outline-primary" style="float:right"
-                                            :style="{visibility: edit_button && personalSchedule.length && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            :style="{visibility: is_edit_button_available && personalSchedule.length && this.user_id == this.person_id? 'visible' : 'hidden'}"
                                             @click="edit_personal_schedule()">
                                     </div>
                                     <div class="tab-pane fade" id="v-pills-comment" role="tabpanel"
@@ -430,19 +430,19 @@
                                             <div v-for="(item, i) in personalComments" :key="item.id">
                                                 <div>{{item.publish_date | formatDate}}</div>
                                                 <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
-                                                    :readonly="i == 0? (isActive? false : 'readonly' ) : true"
+                                                    :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
                                                     style="color: #747474; resize: none"
-                                                    :id="i == 0? (isActive? 'target_comments' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                    :id="i == 0? (is_edit_and_add_button_available? 'target_comments' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
                                                 <hr v-if="i != personalComments.length - 1">
                                             </div>
                                         </div>
-                                        <input type="button" :value="isActive? '保存' : '添加'"
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
                                             class="btn btn-outline-primary" style="float:right; margin-left: 1.5rem"
-                                            :style="{visibility: add_button && is_leader? 'visible' : 'hidden'}"
+                                            :style="{visibility: is_add_button_available && is_leader? 'visible' : 'hidden'}"
                                             @click="add_personal_comments()">
-                                        <input type="button" :value="isActive? '保存' : '编辑'"
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
                                             class="btn btn-outline-primary" style="float:right"
-                                            :style="{visibility: edit_button && personalComments.length && is_leader? 'visible' : 'hidden'}"
+                                            :style="{visibility: is_edit_button_available && personalComments.length && is_leader? 'visible' : 'hidden'}"
                                             @click="edit_personal_comments()">
                                     </div>
                                 </div>
@@ -630,15 +630,15 @@
 
     Vue.filter(
         'getLogoSrc', name => {
-            var pptClassFilenameExtension = ['ppt', 'pptx', 'pptm', 'potm', 'pot', 'ppsx', 'pps', 'ppa'];
-            var wordClassFilenameExtension = ['docx', 'docm', 'dotx', 'dotm', 'dot'];
-            var excelClassFilenameExtension = ['xlsx', 'xlsm', 'xlsb', 'xls', 'xltx', 'xltm', 'xlt', 'xls', 'xlam', 'xla'];
-            var archiveClassFilenameExtension = ['zip', 'rar', '7z'];
-            var pictureClassFilenameExtension = ['jpg', 'jpeg', 'png', 'ico', 'gif', 'bmp'];
-            var textClassFilenameExtension = ['txt'];
-            var pdfClassFilenameExtension = ['pdf'];
+            let pptClassFilenameExtension = ['ppt', 'pptx', 'pptm', 'potm', 'pot', 'ppsx', 'pps', 'ppa'];
+            let wordClassFilenameExtension = ['docx', 'docm', 'dotx', 'dotm', 'dot'];
+            let excelClassFilenameExtension = ['xlsx', 'xlsm', 'xlsb', 'xls', 'xltx', 'xltm', 'xlt', 'xls', 'xlam', 'xla'];
+            let archiveClassFilenameExtension = ['zip', 'rar', '7z'];
+            let pictureClassFilenameExtension = ['jpg', 'jpeg', 'png', 'ico', 'gif', 'bmp'];
+            let textClassFilenameExtension = ['txt'];
+            let pdfClassFilenameExtension = ['pdf'];
 
-            var filenameExtension = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
+            let filenameExtension = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
             if (pptClassFilenameExtension.indexOf(filenameExtension) != -1) {
                 return '/static/pic/ppt.png';
             }
@@ -706,18 +706,17 @@
                 mtLeaders: [],
 
                 // 个人资讯
-                personalProcess: [].reverse(),
-                personalSchedule: [].reverse(),
-                personalComments: [].reverse(),
+                personalProcess: [],
+                personalSchedule: [],
+                personalComments: [],
                 person_id: '',
-                counter: [],
-                isActive: false,
                 edit: "编辑",
                 add: "添加",
 
                 // 添加删除按钮
-                edit_button: true,
-                add_button: true,
+                is_edit_and_add_button_available: false,
+                is_edit_button_available: true,
+                is_add_button_available: true,
 
                 // 时间
                 date: new Date()
@@ -782,17 +781,16 @@
                         this.creator = result.body.info.creator;
                         this.leaders = result.body.info.leaders;
                         this.task_description = result.body.info.task_description;
+                        this.user_id = result.body.info.user_id;
                         this.task_progress = JSON.parse(result.body.info.task_progress).reverse();
                         this.task_comment = JSON.parse(result.body.info.task_comment).reverse();
                         this.task_schedule = JSON.parse(result.body.info.task_schedule).reverse();
-                        this.user_id = result.body.info.user_id;
                     }
                     this.classify();
 
                     this.is_creator = this.user_id == this.creator;
 
-                    var each = null;
-                    for (each of this.leaders) {
+                    for (let each of this.leaders) {
                         if (each['id'] == this.user_id) {
                             this.is_leader = true;
                             break;
@@ -800,21 +798,31 @@
                     }
                 })
             },
+            classify: function () {
+                for (let each_member of this.members) {
+                    switch (each_member.major){
+                        case 'P': this.pythonList.push(each_member); break;
+                        case 'J': this.javaList.push(each_member); break;
+                        case 'N': this.jsList.push(each_member); break;
+                        case 'D': this.designList.push(each_member); break;
+                        case 'M': this.mtList.push(each_member); break;
+                        case 'F': this.frontList.push(each_member); break;
+                    }
+                }
+            },
             download_file: function(filename) {
                 location.href = '/file/appendix/' + this.globle_props.task_id + '/' + filename + '/';
             },
             hide_modal: function () {
-                this.edit_button = true;
-                this.add_button = true;
-                this.isActive = false;
+                this.is_edit_button_available = true;
+                this.is_add_button_available = true;
+                this.is_edit_and_add_button_available = false;
             },
             clean_personal_achieve: function () {
                 this.personalProcess = [];
                 this.personalSchedule = [];
                 this.personalComments = [];
-                this.edit_button = true;
-                this.add_button = true;
-                this.isActive = false;
+                this.hide_modal();
             },
             get_appendixes: function () {
                 this.$http.get('/file/appendix_list/' + this.globle_props.task_id + '/').then(res => {
@@ -833,7 +841,7 @@
                 this.$refs.referenceUpload.value = null;
                 this.is_empty = false;
 
-                var formData = new FormData()
+                let formData = new FormData()
                 formData.append('appendix', this.appendixes[this.appendixes.length - 1])
                 this.$http.post('/file/appendix/' + this.globle_props.task_id + '/xxx/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
                     if (result.body.status == 200) {
@@ -845,8 +853,9 @@
                 })
             },
             remove_appendix: function (index) {
-                var appendix_id = this.appendixes[index].id
+                let appendix_id = this.appendixes[index].id
                 this.appendixes.splice(index, 1);
+
                 if (this.appendixes.length == 0) {
                     this.is_empty = true;
                 }
@@ -861,9 +870,7 @@
                 })
             },
             get_personal_process: function () {
-                this.edit_button = true;
-                this.add_button = true;
-                this.isActive = false;
+                this.hide_modal();
                 if (!this.personalProcess.length) {
                     this.$http.get('/publisher/personal_process/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
                         this.personalProcess = result.body.reverse();
@@ -871,9 +878,7 @@
                 }
             },
             get_personal_schedule: function () {
-                this.edit_button = true;
-                this.add_button = true;
-                this.isActive = false;
+                this.hide_modal();
                 if (!this.personalSchedule.length) {
                     this.$http.get('/publisher/personal_schedule/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
                         this.personalSchedule = result.body.reverse();
@@ -881,33 +886,20 @@
                 }
             },
             get_personal_comments: function () {
-                this.edit_button = true;
-                this.add_button = true;
-                this.isActive = false;
+                this.is_edit_button_available = true;
+                this.is_add_button_available = true;
+                this.is_edit_and_add_button_available = false;
                 if (!this.personalComments.length) {
                     this.$http.get('/publisher/personal_comments/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
                         this.personalComments = result.body.reverse();
                     })
                 }
             },
-            classify: function () {
-                var each_member = null;
-
-                for (each_member of this.members) {
-                    switch (each_member.major){
-                        case 'P': this.pythonList.push(each_member); break;
-                        case 'J': this.javaList.push(each_member); break;
-                        case 'N': this.jsList.push(each_member); break;
-                        case 'D': this.designList.push(each_member); break;
-                        case 'M': this.mtList.push(each_member); break;
-                        case 'F': this.frontList.push(each_member); break;
-                    }
-                }
-            },
             show_deatils: function (personId) {
                 if (this.user_id != personId && !this.is_creator && !this.is_leader) {
                     return;
                 }
+                
                 $('#v-pills-process-tab').tab('show');
                 this.clean_personal_achieve();
                 this.person_id = personId;
@@ -916,12 +908,12 @@
                 })
             },
             edit_task_schedule: function () {
-                this.isActive = !this.isActive;
-                if (this.isActive) {
-                    this.add_button = false;
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
                 }
-                else if (!this.isActive) {
-                    this.add_button = true
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
                     this.task_schedule[0].content = document.getElementById("target_task_schedule").value
                     this.$http.post("/publisher/task_schedule/" + this.globle_props.task_id + "/", { "content": this.task_schedule[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
@@ -934,15 +926,15 @@
                 }
             },
             add_task_schedule: function () {
-                if (!this.isActive) {
+                if (!this.is_edit_and_add_button_available) {
                     this.task_schedule.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
-                    this.edit_button = false;
-                    this.isActive = true;
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
                 }
-                else if (this.isActive) {
+                else if (this.is_edit_and_add_button_available) {
                     this.task_schedule[0].content = document.getElementById("target_task_schedule").value
-                    this.edit_button = true;
-                    this.isActive = false;
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
                     this.$http.post("/publisher/task_schedule/" + this.globle_props.task_id + "/", { "content": this.task_schedule[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
@@ -954,12 +946,12 @@
                 }
             },
             edit_task_process: function () {
-                this.isActive = !this.isActive;
-                if (this.isActive) {
-                    this.add_button = false;
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
                 }
-                else if (!this.isActive) {
-                    this.add_button = true
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
                     this.task_progress[0].content = document.getElementById("target_task_progress").value
                     this.$http.post("/publisher/task_progress/" + this.globle_props.task_id + "/", { "content": this.task_progress[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
@@ -972,15 +964,15 @@
                 }
             },
             add_task_process: function () {
-                if (!this.isActive) {
+                if (!this.is_edit_and_add_button_available) {
                     this.task_progress.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
-                    this.edit_button = false;
-                    this.isActive = true;
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
                 }
-                else if (this.isActive) {
+                else if (this.is_edit_and_add_button_available) {
                     this.task_progress[0].content = document.getElementById("target_task_progress").value
-                    this.edit_button = true;
-                    this.isActive = false;
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
                     this.$http.post("/publisher/task_progress/" + this.globle_props.task_id + "/", { "content": this.task_progress[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
@@ -992,12 +984,12 @@
                 }
             },
             edit_task_comment: function () {
-                this.isActive = !this.isActive;
-                if (this.isActive) {
-                    this.add_button = false;
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
                 }
-                else if (!this.isActive) {
-                    this.add_button = true
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
                     this.task_comment[0].content = document.getElementById("target_task_comment").value
                     this.$http.post("/publisher/task_comment/" + this.globle_props.task_id + "/", { "content": this.task_comment[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
@@ -1010,15 +1002,15 @@
                 }
             },
             add_task_comment: function () {
-                if (!this.isActive) {
+                if (!this.is_edit_and_add_button_available) {
                     this.task_comment.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
-                    this.edit_button = false;
-                    this.isActive = true;
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
                 }
-                else if (this.isActive) {
+                else if (this.is_edit_and_add_button_available) {
                     this.task_comment[0].content = document.getElementById("target_task_comment").value
-                    this.edit_button = true;
-                    this.isActive = false;
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
                     this.$http.post("/publisher/task_comment/" + this.globle_props.task_id + "/", { "content": this.task_comment[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
@@ -1030,12 +1022,12 @@
                 }
             },
             edit_personal_process: function () {
-                this.isActive = !this.isActive;
-                if (this.isActive) {
-                    this.add_button = false;
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
                 }
-                else if (!this.isActive) {
-                    this.add_button = true
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
                     this.personalProcess[0].content = document.getElementById("target_progress").value
                     this.$http.post("/publisher/personal_process/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalProcess[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
@@ -1048,15 +1040,15 @@
                 }
             },
             add_personal_process: function () {
-                if (!this.isActive) {
+                if (!this.is_edit_and_add_button_available) {
                     this.personalProcess.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
-                    this.edit_button = false;
-                    this.isActive = true;
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
                 }
-                else if (this.isActive) {
+                else if (this.is_edit_and_add_button_available) {
                     this.personalProcess[0].content = document.getElementById("target_progress").value
-                    this.edit_button = true;
-                    this.isActive = false;
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
                     this.$http.post("/publisher/personal_process/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalProcess[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
@@ -1068,12 +1060,12 @@
                 }
             },
             edit_personal_comments: function () {
-                this.isActive = !this.isActive;
-                if (this.isActive) {
-                    this.add_button = false;
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
                 }
-                else if (!this.isActive) {
-                    this.add_button = true
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
                     this.personalComments[0].content = document.getElementById("target_comments").value
                     this.$http.post("/publisher/personal_comments/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalComments[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
@@ -1086,15 +1078,15 @@
                 }
             },
             add_personal_comments: function () {
-                if (!this.isActive) {
+                if (!this.is_edit_and_add_button_available) {
                     this.personalComments.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
-                    this.edit_button = false;
-                    this.isActive = true;
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
                 }
-                else if (this.isActive) {
+                else if (this.is_edit_and_add_button_available) {
                     this.personalComments[0].content = document.getElementById("target_comments").value
-                    this.edit_button = true;
-                    this.isActive = false;
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
                     this.$http.post("/publisher/personal_comments/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalComments[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"
@@ -1106,12 +1098,12 @@
                 }
             },
             edit_personal_schedule: function () {
-                this.isActive = !this.isActive;
-                if (this.isActive) {
-                    this.add_button = false;
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
                 }
-                else if (!this.isActive) {
-                    this.add_button = true
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
                     this.personalSchedule[0].content = document.getElementById("target_schedule").value
                     this.$http.post("/publisher/personal_schedule/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalSchedule[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
@@ -1124,15 +1116,15 @@
                 }
             },
             add_personal_schedule: function () {
-                if (!this.isActive) {
+                if (!this.is_edit_and_add_button_available) {
                     this.personalSchedule.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
-                    this.edit_button = false;
-                    this.isActive = true;
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
                 }
-                else if (this.isActive) {
+                else if (this.is_edit_and_add_button_available) {
                     this.personalSchedule[0].content = document.getElementById("target_schedule").value
-                    this.edit_button = true;
-                    this.isActive = false;
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
                     this.$http.post("/publisher/personal_schedule/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalSchedule[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
                         if (result.status == 500) {
                             this.tip = "服务器出错"

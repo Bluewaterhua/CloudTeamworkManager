@@ -12,3 +12,17 @@ class appendix(models.Model):
             ('edit_appendix', '编辑附件'),
             #('delete_appendix', '删除附件'),
         }
+
+class personal_appendix(models.Model):
+    detail = models.TextField(verbose_name = '私人附件详情', default = "[]")
+    id = models.CharField(max_length = 15, primary_key = True)
+
+    class Meta:
+        permissions = {
+            ('edit_personal_appendix', '编辑私人附件'),
+            ('download_personal_appendix', '下载私人附件'),
+            ('upload_personal_appendix', '下载私人附件'),
+            # ('delete_personal_appendix', '删除私人附件'),
+        }
+        verbose_name = u'私人附件'
+        verbose_name_plural = verbose_name

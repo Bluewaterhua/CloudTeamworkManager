@@ -35,6 +35,7 @@ class task(models.Model):
             ('view_personal_schedule', '查看个人时间表'),  # 面向实例
             ('edit_appendix', '编辑附件'),  # 面向实例
             ('delete_appendix', '删除附件'),  # 面向实例
+            ('download_personal_appendix', '下载私人附件'),  # 面向实例
         }
         verbose_name = u'任务详情'
         verbose_name_plural = verbose_name

@@ -52,29 +52,29 @@
                                     placeholder="示例: someone@example.com" style="margin-bottom: 1rem; border-radius: 0px">
                                 <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的宿舍</label>
                                 <input v-model="room" type="text" class="form-control" placeholder="示例: 2#227" style="margin-bottom: 1rem; border-radius: 0px">
-                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的家庭地址</label>
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的家庭地址（可选）</label>
                                 <input v-model="home_address" type="text" class="form-control" placeholder="示例:山西省太原市小店区" style="margin-bottom: 1rem; border-radius: 0px">
                             </form>
                         </transition>
                         <transition :name="extend_info_part_two_name">
                             <form v-if="extend_info_part_two" class="clearfix">
-                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的监护人的电话</label>
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的监护人的电话（可选）</label>
                                 <input v-model="guardian_phone" type="text" class="form-control"
                                     placeholder="示例: 15698310000" style="margin-bottom: 1rem; border-radius: 0px">
-                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的个人介绍</label>
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的个人介绍（可选）</label>
                                 <textarea v-model="introduction" type="text" class="form-control"
                                     placeholder="我是一个活泼开朗的..."
-                                    style="height: 113px; border: 1px solid #ced4da; margin-bottom: 1rem; border-radius: 0px"></textarea>
+                                    style="height: 124px; border: 1px solid #ced4da; margin-bottom: 1rem; border-radius: 0px"></textarea>
                             </form>
                         </transition>
                         <transition :name="extend_info_avatar_name">
                             <form v-if="extend_info_avatar" class="clearfix">
-                                <div style="text-align: center; height: 187.16px">
+                                <div style="text-align: center; height: 169px">
                                     <img :src="src" style="width: 40%" :style="{height: avatar_height}"
                                         class="rounded-circle" id="avatar">
                                 </div>
                                 <label for="file" class="btn btn-primary col-6 offset-3"
-                                    style="cursor: pointer; border-radius: 0px">请选择你的头像</label>
+                                    style="cursor: pointer; border-radius: 0px">请选择头像（可选）</label>
                                 <input ref="referenceUpload" type="file" name="avatar" accept=".jpg" v-on:change="show_avatar($event)"
                                     id="file" style="height: 0px; opacity: 0;">
                             </form>
@@ -422,6 +422,7 @@
                 tip: "",
             }
         },
+        props: ['globle_props'],
         methods: {
             mySwitch: function(target) {
                 this.$emit('switch', target);
@@ -434,7 +435,7 @@
             },
             submit: function () {
                 if (this.avatar){
-                    var formData = new FormData();
+                    let formData = new FormData();
                     formData.append('avatar', this.avatar);
                     this.$http.post('/file/avatar/1/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
                     if (result.body.status == 200) {
@@ -448,6 +449,8 @@
                 }
                 this.$http.post('/account/perfect_information/', { "name": this.name, "birthday": this.birthday, "sex": this.sex, "student_id": this.student_id, "grade": this.student_id.substr(0, 4), "cloud_id": this.cloud_id, "major": this.major, "email": this.email, "room": this.room, "home_address": this.home_address, "guardian_phone": this.guardian_phone, "introduction": this.introduction }, { emulateJSON: true }).then(result => {
                     if (result.body.status == 302) {
+                        this.globle_props.perfected_info = true;
+                        this.$emit('fresh_user_info', '');
                         this.mySwitch(['space', null]);
                     }
                     else {

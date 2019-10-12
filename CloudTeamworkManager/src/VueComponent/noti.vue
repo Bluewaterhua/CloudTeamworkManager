@@ -345,8 +345,7 @@
                 this.detail_body = body;
                 this.detail_date = date;
                 this.$http.get('/noti/mark_target_as_read/' + id)
-                document.getElementById("modal-8").classList.add("md-show");
-
+                
                 if (index != -1) {
                     this.globle_props.read_notifications.unshift(this.globle_props.unread_notifications.splice(index, 1)[0]);
                 }

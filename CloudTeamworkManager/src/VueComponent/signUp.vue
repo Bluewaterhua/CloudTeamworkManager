@@ -68,7 +68,7 @@
                     <div class="text-center col-12 align-self-end rounded-bottom align-middle"
                         style="height: 50px; background-color: rgba(130, 178, 255, 0.2); font-size: 16px">
                         <div style="position: relative; top: 50%; transform: translateY(-50%); color: #999999">已有账号？<a
-                                href="/account/login" v-on:click.prevent="mySwitch(['login', null])">点击登录</a>
+                                href="/account/login" v-on:click.prevent="mySwitch(['signIn', null])">点击登录</a>
                         </div>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                 if (this.submit_check()) {
                     this.$http.post('/account/register/', { 'phone_number': this.phone_number, 'password': this.password, 'msgcode': this.msgcode }, { emulateJSON: true }).then(result => {
                         if (result.body.status == 302) {
-                            this.mySwitch(['home', null]);
+                            this.mySwitch(['signIn', null]);
                         }
                         else {
                             this.tip = result.body.tip;

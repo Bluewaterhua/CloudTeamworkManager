@@ -196,6 +196,21 @@
                                                 :key="item.user_id" :value="item.name" @click="set_leader($event,item)">
                                         </td>
                                     </tr>
+                                    <tr v-show="act_mt">
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <th colspan="2" style="font-size: 16px">机电</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr v-show="act_mt">
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td>
+                                            <input v-for="(item, i) in selected_list_mt" class="btn btn-outline-primary"
+                                                :class="{active: (leader_list.indexOf(item) != -1)} " type="button"
+                                                style="margin: 0px 2rem 0px 0rem; margin-right: 1.5rem; width: 85px; display: inline-block; border-radius: 0"
+                                                :key="item.user_id" :value="item.name" @click="set_leader($event,item)">
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -252,6 +267,9 @@
                                     <a class="nav-link" id="v-pills-design-tab" data-toggle="pill"
                                         href="#v-pills-design" role="tab" aria-controls="v-pills-tabContent"
                                         aria-selected="false" style="border-radius: 0">设计</a>
+                                    <a class="nav-link" id="v-pills-mt-tab" data-toggle="pill"
+                                        href="#v-pills-mt" role="tab" aria-controls="v-pills-mt"
+                                        aria-selected="false" style="border-radius: 0">机电</a>
                                 </div>
                             </div>
                             <div class="col-9">
@@ -263,7 +281,7 @@
                                                 <input type="button" class="btn btn-outline-primary x"
                                                     style="width: 95px;height: 37px;text-align: center; margin: 0px 1.2rem 1rem 0rem; border-radius: 0"
                                                     v-for="item in python_list" :key="item.user_id" :value="item.name"
-                                                    @click="del(item.user_id)">
+                                                    @click="del_py(item.user_id)">
                                             </div>
                                         </div>
                                     </div>
@@ -305,6 +323,15 @@
                                                 @click="del_de(item_de.user_id)">
                                         </div>
                                     </div>
+                                    <div class="tab-pane fade" id="v-pills-mt" role="tabpanel"
+                                        aria-labelledby="v-pills-mt-tab">
+                                        <div class="row">
+                                            <input type="button" class="btn btn-outline-primary x"
+                                                style="width: 95px;height: 37px;text-align: center; margin: 0px 1.2rem 1rem 0rem; border-radius: 0"
+                                                v-for="item_mt in mt_list" :key="item_mt.id" :value="item_mt.name"
+                                                @click="del_mt(item_mt.user_id)">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -314,7 +341,7 @@
                                 <input type="button" class="btn btn-outline-primary"
                                     style="width: 95px;height: 37px;text-align: center; margin: 0px 1.2rem 1rem 0rem; border-radius: 0"
                                     v-for="item_s in selected_list_py" :key="item_s.user_id" :value="item_s.name"
-                                    @click="add(item_s.user_id)">
+                                    @click="add_py(item_s.user_id)">
                                 <input type="button" class="btn btn-outline-primary"
                                     style="width: 95px;height: 37px;text-align: center; margin: 0px 1.2rem 1rem 0rem; border-radius: 0"
                                     v-for="item_ja in selected_list_ja" :key="item_ja.user_id" :value="item_ja.name"
@@ -331,6 +358,10 @@
                                     style="width: 95px;height: 37px;text-align: center; margin: 0px 1.2rem 1rem 0rem; border-radius: 0"
                                     v-for="item_de in selected_list_de" :key="item_de.user_id" :value="item_de.name"
                                     @click="add_de(item_de.user_id)">
+                                <input type="button" class="btn btn-outline-primary"
+                                    style="width: 95px;height: 37px;text-align: center; margin: 0px 1.2rem 1rem 0rem; border-radius: 0"
+                                    v-for="item_mt in selected_list_mt" :key="item_mt.user_id" :value="item_mt.name"
+                                    @click="add_mt(item_mt.user_id)">
                             </div>
                         </div>
                     </div>
@@ -505,12 +536,19 @@
                 selected_list_de: [],
                 flag_de: false,
 
+                // 机电创新团队 mt
+                items_M: [],
+                mt_list: [],
+                selected_list_mt: [],
+                flag_mt: false,
+
                 //文字
                 act_p: false,
                 act_j: false,
                 act_n: false,
                 act_f: false,
                 act_d: false,
+                act_mt: false,
                 act_all: false,
 
                 //附件
@@ -652,33 +690,15 @@
                         }
                     }
                 });
-            },
-            add(id) {
-                let index = this.selected_list_py.findIndex(obj => {
-                    if (obj.user_id == id) {
-                        return true
+                this.$http.get('/task/get_members/?key=M').then(result => {
+                    this.items_M = result.body;
+                    if (this.mt_list.length == 0 && this.selected_list_mt.length == 0) {
+                        for (let i = 0; i < this.items_M.length; i++) {
+                            let obj = this.items_M[i];
+                            this.mt_list.push(obj);
+                        }
                     }
                 });
-                this.python_list.push(this.selected_list_py[index]);
-                this.selected_list_py.splice(index, 1);
-                if (this.selected_list_py.length == 0)
-                    this.act_p = false;
-                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
-                    this.act_all = false;
-                }
-            },
-            del(id) {
-                let index = this.python_list.findIndex(obj => {
-                    if (obj.user_id == id) {
-                        return true
-                    }
-                });
-                if (this.selected_list_py.length == 0) {
-                    this.act_p = true;
-                    this.act_all = true;
-                }
-                this.selected_list_py.push(this.python_list[index]);
-                this.python_list.splice(index, 1);
             },
             set_leader(e, item) {
                 if (e.target.classList.contains("active")) {
@@ -697,6 +717,33 @@
                     }
                 }
             },
+            add_py(id) {
+                let index = this.selected_list_py.findIndex(obj => {
+                    if (obj.user_id == id) {
+                        return true
+                    }
+                });
+                this.python_list.push(this.selected_list_py[index]);
+                this.selected_list_py.splice(index, 1);
+                if (this.selected_list_py.length == 0)
+                    this.act_p = false;
+                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 && this.selected_list_fr.length == 0 && this.selected_list_mt.length == 0) {
+                    this.act_all = false;
+                }
+            },
+            del_py(id) {
+                let index = this.python_list.findIndex(obj => {
+                    if (obj.user_id == id) {
+                        return true
+                    }
+                });
+                if (this.selected_list_py.length == 0) {
+                    this.act_p = true;
+                    this.act_all = true;
+                }
+                this.selected_list_py.push(this.python_list[index]);
+                this.python_list.splice(index, 1);
+            },
             add_ja(id_ja) {
                 let index = this.selected_list_ja.findIndex(obj_ja => {
                     if (obj_ja.user_id == id_ja) {
@@ -707,7 +754,7 @@
                 this.selected_list_ja.splice(index, 1);
                 if (this.selected_list_ja.length == 0)
                     this.act_j = false;
-                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
+                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 && this.selected_list_fr.length == 0 && this.selected_list_mt.length == 0) {
                     this.act_all = false;
                 }
             },
@@ -734,7 +781,7 @@
                 this.selected_list_no.splice(index, 1);
                 if (this.selected_list_no.length == 0)
                     this.act_n = false;
-                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
+                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 && this.selected_list_fr.length == 0 && this.selected_list_mt.length == 0) {
                     this.act_all = false;
                 }
             },
@@ -762,7 +809,7 @@
                 this.selected_list_fr.splice(index, 1);
                 if (this.selected_list_fr.length == 0)
                     this.act_f = false;
-                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
+                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 && this.selected_list_fr.length == 0 && this.selected_list_mt.length == 0) {
                     this.act_all = false;
                 }
             },
@@ -789,7 +836,7 @@
                 this.selected_list_de.splice(index, 1)
                 if (this.selected_list_de.length == 0)
                     this.act_d = false;
-                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 & this.selected_list_fr.length == 0) {
+                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 && this.selected_list_fr.length == 0 && this.selected_list_mt.length == 0) {
                     this.act_all = false;
                 }
             },
@@ -806,6 +853,34 @@
                 }
                 this.selected_list_de.push(this.design_list[index]);
                 this.design_list.splice(index, 1);
+            },
+            add_mt(id_mt) {
+                let index = this.selected_list_mt.findIndex(obj_mt => {
+                    if (obj_mt.user_id == id_mt) {
+                        return true
+                    }
+                });
+                this.mt_list.push(this.selected_list_mt[index]);
+                this.selected_list_mt.splice(index, 1)
+                if (this.selected_list_mt.length == 0)
+                    this.act_mt = false;
+                if (this.selected_list_py.length == 0 && this.selected_list_ja.length == 0 && this.selected_list_de.length == 0 && this.selected_list_no.length == 0 && this.selected_list_fr.length == 0 && this.selected_list_mt.length == 0) {
+                    this.act_all = false;
+                }
+            },
+            del_mt(id_mt) {
+                let index = this.mt_list.findIndex(obj_mt => {
+                    if (obj_mt.user_id == id_mt) {
+                        return true
+                    }
+
+                });
+                if (this.selected_list_mt.length == 0) {
+                    this.act_mt = true;
+                    this.act_all = true;
+                }
+                this.selected_list_mt.push(this.mt_list[index]);
+                this.mt_list.splice(index, 1);
             },
             submit() {
                 this.loading_display_mode = 'block'
@@ -825,6 +900,9 @@
                     }
                     for (let i = 0; i < this.selected_list_de.length; i++) {
                         this.members.push(this.selected_list_de[i].user_id)
+                    }
+                    for (let i = 0; i < this.selected_list_mt.length; i++) {
+                        this.members.push(this.selected_list_mt[i].user_id)
                     }
                     for (let i = 0; i < this.leader_list.length; i++) {
                         this.leaders.push(this.leader_list[i].user_id)
