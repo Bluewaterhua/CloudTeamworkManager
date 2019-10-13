@@ -19,6 +19,7 @@ Including another URLconf
 # Uncomment next two lines to enable admin:
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
 import notifications.urls
 import xadmin
 
@@ -31,4 +32,5 @@ urlpatterns = [
     path('file/', include('file.urls')),
     path('noti/', include('noti.urls')),
     path('', include('account.urls')),
+    path('favicon.ico/', RedirectView.as_view(url='/static/pic/favicon.ico')),
 ]

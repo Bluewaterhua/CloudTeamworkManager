@@ -95,7 +95,7 @@
                             <table class="table col-10 offset-1 " style="margin-bottom: 1.5rem; width: 100%">
                                 <tbody>
                                     <tr>
-                                        <th colspan="3">添加成员</th>
+                                        <th colspan="3">添加成员<span style="font-size: 12px">将自己设置为组长，并修改任务进度和任务规划。</span></th>
                                         <td></td>
                                         <td></td>
                                     </tr>
@@ -240,7 +240,7 @@
                         </div>
                         <div class="row">
                             <div class="col-6" style="padding-right: 0;">
-                                <input type="search" id="search" class="form-control">
+                                <input type="search" id="search" class="form-control" placeholder="暂时不可用">
                             </div>
                             <div style="float: left;margin-top: 2px">
                                 <a href="#">

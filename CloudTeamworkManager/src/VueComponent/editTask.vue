@@ -238,7 +238,7 @@
                         </div>
                         <div class="row">
                             <div class="col-6" style="padding-right: 0;">
-                                <input type="search" id="search" class="form-control">
+                                <input type="search" id="search" class="form-control" placeholder="暂时不可用">
                             </div>
                             <div style="float: left;margin-top: 2px">
                                 <a href="#">

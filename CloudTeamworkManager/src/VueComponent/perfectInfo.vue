@@ -14,11 +14,11 @@
                     <div class="col-10" style="margin-top: 10%; margin-bottom: 10%">
                         <transition :name="basic_info_part_one_name">
                             <form v-if="basic_info_part_one" class="clearfix">
-                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的姓名</label>
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的姓名（确定后无法修改）</label>
                                 <input v-model="name" class="form-control" placeholder="示例: 王美美" style="margin-bottom: 1rem; border-radius: 0px">
-                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的生日</label>
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的生日（确定后无法修改）</label>
                                 <input v-model="birthday" type="date" class="form-control" style="margin-bottom: 1rem; border-radius: 0px">
-                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的性别</label>
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的性别（确定后无法修改）</label>
                                 <select v-model="sex" class="form-control" style="margin-bottom: 1rem; border-radius: 0px">
                                     <option selected value="">请选择</option>
                                     <option value='m'>男</option>
@@ -28,12 +28,12 @@
                         </transition>
                         <transition :name="basic_info_part_two_name">
                             <form v-if="basic_info_part_two" class="clearfix">
-                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的学号</label>
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的学号（确定后无法修改）</label>
                                 <input v-model="student_id" type="text" class="form-control"
                                     placeholder="示例: 2015006797" style="margin-bottom: 1rem; border-radius: 0px">
-                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的云ID</label>
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请输入你的云ID（确定后无法修改）</label>
                                 <input v-model="cloud_id" type="text" class="form-control" placeholder="示例: 1234567" style="margin-bottom: 1rem; border-radius: 0px">
-                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的方向</label>
+                                <label style="font-size: 14px; margin: 0rem 0rem 0.5rem 0rem; color: #333333">请选择你的方向（确定后无法修改）</label>
                                 <select v-model="major" class="form-control" style="margin-bottom: 1rem; border-radius: 0px">
                                     <option selected value="">请选择</option>
                                     <option value='M'>机电创新团队</option>

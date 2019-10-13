@@ -37,12 +37,13 @@
                             </ul>
                         </div>
                     </div>
-                    <div>
-                        <div class="tab-content col-10 offset-1" id="pills-tabContent" style="padding-bottom: .75rem">
+                    <div class="row no-gutters">
+                        <div class="tab-content col-12" id="pills-tabContent" style="margin-top: 1rem; margin-bottom: 1rem;">
                             <div class="tab-pane fade show active" id="pills-all" role="tabpanel"
                                 aria-labelledby="pills-all-tab">
+                                <div v-if="!globle_props.unread_notifications.length && !globle_props.read_notifications.length" class="offset-1 col-10">暂无消息</div>
                                 <div class="unread_notific">
-                                    <div v-for="(each, index) in globle_props.unread_notifications" class="row no-gutters md-trigger"
+                                    <div v-for="(each, index) in globle_props.unread_notifications" class="row no-gutters md-trigger col-10 offset-1"
                                         style="height: 5rem; cursor: pointer; margin-bottom: 1.5rem"
                                         data-modal="modal-8" :key="index"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)">
@@ -66,7 +67,7 @@
                                 </div>
                                 <hr v-if="globle_props.read_notifications.length && globle_props.unread_notifications.length" style="background-color: #007bff">
                                 <div class="read_notific">
-                                    <div v-for="each in globle_props.read_notifications" class="row no-gutters md-trigger"
+                                    <div v-for="each in globle_props.read_notifications" class="row no-gutters md-trigger col-10 offset-1"
                                         style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem;"
                                         data-modal="modal-8" :key="each"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, -1)">
@@ -87,12 +88,11 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="tab-pane fade" id="pills-system" role="tabpanel"
                                 aria-labelledby="pills-profile-tab">
                                 <div class="unread_notific">
                                     <div v-for="(each, index) in globle_props.unread_notifications" v-if="JSON.parse(each.data).type == 1"
-                                        class="row no-gutters md-trigger" style="height: 5rem; cursor: pointer;"
+                                        class="row no-gutters md-trigger col-10 offset-1" style="height: 5rem; cursor: pointer;"
                                         data-modal="modal-8" :key="index"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)">
                                         <div class="col-2" style="text-align: center">
@@ -116,7 +116,7 @@
                                 <hr v-if="sys_read.length && sys_unread.length" style="background-color: #007bff">
                                 <div class="read_notific">
                                     <div v-for="each in globle_props.read_notifications" v-if="JSON.parse(each.data).type == 1"
-                                        class="row no-gutters md-trigger " :key="each"
+                                        class="row no-gutters md-trigger col-10 offset-1" :key="each"
                                         style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem" data-modal="modal-8"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, -1)">
                                         <div class="col-2" style="text-align: center">
@@ -137,12 +137,11 @@
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="tab-pane fade" id="pills-group" role="tabpanel"
                                 aria-labelledby="pills-contact-tab">
                                 <div class="unread_notific">
                                     <div v-for="(each, index) in globle_props.unread_notifications" v-if="JSON.parse(each.data).type == 0"
-                                        class="row no-gutters md-trigger" :key="index"
+                                        class="row no-gutters md-trigger col-10 offset-1" :key="index"
                                         style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem" data-modal="modal-8"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id, index)">
                                         <div class="col-2" style="text-align: center">
@@ -166,7 +165,7 @@
                                 <hr v-if="team_read.length && team_unread.length" style="background-color: #007bff" />
                                 <div class="read_notific">
                                     <div v-for="each in globle_props.read_notifications" v-if="JSON.parse(each.data).type == 0"
-                                        class="row no-gutters md-trigger"
+                                        class="row no-gutters md-trigger col-10 offset-1"
                                         style="height: 5rem; cursor: pointer;margin-bottom: 1.5rem;"
                                         data-modal="modal-8" :key="each"
                                         @click="show_detail(each.verb, each.description, each.timestamp, each.id)">
@@ -188,52 +187,52 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div>
-                            <div class="md-modal md-effect-8" id="modal-8">
-                                <div class="md-content">
-                                    <div>
-                                        <div class="container-fluid">
-                                            <div class="row justify-content-between">
-                                                <div class="col-4" style="margin-top: 10px; font-size: 24px">
-                                                    消息详情
-                                                </div>
-                                                <div class="col-2" style="margin-top: 10px;">
-                                                    <button class="md-close btn-sm btn-primary"
-                                                        style="background-color: transparent; border: none; height: 100%">
-                                                        <img src="/static/pic/close.png">
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="lead" style="letter-spacing: 2px">{{detail_title}}</div>
-                                                    <div class="text-left" style="letter-spacing: 1px">
-                                                        {{detail_body}}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <small>{{timestamp_to_date(detail_date)}}</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="md-overlay"></div>
-                        </div>
                     </div>
 
                     <div class="row no-gutters"
-                    style="background-color: #E4EBFF; height: 4rem; cursor: pointer;">
+                    style="background-color: #E4EBFF; height: 4rem; cursor: pointer; display: none">
                         <div style="text-decoration: none; color: #999999; margin-left: auto; margin-right: auto">
                             <div style="position: relative; transform: translateY(-50%); top: 50%">
                                 <div>点击加载更多</div>
                                 <div style="text-align: center; transform: rotate(180deg)">^</div>
                             </div>
                         </div>
+                    </div>
+
+                    <div>
+                        <div class="md-modal md-effect-8" id="modal-8">
+                            <div class="md-content">
+                                <div>
+                                    <div class="container-fluid">
+                                        <div class="row justify-content-between">
+                                            <div class="col-4" style="margin-top: 10px; font-size: 24px">
+                                                消息详情
+                                            </div>
+                                            <div class="col-2" style="margin-top: 10px;">
+                                                <button class="md-close btn-sm btn-primary"
+                                                    style="background-color: transparent; border: none; height: 100%">
+                                                    <img src="/static/pic/close.png">
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="lead" style="letter-spacing: 2px">{{detail_title}}</div>
+                                                <div class="text-left" style="letter-spacing: 1px">
+                                                    {{detail_body}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <small>{{timestamp_to_date(detail_date)}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-overlay"></div>
                     </div>
                 </div>
             </div>

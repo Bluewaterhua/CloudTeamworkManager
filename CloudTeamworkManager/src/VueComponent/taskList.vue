@@ -66,6 +66,7 @@
                         <div class="tab-content row no-gutters col-12" id="pills-tabContent">
                             <div class="tab-pane fade show active col-12" id="pills-all" role="tabpanel"
                                 aria-labelledby="pills-all-tab">
+                                <div v-if="!task_list.length" class="offset-1 col-10">暂无任务</div>
                                 <div v-for="(each, index) in task_list" class="task_card offset-1 col-10" :key="index"
                                     style="height: 6rem; margin-bottom: 1.5rem; cursor: pointer; padding-right: 0px" v-on:click.prevent="mySwitch(['taskDetail', each.id])">
                                     <div style="display: inline-block;">
@@ -152,7 +153,7 @@
                     </div>
 
                     <div v-if="show_more" class="row no-gutters"
-                        style="background-color: #E4EBFF; height: 4rem; cursor: pointer;">
+                        style="background-color: #E4EBFF; height: 4rem; cursor: pointer; display: none">
                         <div style="text-decoration: none; color: #999999; margin-left: auto; margin-right: auto">
                             <div style="position: relative; transform: translateY(-50%); top: 50%">
                                 <div>点击加载更多</div>
