@@ -59,7 +59,7 @@
                                             <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
                                                 class="btn btn-outline-primary"
                                                 style="float:right; margin-left: 1.5rem; margin-top: .5rem"
-                                                :style="{visibility: add_button? 'visible' : 'hidden'}"
+                                                :style="{visibility: is_add_button_available? 'visible' : 'hidden'}"
                                                 @click="add_task_comment()" v-if="is_creator">
                                             <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
                                                 class="btn btn-outline-primary" style="float:right; margin-top: .5rem"
@@ -122,7 +122,7 @@
                                             <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
                                                 class="btn btn-outline-primary"
                                                 style="float:right; margin-left: 1.5rem; margin-top: .5rem"
-                                                :style="{visibility: add_button? 'visible' : 'hidden'}"
+                                                :style="{visibility: is_add_button_available? 'visible' : 'hidden'}"
                                                 @click="add_task_schedule()" v-if="is_leader">
                                             <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
                                                 class="btn btn-outline-primary" style="float:right; margin-top: .5rem"
@@ -148,7 +148,7 @@
                                             <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
                                                 class="btn btn-outline-primary"
                                                 style="float:right; margin-left: 1.5rem; margin-top: .5rem"
-                                                :style="{visibility: add_button? 'visible' : 'hidden'}"
+                                                :style="{visibility: is_add_button_available? 'visible' : 'hidden'}"
                                                 @click="add_task_process()" v-if="is_leader">
                                             <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
                                                 class="btn btn-outline-primary" style="float:right; margin-top: .5rem"
@@ -375,6 +375,10 @@
                                         href="#v-pills-comment" role="tab" aria-controls="v-pills-comment"
                                         aria-selected="false" @click='get_personal_comments()'
                                         style="border-radius: 0px" v-if="is_leader || is_creator">评价</a>
+                                    <a class="nav-link show" id="v-pills-personal_appendix-tab" data-toggle="pill"
+                                        href="#v-pills-personal_appendix" role="tab" aria-controls="v-pills-personal_appendix"
+                                        aria-selected="false" @click='get_personal_appendixes()'
+                                        style="border-radius: 0px" v-if="is_leader || is_creator">附件</a>
                                 </div>
                             </div>
                             <div class="col-9">
@@ -444,6 +448,45 @@
                                             class="btn btn-outline-primary" style="float:right"
                                             :style="{visibility: is_edit_button_available && personalComments.length && is_leader? 'visible' : 'hidden'}"
                                             @click="edit_personal_comments()">
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-personal_appendix" role="tabpanel"
+                                        aria-labelledby="v-pills-personal_appendix-tab" v-if="is_leader || is_creator">
+                                        <div style="height: 300px; overflow-y: auto">
+                                            <div v-if="!personalAppendix.length">暂无内容</div>
+                                            <table v-if="personalAppendix.length" style="width: 100%; border-collapse:separate; border-spacing:0px 1rem;">
+                                                <tbody>
+                                                    <tr v-for="(each, index) in personalAppendix" :key="index">
+                                                        <th style="width: 4rem;">
+                                                            <img :src="each.name | getLogoSrc">
+                                                        </th>
+                                                        <td>
+                                                            <div>
+                                                                {{each.name}}
+                                                            </div>
+                                                            <div style="margin-top: 1.2rem">
+                                                                {{each.size}}字节
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <button
+                                                                    style="background: url(/static/pic/826.png); width:24px; height:24px; border:none; float: right; margin-left: 1.2rem"
+                                                                    @click="remove_personal_appendix(index)"
+                                                                    v-if="user_id == person_id">
+                                                                </button>
+                                                                <button
+                                                                    style="background: url(/static/pic/829.png); width:24px; height:24px; border:none; float: right;"
+                                                                    @click="download_personal_appendix(each.name)">
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <input type="file" @change="add_personal_appendix()" ref="referenceUpload" name="personal_appendix" id="personal_appendix" style="height: 0px; display: none">
+                                        <label for="personal_appendix" class="btn btn-outline-primary col-3" :style="{visibility: is_add_button_available && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            style="cursor: pointer; margin: 0px 0px 0px 7.5px; border-radius: 0px; float:right; margin-left: 1.5rem; width: auto">添加</label>
                                     </div>
                                 </div>
                             </div>
@@ -709,6 +752,7 @@
                 personalProcess: [],
                 personalSchedule: [],
                 personalComments: [],
+                personalAppendix: [],
                 person_id: '',
                 edit: "编辑",
                 add: "添加",
@@ -813,6 +857,9 @@
             download_file: function(filename) {
                 location.href = '/file/appendix/' + this.globle_props.task_id + '/' + filename + '/';
             },
+            download_personal_appendix: function(filename) {
+                location.href = '/file/personal_appendix/' + this.globle_props.task_id + '/' + filename + '/?user_id=' + this.person_id;
+            },
             hide_modal: function () {
                 this.is_edit_button_available = true;
                 this.is_add_button_available = true;
@@ -822,6 +869,7 @@
                 this.personalProcess = [];
                 this.personalSchedule = [];
                 this.personalComments = [];
+                this.personalAppendix = [];
                 this.hide_modal();
             },
             get_appendixes: function () {
@@ -867,6 +915,30 @@
                     else if (result.body.status == 400) {
                         ;
                     }
+                })
+            },
+            get_personal_appendixes: function () {
+                this.$http.get('/file/personal_appendix_list/' + this.globle_props.task_id + '/' +this.person_id +'/').then(res => {
+                    this.personalAppendix = res.body;
+                })
+            },
+            add_personal_appendix: function () {
+                this.personalAppendix.push(event.target.files[0]);
+                this.$refs.referenceUpload.value = null;
+                this.is_empty = false;
+
+                let formData = new FormData()
+                formData.append('personal_appendix', this.personalAppendix[this.personalAppendix.length - 1])
+                this.$http.post('/file/personal_appendix/' + this.globle_props.task_id + '/xxx/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
+
+                })
+            },
+            remove_personal_appendix: function (index) {
+                let appendix_id = this.personalAppendix[index].id
+                this.personalAppendix.splice(index, 1);
+
+                this.$http.get('/file/delete_personal_appendix/' + this.globle_props.task_id + '/' + index + '/').then(result => {
+
                 })
             },
             get_personal_process: function () {

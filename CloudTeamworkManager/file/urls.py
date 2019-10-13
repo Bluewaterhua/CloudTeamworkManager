@@ -12,4 +12,7 @@ urlpatterns = [
     path('delete_appendix/<int:task_id>/<int:appendix_id>/', views.delete),
     path('overlay_appendix/<int:task_id>/<int:appendix_id>/', views.overlay),
     path('appendix_list/<int:task_id>/', views.table),
+    path('personal_appendix/<int:task_id>/<str:file_name>/', views.personal_appendix),
+    path('delete_personal_appendix/<int:task_id>/<int:file_index>/', views.delete_personal_appendix),
+    path('personal_appendix_list/<int:task_id>/<int:user_id>/', views.personal_appendix_list),
 ]

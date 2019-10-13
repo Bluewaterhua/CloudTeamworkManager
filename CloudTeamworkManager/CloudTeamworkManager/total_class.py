@@ -513,7 +513,8 @@ class task(object):
 
             target_member.remove_creater_perm()
             target_member.remove_member_perm()
-            target_member.quit_task_in_profile()
+            if not request.user.id in members:
+                target_member.quit_task_in_profile()
         except UserProfile.DoesNotExist:
             pass
 
