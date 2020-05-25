@@ -14,4 +14,7 @@ urlpatterns = [
     path('perfect_information/', views.perfect_info),
     path('change_information/', views.change_info),
     path('task_list/', views.task_list),
+    path('login_check/', views.login_check),
+    path('csrf_token/', views.csrf_token),
+    path('basic_info/', views.basic_info),
 ]

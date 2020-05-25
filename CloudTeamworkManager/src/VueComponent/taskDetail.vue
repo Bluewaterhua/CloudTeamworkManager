@@ -1,0 +1,1212 @@
+<template>
+    <div id="mainFunc">
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="col-10 offset-1">
+                    <div class="card">
+                        <div class="clearfix" style="width: 100%">
+                            <div class="title">
+                                <div class="text-uppercase lead font-weight-bold title_en">
+                                    the&nbsp;task
+                                </div>
+                                <div class="title_zh">
+                                    基本资料
+                                </div>
+                            </div>
+                        </div>
+                        <div class="offset-1">
+                            <p class="card-text task_name">
+                                {{task_name}}
+                            </p>
+                        </div>
+                        <div class="row no-gutters">
+                            <table class="table col-10 offset-1">
+                                <tbody>
+                                    <tr>
+                                        <th>创建时间</th>
+                                        <td>{{publish_date}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>任务详情</th>
+                                        <td>
+                                            <div class="task_description" style="max-height: 200px; overflow-y: auto">
+                                                {{task_description}}
+                                            </div>
+                                            <small class="form-text text-muted"
+                                                style="margin-top: 10px;float: left;letter-spacing: 5px">
+                                                <span class="md-trigger cursor-pointer" data-modal="modal-8" @click="get_appendixes()">
+                                                    <img src="/static/pic/href_active.png">&nbsp;查看附件
+                                                </span>
+                                            </small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>任务评价</th>
+                                        <td>
+                                            <div style="max-height: 200px; overflow-y: auto">
+                                                <div v-if="!task_comment.length" style="position: absolute;">暂无内容</div>
+                                                <div v-for="(item,i) in task_comment" :key="item.id">
+                                                    <div style="font-size: 14px">
+                                                        {{item.publish_date |
+                                                        formatDate}}</div>
+                                                    <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
+                                                        :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
+                                                        style="color: #747474; resize: none"
+                                                        :id="i == 0? (is_edit_and_add_button_available? 'target_task_comment' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                    <hr v-if="i != task_comment.length - 1">
+                                                </div>
+                                            </div>
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
+                                                class="btn btn-outline-primary"
+                                                style="float:right; margin-left: 1.5rem; margin-top: .5rem"
+                                                :style="{visibility: is_add_button_available? 'visible' : 'hidden'}"
+                                                @click="add_task_comment()" v-if="is_creator">
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
+                                                class="btn btn-outline-primary" style="float:right; margin-top: .5rem"
+                                                :style="{visibility: is_edit_button_available && task_comment.length? 'visible' : 'hidden'}"
+                                                @click="edit_task_comment()" v-if="is_creator">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="clearfix" style="width: 100%">
+                            <div class="title">
+                                <div class="text-uppercase lead font-weight-bold title_en">
+                                    THE&nbsp;TASK
+                                </div>
+                                <div class="title_zh">
+                                    任务进度
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row no-gutters">
+                            <table class="table col-10 offset-1">
+                                <tbody>
+                                    <tr>
+                                        <th>截止时间</th>
+                                        <td>
+                                            {{deadline}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>目前耗时</th>
+                                        <td style="vertical-align: middle">
+                                            <div class="progress"
+                                                style="border-radius: 0px; width: 80%; display: inline-flex; height: 10px">
+                                                <div class="progress-bar" :style="{width: progress}"></div>
+                                            </div>
+                                            <div
+                                                style="margin-left: 1rem; display: inline-flex; font-size: 16px; color: #999999">
+                                                {{ progress }}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>任务规划</th>
+                                        <td>
+                                            <div v-if="!task_schedule.length" style="position: absolute;">暂无内容</div>
+                                            <div style="max-height: 200px; overflow-y: auto">
+                                                <div v-for="(item,i) in task_schedule" :key="item.id">
+                                                    <div style="font-size: 14px">{{item.publish_date |
+                                                        formatDate}}</div>
+                                                    <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
+                                                        :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
+                                                        style="color: #747474; resize: none"
+                                                        :id="i == 0? (is_edit_and_add_button_available? 'target_task_schedule' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                    <hr v-if="i != task_schedule.length - 1">
+                                                </div>
+                                            </div>
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
+                                                class="btn btn-outline-primary"
+                                                style="float:right; margin-left: 1.5rem; margin-top: .5rem"
+                                                :style="{visibility: is_add_button_available? 'visible' : 'hidden'}"
+                                                @click="add_task_schedule()" v-if="is_leader">
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
+                                                class="btn btn-outline-primary" style="float:right; margin-top: .5rem"
+                                                :style="{visibility: is_edit_button_available && task_schedule.length? 'visible' : 'hidden'}"
+                                                @click="edit_task_schedule()" v-if="is_leader">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>项目进度</th>
+                                        <td>
+                                            <div v-if="!task_progress.length" style="position: absolute;">暂无内容</div>
+                                            <div style="max-height: 200px; overflow-y: auto">
+                                                <div v-for="(item,i) in task_progress" :key="item.id">
+                                                    <div style="font-size: 14px">{{item.publish_date |
+                                                        formatDate}}</div>
+                                                    <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
+                                                        :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
+                                                        style="color: #747474; resize: none"
+                                                        :id="i == 0? (is_edit_and_add_button_available? 'target_task_progress' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                    <hr v-if="i != task_progress.length - 1">
+                                                </div>
+                                            </div>
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
+                                                class="btn btn-outline-primary"
+                                                style="float:right; margin-left: 1.5rem; margin-top: .5rem"
+                                                :style="{visibility: is_add_button_available? 'visible' : 'hidden'}"
+                                                @click="add_task_process()" v-if="is_leader">
+                                            <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
+                                                class="btn btn-outline-primary" style="float:right; margin-top: .5rem"
+                                                :style="{visibility: is_edit_button_available && task_progress.length? 'visible' : 'hidden'}"
+                                                @click="edit_task_process()" v-if="is_leader">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="clearfix" style="width: 100%">
+                            <div class="title">
+                                <div class="text-uppercase lead font-weight-bold title_en">
+                                    members
+                                </div>
+                                <div class="title_zh">
+                                    人员安排
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row no-gutters">
+                            <table class="table col-10 offset-1 " style="margin-bottom: 1.5rem; width: 100%">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="3">小组组长</th>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td>
+                                            <div v-for='person in leaders' :key="person.id"
+                                                :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
+                                                data-modal="modal-5" @click="show_deatils(person.id)"
+                                                style="margin-right: 2rem; width: 85px; display: inline-block"
+                                                :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
+                                                <div style="font-size: 14px; display: inline-block;">
+                                                    {{person.name}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row no-gutters">
+                            <table class="table col-10 offset-1" style="margin-bottom: 3rem;">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="3">小组成员</th>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr v-if='pythonList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <th colspan="2" style="font-size: 16px">Python</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr v-if='pythonList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td>
+                                            <div v-for='person in pythonList' :key="person.id"
+                                                :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
+                                                data-modal="modal-5" @click="show_deatils(person.id)"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
+                                                :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
+                                                <div style="font-size: 14px; display: inline-block;">
+                                                    {{person.name}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if='javaList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <th colspan="2" style="font-size: 16px">Java</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr v-if='javaList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td>
+                                            <div v-for='person in javaList' :key="person.id"
+                                                :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
+                                                data-modal="modal-5" @click="show_deatils(person.id)"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
+                                                :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
+                                                <div style="font-size: 14px; display: inline-block;">
+                                                    {{person.name}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if='jsList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <th colspan="2" style="font-size: 16px">JS</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr v-if='jsList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td>
+                                            <div v-for='person in jsList' :key="person.id"
+                                                :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
+                                                data-modal="modal-5" @click="show_deatils(person.id)"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
+                                                :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
+                                                <div style="font-size: 14px; display: inline-block;">
+                                                    {{person.name}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if='mtList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <th colspan="2" style="font-size: 16px">机电</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr v-if='mtList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td>
+                                            <div v-for='person in mtList' :key="person.id"
+                                                :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
+                                                data-modal="modal-5" @click="show_deatils(person.id)"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
+                                                :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
+                                                <div style="font-size: 14px; display: inline-block;">
+                                                    {{person.name}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if='frontList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <th colspan="2" style="font-size: 16px">前端</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr v-if='frontList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td>
+                                            <div v-for='person in frontList' :key="person.id"
+                                                :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
+                                                data-modal="modal-5" @click="show_deatils(person.id)"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
+                                                :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
+                                                <div style="font-size: 14px; display: inline-block;">
+                                                    {{person.name}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if='designList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <th colspan="2" style="font-size: 16px">设计</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr v-if='designList.length !== 0'>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td style="width: .6rem; padding: 0px"></td>
+                                        <td>
+                                            <div v-for='person in designList' :key="person.id"
+                                                :class="[{'md-trigger': user_id == person.id || is_creator || is_leader}]"
+                                                data-modal="modal-5" @click="show_deatils(person.id)"
+                                                style="margin: 0px 1.5rem 1rem 0rem; width: 85px; display: inline-block"
+                                                :style="{cursor: user_id == person.id || is_creator || is_leader? 'pointer' : false}">
+                                                <img :src="'/file/avatar/1/?user_id=' + person.id"
+                                                    style="height: 30px; width: 30px; border-radius: 15px">
+                                                <div style="font-size: 14px; display: inline-block;">
+                                                    {{person.name}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="md-modal md-effect-8" id="modal-5">
+                <div class="md-content">
+                    <div class="container-fluid">
+                        <div class="row justify-content-between">
+                            <div class="col-4" style="margin-top: .5rem; font-size: 24px">
+                                个人资讯
+                            </div>
+                            <span class="col-2 md-close" style="margin-top: .5rem; cursor: pointer;">
+                                <img src="/static/pic/close.png"
+                                    style="position: relative; top: 50%; transform: translateY(-50%); float: right">
+                            </span>
+                        </div>
+                        <div class="row" style="margin-top: 5px">
+                            <div class="col-3">
+                                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                                    aria-orientation="vertical">
+                                    <a class="nav-link show active" id="v-pills-process-tab" data-toggle="pill"
+                                        href="#v-pills-process" role="tab" aria-controls="v-pills-process"
+                                        aria-selected="true" @click='get_personal_process()'
+                                        style="border-radius: 0px">进度</a>
+                                    <a class="nav-link show" id="v-pills-schedule-tab" data-toggle="pill"
+                                        href="#v-pills-schedule" role="tab" aria-controls="v-pills-schedule"
+                                        aria-selected="false" @click='get_personal_schedule()'
+                                        style="border-radius: 0px">规划</a>
+                                    <a class="nav-link show" id="v-pills-comment-tab" data-toggle="pill"
+                                        href="#v-pills-comment" role="tab" aria-controls="v-pills-comment"
+                                        aria-selected="false" @click='get_personal_comments()'
+                                        style="border-radius: 0px" v-if="is_leader || is_creator">评价</a>
+                                    <a class="nav-link show" id="v-pills-personal_appendix-tab" data-toggle="pill"
+                                        href="#v-pills-personal_appendix" role="tab" aria-controls="v-pills-personal_appendix"
+                                        aria-selected="false" @click='get_personal_appendixes()'
+                                        style="border-radius: 0px" v-if="is_leader || is_creator">附件</a>
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="tab-content" id="v-pills-tabContent">
+                                    <div class="tab-pane fade active show" id="v-pills-process" role="tabpanel"
+                                        aria-labelledby="v-pills-home-tab">
+                                        <div style="height: 300px; overflow-y: auto">
+                                            <div v-if="!personalProcess.length">暂无内容</div>
+                                            <div v-for="(item,i) in personalProcess" :key="item.id">
+                                                <div>{{item.publish_date | formatDate}}</div>
+                                                <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
+                                                    :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
+                                                    style="color: #747474; resize: none"
+                                                    :id="i == 0? (is_edit_and_add_button_available? 'target_progress' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                <hr v-if="i != personalProcess.length - 1">
+                                            </div>
+                                        </div>
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
+                                            class="btn btn-outline-primary" style="float:right; margin-left: 1.5rem"
+                                            :style="{visibility: is_add_button_available && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            @click="add_personal_process()">
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
+                                            class="btn btn-outline-primary" style="float:right"
+                                            :style="{visibility: is_edit_button_available && personalProcess.length && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            @click="edit_personal_process()">
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-schedule" role="tabpanel"
+                                        aria-labelledby="v-pills-messages-tab">
+                                        <div style="height: 300px; overflow-y: auto">
+                                            <div v-if="!personalSchedule.length">暂无内容</div>
+                                            <div v-for="(item,i) in personalSchedule" :key="item.id">
+                                                <div>{{item.publish_date | formatDate}}</div>
+                                                <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
+                                                    :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
+                                                    style="color: #747474; resize: none"
+                                                    :id="i == 0? (is_edit_and_add_button_available? 'target_schedule' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                <hr v-if="i != personalSchedule.length - 1">
+                                            </div>
+                                        </div>
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
+                                            class="btn btn-outline-primary" style="float:right; margin-left: 1.5rem"
+                                            :style="{visibility: is_add_button_available && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            @click="add_personal_schedule()">
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
+                                            class="btn btn-outline-primary" style="float:right"
+                                            :style="{visibility: is_edit_button_available && personalSchedule.length && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            @click="edit_personal_schedule()">
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-comment" role="tabpanel"
+                                        aria-labelledby="v-pills-settings-tab" v-if="is_leader || is_creator">
+                                        <div style="height: 300px; overflow-y: auto">
+                                            <div v-if="!personalComments.length">暂无内容</div>
+                                            <div v-for="(item, i) in personalComments" :key="item.id">
+                                                <div>{{item.publish_date | formatDate}}</div>
+                                                <textarea rows="1" placeholder="请输入内容" :key="item.publish_date"
+                                                    :readonly="i == 0? (is_edit_and_add_button_available? false : 'readonly' ) : true"
+                                                    style="color: #747474; resize: none"
+                                                    :id="i == 0? (is_edit_and_add_button_available? 'target_comments' : 'abandon' ) : 'abandon'" :value="item.content"></textarea>
+                                                <hr v-if="i != personalComments.length - 1">
+                                            </div>
+                                        </div>
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '添加'"
+                                            class="btn btn-outline-primary" style="float:right; margin-left: 1.5rem"
+                                            :style="{visibility: is_add_button_available && is_leader? 'visible' : 'hidden'}"
+                                            @click="add_personal_comments()">
+                                        <input type="button" :value="is_edit_and_add_button_available? '保存' : '编辑'"
+                                            class="btn btn-outline-primary" style="float:right"
+                                            :style="{visibility: is_edit_button_available && personalComments.length && is_leader? 'visible' : 'hidden'}"
+                                            @click="edit_personal_comments()">
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-personal_appendix" role="tabpanel"
+                                        aria-labelledby="v-pills-personal_appendix-tab" v-if="is_leader || is_creator">
+                                        <div style="height: 300px; overflow-y: auto">
+                                            <div v-if="!personalAppendix.length">暂无内容</div>
+                                            <table v-if="personalAppendix.length" style="width: 100%; border-collapse:separate; border-spacing:0px 1rem;">
+                                                <tbody>
+                                                    <tr v-for="(each, index) in personalAppendix" :key="index">
+                                                        <th style="width: 4rem;">
+                                                            <img :src="each.name | getLogoSrc">
+                                                        </th>
+                                                        <td>
+                                                            <div>
+                                                                {{each.name}}
+                                                            </div>
+                                                            <div style="margin-top: 1.2rem">
+                                                                {{each.size}}字节
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <button
+                                                                    style="background: url(/static/pic/826.png); width:24px; height:24px; border:none; float: right; margin-left: 1.2rem"
+                                                                    @click="remove_personal_appendix(index)"
+                                                                    v-if="user_id == person_id">
+                                                                </button>
+                                                                <button
+                                                                    style="background: url(/static/pic/829.png); width:24px; height:24px; border:none; float: right;"
+                                                                    @click="download_personal_appendix(each.name)">
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <input type="file" @change="add_personal_appendix()" ref="referenceUpload" name="personal_appendix" id="personal_appendix" style="height: 0px; display: none">
+                                        <label for="personal_appendix" class="btn btn-outline-primary col-3" :style="{visibility: is_add_button_available && this.user_id == this.person_id? 'visible' : 'hidden'}"
+                                            style="cursor: pointer; margin: 0px 0px 0px 7.5px; border-radius: 0px; float:right; margin-left: 1.5rem; width: auto">添加</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md-modal md-effect-8" id="modal-8">
+                <div class="md-content">
+                    <div style="min-height: 400px">
+                        <div class="container-fluid">
+                            <div class="row justify-content-between">
+                                <div class="col-4" style="margin-top: .5rem; font-size: 24px">
+                                    添加附件
+                                </div>
+                                <span class="col-2 md-close" style="margin-top: .5rem; cursor: pointer;"
+                                    @click="hide_modal()">
+                                    <img src="/static/pic/close.png"
+                                        style="position: relative; top: 50%; transform: translateY(-50%); float: right">
+                                </span>
+                            </div>
+                            <div style="height: 24rem" v-if="is_empty">
+                                <div class="row no-gutters"
+                                    style="position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);text-align: center">
+                                    <div class="row col-10 offset-1">
+                                        <label for="file" class="btn btn-primary col-6 offset-3"
+                                            style="cursor: pointer; border-radius: 0px">点击选择</label>
+                                        <input ref="referenceUpload" type="file" name="appendix" id="file" style="height: 0px; opacity: 0"
+                                            v-on:change="add_appendix($event)">
+                                        <small class="col-6 offset-3"
+                                            style="color: #C9C9C9;float:left; padding: 0px; text-align: left">文件不要超过10M！</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="!is_empty" style="height: 23rem; margin-top: 1rem">
+                                <div v-if="!is_empty">
+                                    <label for="file" class="btn btn-primary col-3"
+                                        style="cursor: pointer; margin: 0px 0px 0px 7.5px; border-radius: 0px">点击选择</label>
+                                    <input ref="referenceUpload" type="file" name="appendix" id="file" style="height: 0px; display: none"
+                                        v-on:change="add_appendix($event)">
+                                    <span
+                                        style="color: #C9C9C9; vertical-align: bottom; font-size: 80%; font-weight: 400; margin-left: .8rem">
+                                        文件不要超过10M！
+                                    </span>
+                                </div>
+                                <div class="col-12" style="max-height: 18rem; overflow-y: auto; margin: 1rem 0px">
+                                    <table style="width: 100%; border-collapse:separate; border-spacing:0px 1rem;">
+                                        <tbody>
+                                            <tr v-for="(each, index) in appendixes" :key="index">
+                                                <th style="width: 4rem;">
+                                                    <img :src="each.name | getLogoSrc">
+                                                </th>
+                                                <td>
+                                                    <div>
+                                                        {{each.name}}
+                                                    </div>
+                                                    <div style="margin-top: 1.2rem">
+                                                        {{each.size}}字节
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <button
+                                                            style="background: url(/static/pic/826.png); width:24px; height:24px; border:none; float: right; margin-left: 1.2rem"
+                                                            @click="remove_appendix(index)"
+                                                            v-if="each.publisher == user_id || is_leader || is_creator">
+                                                        </button>
+                                                        <button
+                                                            style="background: url(/static/pic/829.png); width:24px; height:24px; border:none; float: right;"
+                                                            @click="download_file(each.name)">
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md-overlay" @click="hide_modal()"></div>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+    hr {
+        margin: 9px;
+    }
+
+    .table td,
+    .table th {
+        border-top: 0px;
+        font-size: 18px;
+        color: #666666;
+        vertical-align: top;
+    }
+
+    .table th {
+        width: 7em;
+        font-weight: initial;
+        letter-spacing: 4px;
+    }
+
+    .card {
+        margin: 1.2rem 0rem;
+        border-radius: 0px;
+        border-bottom: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        border-top: 0.25rem solid #448AFF
+    }
+
+    .btn {
+        border-radius: 0px;
+    }
+
+    input.form-control:focus {
+        box-shadow: 0 0 0;
+    }
+
+    input.form-control {
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        padding: 0;
+        border-radius: 0;
+    }
+
+    .input {
+        min-height: 30px;
+        max-height: 100px;
+        border: 1px solid grey;
+    }
+
+    .input:empty::before {
+        color: lightgrey;
+        content: attr(placeholder);
+    }
+
+    textarea[readonly] {
+        border: 1px rgba(255, 255, 255, 0) solid !important;
+    }
+
+    textarea[readonly]:focus {
+        border: 1px rgba(255, 255, 255, 0) solid !important;
+        outline: 0px;
+    }
+
+    textarea {
+        border: 1px #ced4da solid;
+        width: 100%;
+    }
+
+    textarea:focus {
+        border: 1px #80bdff solid;
+        outline: 0px;
+    }
+
+    table{
+        margin-bottom: 3rem;
+    }
+
+    .task_name{
+        font-size: 24px; 
+        color: #666666; 
+        padding: 0.75rem;
+    }
+
+    .cursor-pointer{
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    import Vue from "vue"
+    import classie from '../../static/js/animation/classie.js'
+    
+    Vue.filter('formatDate', time => {
+        return new Date(parseInt(time * 1000)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+    })
+
+    Vue.filter(
+        'getLogoSrc', name => {
+            let pptClassFilenameExtension = ['ppt', 'pptx', 'pptm', 'potm', 'pot', 'ppsx', 'pps', 'ppa'];
+            let wordClassFilenameExtension = ['docx', 'docm', 'dotx', 'dotm', 'dot'];
+            let excelClassFilenameExtension = ['xlsx', 'xlsm', 'xlsb', 'xls', 'xltx', 'xltm', 'xlt', 'xls', 'xlam', 'xla'];
+            let archiveClassFilenameExtension = ['zip', 'rar', '7z'];
+            let pictureClassFilenameExtension = ['jpg', 'jpeg', 'png', 'ico', 'gif', 'bmp'];
+            let textClassFilenameExtension = ['txt'];
+            let pdfClassFilenameExtension = ['pdf'];
+
+            let filenameExtension = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
+            if (pptClassFilenameExtension.indexOf(filenameExtension) != -1) {
+                return '/static/pic/ppt.png';
+            }
+            if (excelClassFilenameExtension.indexOf(filenameExtension) != -1) {
+                return '/static/pic/excel.png';
+            }
+            if (wordClassFilenameExtension.indexOf(filenameExtension) != -1) {
+                return '/static/pic/word.png';
+            }
+            if (pdfClassFilenameExtension.indexOf(filenameExtension) != -1) {
+                return '/static/pic/pdf.png';
+            }
+            if (pictureClassFilenameExtension.indexOf(filenameExtension) != -1) {
+                return '/static/pic/picture.png';
+            }
+            if (archiveClassFilenameExtension.indexOf(filenameExtension) != -1) {
+                return '/static/pic/archive.png';
+            }
+            if (textClassFilenameExtension.indexOf(filenameExtension) != -1) {
+                return '/static/pic/text.png';
+            }
+            return '/static/pic/unknown.png';
+        }
+    )
+    
+    export default {
+        data() {
+            return {
+                task_name: '',
+                publish_date: '',
+                deadline: '',
+                task_status: '',
+                members: '',
+                creator: '',
+                leaders: '',
+                task_description: '',
+                task_progress: '',
+                task_comment: '',
+                task_schedule: '',
+                progress: 0,
+
+                // 当前用户信息
+                user_id: 0,
+                is_leader: false,
+                is_creator: false,
+
+                // 附件表
+                appendixes: [],
+                is_empty: true,
+
+                // 成员表
+                pythonList: [],
+                javaList: [],
+                jsList: [],
+                frontList: [],
+                designList: [],
+                mtList: [],
+
+                // 组长表
+                pythonLeasers: [],
+                javaLeaders: [],
+                jsLeaders: [],
+                frontLeaders: [],
+                designLeaders: [],
+                mtLeaders: [],
+
+                // 个人资讯
+                personalProcess: [],
+                personalSchedule: [],
+                personalComments: [],
+                personalAppendix: [],
+                person_id: '',
+                edit: "编辑",
+                add: "添加",
+
+                // 添加删除按钮
+                is_edit_and_add_button_available: false,
+                is_edit_button_available: true,
+                is_add_button_available: true,
+
+                // 时间
+                date: new Date()
+            }
+        },
+        created() {
+            this.getInfo();
+            this.progress = new Date(this.deadline).getTime() - this.date.getTime() > 0 ? 100 - parseInt((new Date(this.deadline).getTime() - this.date.getTime()) / (new Date(this.deadline).getTime() - new Date(this.publish_date).getTime()) * 100) + '%' : '100%';
+        },
+        props: ['globle_props'],
+        updated() {
+            this.modalEffects();
+        },
+        methods: {
+            modalEffects: function() {
+
+                var overlay = document.querySelectorAll( '.md-overlay' )[1];
+                
+                [].slice.call( document.querySelectorAll( '.md-trigger' ) ).forEach( function( el, i ) {
+
+                    var modal = document.querySelector( '#' + el.getAttribute( 'data-modal' ) ),
+                        close = modal.querySelector( '.md-close' );
+
+                    function removeModal( hasPerspective ) {
+                        classie.remove( modal, 'md-show' );
+
+                        if( hasPerspective ) {
+                            classie.remove( document.documentElement, 'md-perspective' );
+                        }
+                    }
+
+                    function removeModalHandler() {
+                        removeModal( classie.has( el, 'md-setperspective' ) ); 
+                    }
+
+                    el.addEventListener( 'click', function( ev ) {
+                        classie.add( modal, 'md-show' );
+                        overlay.removeEventListener( 'click', removeModalHandler );
+                        overlay.addEventListener( 'click', removeModalHandler );
+
+                        if( classie.has( el, 'md-setperspective' ) ) {
+                            setTimeout( function() {
+                                classie.add( document.documentElement, 'md-perspective' );
+                            }, 25 );
+                        }
+                    });
+
+                    close.addEventListener( 'click', function( ev ) {
+                        ev.stopPropagation();
+                        removeModalHandler();
+                    });
+                } );
+            },
+            getInfo() {
+                this.$http.get('/task/task_page/' + this.globle_props.task_id + '/').then(result => {
+                    if (result.status == 200){
+                        this.task_name = result.body.info.task_name;
+                        this.publish_date = result.body.info.publish_date;
+                        this.deadline = result.body.info.deadline;
+                        this.task_status = result.body.info.task_status;
+                        this.members = result.body.info.members;
+                        this.creator = result.body.info.creator;
+                        this.leaders = result.body.info.leaders;
+                        this.task_description = result.body.info.task_description;
+                        this.user_id = result.body.info.user_id;
+                        this.task_progress = JSON.parse(result.body.info.task_progress).reverse();
+                        this.task_comment = JSON.parse(result.body.info.task_comment).reverse();
+                        this.task_schedule = JSON.parse(result.body.info.task_schedule).reverse();
+                    }
+                    this.classify();
+
+                    this.is_creator = this.user_id == this.creator;
+
+                    for (let each of this.leaders) {
+                        if (each['id'] == this.user_id) {
+                            this.is_leader = true;
+                            break;
+                        }
+                    }
+                })
+            },
+            classify: function () {
+                for (let each_member of this.members) {
+                    switch (each_member.major){
+                        case 'P': this.pythonList.push(each_member); break;
+                        case 'J': this.javaList.push(each_member); break;
+                        case 'N': this.jsList.push(each_member); break;
+                        case 'D': this.designList.push(each_member); break;
+                        case 'M': this.mtList.push(each_member); break;
+                        case 'F': this.frontList.push(each_member); break;
+                    }
+                }
+            },
+            download_file: function(filename) {
+                location.href = '/file/appendix/' + this.globle_props.task_id + '/' + filename + '/';
+            },
+            download_personal_appendix: function(filename) {
+                location.href = '/file/personal_appendix/' + this.globle_props.task_id + '/' + filename + '/?user_id=' + this.person_id;
+            },
+            hide_modal: function () {
+                this.is_edit_button_available = true;
+                this.is_add_button_available = true;
+                this.is_edit_and_add_button_available = false;
+            },
+            clean_personal_achieve: function () {
+                this.personalProcess = [];
+                this.personalSchedule = [];
+                this.personalComments = [];
+                this.personalAppendix = [];
+                this.hide_modal();
+            },
+            get_appendixes: function () {
+                this.$http.get('/file/appendix_list/' + this.globle_props.task_id + '/').then(res => {
+                    this.appendixes = res.body;
+                    if (this.appendixes.length > 0) {
+                        this.is_empty = false;
+                    }
+                    else {
+                        this.is_empty = true;
+                    }
+                })
+            },
+            add_appendix: function () {
+                this.appendixes.push(event.target.files[0]);
+                this.appendixes[this.appendixes.length - 1]['publisher'] = this.user_id;
+                this.$refs.referenceUpload.value = null;
+                this.is_empty = false;
+
+                let formData = new FormData()
+                formData.append('appendix', this.appendixes[this.appendixes.length - 1])
+                this.$http.post('/file/appendix/' + this.globle_props.task_id + '/xxx/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
+                    if (result.body.status == 200) {
+                        this.appendixes[this.appendixes.length - 1]["id"] = result.body.id;
+                    }
+                    else if (result.body.status == 400) {
+                        ;
+                    }
+                })
+            },
+            remove_appendix: function (index) {
+                let appendix_id = this.appendixes[index].id
+                this.appendixes.splice(index, 1);
+
+                if (this.appendixes.length == 0) {
+                    this.is_empty = true;
+                }
+
+                this.$http.get('/file/delete_appendix/' + this.globle_props.task_id + '/' + appendix_id + '/').then(result => {
+                    if (result.body.status == 200) {
+                        ;
+                    }
+                    else if (result.body.status == 400) {
+                        ;
+                    }
+                })
+            },
+            get_personal_appendixes: function () {
+                this.$http.get('/file/personal_appendix_list/' + this.globle_props.task_id + '/' +this.person_id +'/').then(res => {
+                    this.personalAppendix = res.body;
+                })
+            },
+            add_personal_appendix: function () {
+                this.personalAppendix.push(event.target.files[0]);
+                this.$refs.referenceUpload.value = null;
+                this.is_empty = false;
+
+                let formData = new FormData()
+                formData.append('personal_appendix', this.personalAppendix[this.personalAppendix.length - 1])
+                this.$http.post('/file/personal_appendix/' + this.globle_props.task_id + '/xxx/', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(result => {
+
+                })
+            },
+            remove_personal_appendix: function (index) {
+                let appendix_id = this.personalAppendix[index].id
+                this.personalAppendix.splice(index, 1);
+
+                this.$http.get('/file/delete_personal_appendix/' + this.globle_props.task_id + '/' + index + '/').then(result => {
+
+                })
+            },
+            get_personal_process: function () {
+                this.hide_modal();
+                if (!this.personalProcess.length) {
+                    this.$http.get('/publisher/personal_process/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
+                        this.personalProcess = result.body.reverse();
+                    })
+                }
+            },
+            get_personal_schedule: function () {
+                this.hide_modal();
+                if (!this.personalSchedule.length) {
+                    this.$http.get('/publisher/personal_schedule/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
+                        this.personalSchedule = result.body.reverse();
+                    })
+                }
+            },
+            get_personal_comments: function () {
+                this.is_edit_button_available = true;
+                this.is_add_button_available = true;
+                this.is_edit_and_add_button_available = false;
+                if (!this.personalComments.length) {
+                    this.$http.get('/publisher/personal_comments/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
+                        this.personalComments = result.body.reverse();
+                    })
+                }
+            },
+            show_deatils: function (personId) {
+                if (this.user_id != personId && !this.is_creator && !this.is_leader) {
+                    return;
+                }
+                
+                $('#v-pills-process-tab').tab('show');
+                this.clean_personal_achieve();
+                this.person_id = personId;
+                this.$http.get('/publisher/personal_process/' + this.globle_props.task_id + '/' + this.person_id + '/').then(result => {
+                    this.personalProcess = result.body;
+                })
+            },
+            edit_task_schedule: function () {
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
+                }
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
+                    this.task_schedule[0].content = document.getElementById("target_task_schedule").value
+                    this.$http.post("/publisher/task_schedule/" + this.globle_props.task_id + "/", { "content": this.task_schedule[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            add_task_schedule: function () {
+                if (!this.is_edit_and_add_button_available) {
+                    this.task_schedule.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
+                }
+                else if (this.is_edit_and_add_button_available) {
+                    this.task_schedule[0].content = document.getElementById("target_task_schedule").value
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
+                    this.$http.post("/publisher/task_schedule/" + this.globle_props.task_id + "/", { "content": this.task_schedule[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            edit_task_process: function () {
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
+                }
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
+                    this.task_progress[0].content = document.getElementById("target_task_progress").value
+                    this.$http.post("/publisher/task_progress/" + this.globle_props.task_id + "/", { "content": this.task_progress[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            add_task_process: function () {
+                if (!this.is_edit_and_add_button_available) {
+                    this.task_progress.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
+                }
+                else if (this.is_edit_and_add_button_available) {
+                    this.task_progress[0].content = document.getElementById("target_task_progress").value
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
+                    this.$http.post("/publisher/task_progress/" + this.globle_props.task_id + "/", { "content": this.task_progress[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            edit_task_comment: function () {
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
+                }
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
+                    this.task_comment[0].content = document.getElementById("target_task_comment").value
+                    this.$http.post("/publisher/task_comment/" + this.globle_props.task_id + "/", { "content": this.task_comment[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            add_task_comment: function () {
+                if (!this.is_edit_and_add_button_available) {
+                    this.task_comment.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
+                }
+                else if (this.is_edit_and_add_button_available) {
+                    this.task_comment[0].content = document.getElementById("target_task_comment").value
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
+                    this.$http.post("/publisher/task_comment/" + this.globle_props.task_id + "/", { "content": this.task_comment[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            edit_personal_process: function () {
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
+                }
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
+                    this.personalProcess[0].content = document.getElementById("target_progress").value
+                    this.$http.post("/publisher/personal_process/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalProcess[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            add_personal_process: function () {
+                if (!this.is_edit_and_add_button_available) {
+                    this.personalProcess.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
+                }
+                else if (this.is_edit_and_add_button_available) {
+                    this.personalProcess[0].content = document.getElementById("target_progress").value
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
+                    this.$http.post("/publisher/personal_process/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalProcess[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            edit_personal_comments: function () {
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
+                }
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
+                    this.personalComments[0].content = document.getElementById("target_comments").value
+                    this.$http.post("/publisher/personal_comments/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalComments[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            add_personal_comments: function () {
+                if (!this.is_edit_and_add_button_available) {
+                    this.personalComments.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
+                }
+                else if (this.is_edit_and_add_button_available) {
+                    this.personalComments[0].content = document.getElementById("target_comments").value
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
+                    this.$http.post("/publisher/personal_comments/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalComments[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            edit_personal_schedule: function () {
+                this.is_edit_and_add_button_available = !this.is_edit_and_add_button_available;
+                if (this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = false;
+                }
+                else if (!this.is_edit_and_add_button_available) {
+                    this.is_add_button_available = true
+                    this.personalSchedule[0].content = document.getElementById("target_schedule").value
+                    this.$http.post("/publisher/personal_schedule/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalSchedule[0].content, "action": "upgrade" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+            add_personal_schedule: function () {
+                if (!this.is_edit_and_add_button_available) {
+                    this.personalSchedule.unshift({ "content": "", "creater": "", "publish_date": new Date().getTime() / 1000, "upgrade_date": "2910-11-11" });
+                    this.is_edit_button_available = false;
+                    this.is_edit_and_add_button_available = true;
+                }
+                else if (this.is_edit_and_add_button_available) {
+                    this.personalSchedule[0].content = document.getElementById("target_schedule").value
+                    this.is_edit_button_available = true;
+                    this.is_edit_and_add_button_available = false;
+                    this.$http.post("/publisher/personal_schedule/" + this.globle_props.task_id + "/" + this.person_id + "/", { "content": this.personalSchedule[0].content, "action": "create" }, { emulateJSON: true }).then(result => {
+                        if (result.status == 500) {
+                            this.tip = "服务器出错"
+                        }
+                        else {
+                            this.tip = "操作成功"
+                        }
+                    })
+                }
+            },
+        }
+    }
+</script>

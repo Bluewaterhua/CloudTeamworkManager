@@ -2,16 +2,19 @@ from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.contrib.auth.models import User, Group, Permission
+from notifications.signals import notify
 from guardian.shortcuts import assign_perm, remove_perm
 from task.models import task as models_task
 from task.forms import task as forms_task
 from publisher.models import personal_comment, personal_progress, personal_schedule
+from file.models import personal_appendix
 from account.models import UserProfile
 import re
 import json
 import time
 import os
 
+WebSocket_Connections = {}
 
 class member(object):
     user_buildin = None
@@ -83,6 +86,11 @@ class member(object):
         temp = personal_progress.objects.create(id = "%s&%s"%(self.target_task.id, self.user_buildin.id), detail = "[]")
         assign_perm('publisher.edit_personal_progress', self.user_buildin, temp)
         assign_perm('publisher.view_personal_progress', self.user_buildin, temp)
+        temp = personal_appendix.objects.create(id = "%s&%s"%(self.target_task.id, self.user_buildin.id), detail = "[]")
+        assign_perm('file.download_personal_appendix', self.user_buildin, temp)
+        assign_perm('file.delete_personal_appendix', self.user_buildin, temp)
+        assign_perm('file.upload_personal_appendix', self.user_buildin, temp)
+        os.makedirs("./file/appendixes/%s/%s"%(self.target_task.id, self.user_buildin.id))
         temp = personal_schedule.objects.create(id = "%s&%s"%(self.target_task.id, self.user_buildin.id), detail = "[]")
         assign_perm('publisher.edit_personal_schedule', self.user_buildin, temp)
         assign_perm('publisher.view_personal_schedule', self.user_buildin, temp)
@@ -90,10 +98,16 @@ class member(object):
     def recover_archive_edit_perm(self):
         assign_perm('publisher.edit_personal_progress', self.user_buildin, personal_progress.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id)))
         assign_perm('publisher.edit_personal_schedule', self.user_buildin, personal_schedule.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id)))
+        temp = personal_appendix.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id))
+        assign_perm('file.upload_personal_appendix', self.user_buildin, temp)
+        assign_perm('file.delete_personal_appendix', self.user_buildin, temp)
 
     def remove_archive_edit_perm(self):
         remove_perm('publisher.edit_personal_progress', self.user_buildin, personal_progress.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id)))
         remove_perm('publisher.edit_personal_schedule', self.user_buildin, personal_schedule.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id)))
+        temp = personal_appendix.objects.get(id = "%s&%s"%(self.target_task.id, self.user_buildin.id))
+        remove_perm('file.upload_personal_appendix', self.user_buildin, temp)
+        remove_perm('file.delete_personal_appendix', self.user_buildin, temp)
 
     def set_leader_in_profile(self):
         temp = json.loads(self.user_profile.managed_projects)
@@ -135,6 +149,7 @@ class member(object):
         assign_perm('task.view_personal_schedule', self.user_buildin, self.target_task)
         assign_perm('task.edit_appendix', self.user_buildin, self.target_task)
         assign_perm('task.delete_appendix', self.user_buildin, self.target_task)
+        assign_perm('task.download_personal_appendix', self.user_buildin, self.target_task)
 
     def remove_creater_perm(self):
         remove_perm('task.edit_task', self.user_buildin, self.target_task)
@@ -144,6 +159,7 @@ class member(object):
         remove_perm('task.view_personal_schedule', self.user_buildin, self.target_task)
         remove_perm('task.edit_appendix', self.user_buildin, self.target_task)
         remove_perm('task.delete_appendix', self.user_buildin, self.target_task)
+        remove_perm('task.download_personal_appendix', self.user_buildin, self.target_task)
 
     def view_personal_comments(self, request):
         if request.user.has_perm("task.view_personal_comments", self.target_task):
@@ -286,11 +302,14 @@ class task(object):
             assign_perm('task.view_personal_schedule', target_group_leader, target_task)
             assign_perm('task.edit_appendix', target_group_leader, target_task)
             assign_perm('task.delete_appendix', target_group_leader, target_task)
+            assign_perm('task.edit_task', target_group_leader, target_task)
+            assign_perm('task.download_personal_appendix', target_group_leader, target_task)
 
             # 配置创建者权限
-            target_member = member(user_buildin = request.user, target_task = target_task, target_group = target_group, target_group_leader = target_group_leader)
+            target_member = member(user_buildin = request.user, user_profile = UserProfile.objects.get(user_id = request.user.id), target_task = target_task, target_group = target_group, target_group_leader = target_group_leader)
             target_member.assign_member_perm()
             target_member.assign_creater_perm()
+            target_member.join_task_in_profile()
 
             # 配置组员相关
             for each in json.loads(form.instance.members):
@@ -306,6 +325,14 @@ class task(object):
                 target_member.assign_member_perm()
                 target_member.create_personal_archive()
 
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已加入项目组", description = "%s%s%s" % ('您已加入', target_task.task_name, '项目组'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已加入项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
+                    except:
+                        pass
+
             # 配置组长相关
             for each in json.loads(form.instance.leaders):
                 try:
@@ -319,11 +346,18 @@ class task(object):
                 target_member.set_leader_in_profile()
                 target_member.assign_leader_perm()
 
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已成为组长", description = "%s%s%s" % ('您已成为', target_task.task_name, '项目组组长'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
+                    except:
+                        pass
+
             # 建立附件目录
-            os.makedirs("./file/appendixes/%s/"%(target_task.id))
-
-            # 通知
-
+            if not os.path.exists("./file/appendixes/%s/"%(target_task.id)):
+                os.makedirs("./file/appendixes/%s/"%(target_task.id))
+   
             return JsonResponse({"task_id": target_task.id, "status": 200}, safe=False)
         return JsonResponse({"tip": "表单验证失败", "status": 400}, safe=False)
 
@@ -332,10 +366,10 @@ class task(object):
         members = json.loads(target_task["members"])
         leaders = json.loads(target_task["leaders"])
 
-        target_task["members"] = json.dumps([{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members])
-        target_task["leaders"] = json.dumps([{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders])
+        target_task["members"] = [{**{"user_id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members]
+        target_task["leaders"] = [{**{"user_id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders]
 
-        return render(request, "edit_task.html", target_task)
+        return JsonResponse({"info": target_task, "status": 200}, safe=False)
 
     def edit_task(self, request):
         form = forms_task(request.POST, instance = self.task)
@@ -360,10 +394,6 @@ class task(object):
             target_group = Group.objects.get(name=str(self.task.id))
             target_group_leader = Group.objects.get(name = "%s%s"%(str(self.task.id), "leaders"))
 
-            # 更新参与过该任务的成员列表
-            form.instance.all_members = json.dumps(list(set(json.loads(form.instance.all_members) + list(current_members))))
-            self.task = form.save()
-
             # 建立成员类
             target_member = member(target_task = self.task, target_group = target_group, target_group_leader = target_group_leader)
 
@@ -380,7 +410,13 @@ class task(object):
                 target_member.cancel_leader_in_profile()
                 target_member.remove_leader_perm()
 
-                # 通知
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已被撤销组长", description = "%s%s%s" % ('您在', self.task.task_name, '项目组组长的组长职务已被撤销'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已被撤销组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
+                    except:
+                        pass
 
             # 移除组员
             for each in removed_members:
@@ -396,7 +432,13 @@ class task(object):
                 target_member.remove_member_perm()
                 target_member.remove_archive_edit_perm()
 
-                # 通知
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已被移出项目组", description = "%s%s%s" % ('您已被移出', self.task.task_name, '项目组'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已被移出项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
+                    except:
+                        pass
 
             # 配置新增组员
             for each in new_members:
@@ -417,7 +459,13 @@ class task(object):
                     target_member.join_task_in_profile()
                     target_member.assign_member_perm()
 
-                # 通知
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已加入项目组", description = "%s%s%s" % ('您已加入', self.task.task_name, '项目组'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已加入项目组", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
+                    except:
+                        pass
 
             # 配置新增组长
             for each in new_leaders:
@@ -432,7 +480,17 @@ class task(object):
                 target_member.set_leader_in_profile()
                 target_member.assign_leader_perm()
 
-                # 通知
+                noti = notify.send(request.user, recipient=target_member.user_buildin, verb="已成为组长", description = "%s%s%s" % ('您已成为', self.task.task_name, '项目组组长'), type=0)
+                temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+                if temp:
+                    try:
+                        temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "已成为组长", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
+                    except:
+                        pass
+
+            # 更新参与过该任务的成员列表
+            form.instance.all_members = json.dumps(list(set(json.loads(form.instance.all_members) + list(current_members))))
+            self.task = form.save()
 
             return JsonResponse({"url": "/task/task_page/%d"%self.task.id, "status": 302}, safe=False)
         return JsonResponse({"tip": "表单验证失败", "status": 400}, safe=False)
@@ -452,6 +510,11 @@ class task(object):
         try:
             target_member.user_buildin = request.user
             target_member.user_profile = UserProfile.objects.get(user_id = request.user.id)
+
+            target_member.remove_creater_perm()
+            target_member.remove_member_perm()
+            if not request.user.id in members:
+                target_member.quit_task_in_profile()
         except UserProfile.DoesNotExist:
             pass
 
@@ -482,7 +545,13 @@ class task(object):
             target_member.remove_member_perm()
             target_member.remove_archive_edit_perm()
 
-        # 通知
+            noti = notify.send(request.user, recipient=target_member.user_buildin, verb="项目组已被解散", description = "%s%s" % (self.task.task_name, '项目组已被解散'), type=0)
+            temp = WebSocket_Connections.get(target_member.user_buildin.id, None)
+            if temp:
+                try:
+                    temp.send(json.dumps({"id": noti[0][1][0].id, "verb": "项目组已被解散", "description": noti[0][1][0].description, "timestamp": (int)(time.time()), "data": json.dumps(noti[0][1][0].data), "status": 200}).encode())
+                except:
+                    pass
 
         return JsonResponse({"tip": "操作成功", "status": 200}, safe=False)
 
@@ -492,12 +561,11 @@ class task(object):
         members = json.loads(target_task["members"])
         leaders = json.loads(target_task["leaders"])
 
-        target_task["members"] = json.dumps([{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members])
-        target_task["leaders"] = json.dumps([{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders])
+        target_task["members"] = [{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in members]
+        target_task["leaders"] = [{**{"id": each}, **model_to_dict(UserProfile.objects.get(user_id = each), fields=['name', 'major'])} for each in leaders]
         target_task["user_id"] = request.user.id
-        target_task["task"] = self.task
 
-        return render(request, "task_detail.html", target_task)
+        return JsonResponse({"info": target_task, "status": 200}, safe=False)
 
     @staticmethod
     def get_members(request):

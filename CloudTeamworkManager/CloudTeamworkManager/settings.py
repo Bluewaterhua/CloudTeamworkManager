@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+LOGIN_URL = '/account/login/'
+
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
 INSTALLED_APPS = [
@@ -45,7 +47,8 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
     'noti',
-    'notifications'
+    'notifications',
+    'dwebsocket',
 ]
 
 # Middleware framework
